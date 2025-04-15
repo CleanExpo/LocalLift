@@ -1,5 +1,7 @@
 # LocalLift
 
+Powering Visibility. Growing Communities.
+
 A regional group CRM with gamification features, built with FastAPI and Supabase.
 
 ![LocalLift Logo](https://via.placeholder.com/1200x400?text=LocalLift+CRM)
@@ -50,8 +52,8 @@ LocalLift is a modern CRM platform designed specifically for regional businesses
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/local-lift.git
-   cd local-lift
+   git clone https://github.com/CleanExpo/LocalLift.git
+   cd LocalLift
    ```
 
 2. **Install dependencies**
@@ -73,7 +75,9 @@ LocalLift is a modern CRM platform designed specifically for regional businesses
 
 5. **Run the application**
    ```bash
-   python modified_web_app.py
+   ./run.sh  # On Unix/Linux
+   # or
+   run.bat   # On Windows
    ```
 
 6. **Access the web interface at http://localhost:8002**
@@ -83,7 +87,7 @@ For more detailed setup instructions, see [environment.md](environment.md).
 ## Project Structure
 
 ```
-local-lift/
+LocalLift/
 ├── core/                  # Core functionality
 │   ├── config/            # Configuration
 │   └── database/          # Database connections
@@ -111,7 +115,7 @@ local-lift/
 To run the application with auto-reload:
 
 ```bash
-python modified_web_app.py
+python -m uvicorn backend.api:app --reload --host 0.0.0.0 --port 8002
 ```
 
 ### CSS Development
