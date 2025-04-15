@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}LocalLift - Regional CRM with Gamification{% endblock %}
+
+{% block content %}
+<div class="text-center mb-12">
+    <h1 class="text-4xl font-display font-bold text-primary-700 mb-2">Welcome to <span class="text-primary-600">Local<span class="text-secondary-500">Lift</span></span></h1>
+    <p class="text-xl text-gray-600 max-w-3xl mx-auto">The regional group CRM platform with powerful gamification features to boost engagement and performance.</p>
+</div>
+
+<!-- Feature Highlights -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+    <div class="card hover:shadow-lg transition-shadow duration-200 border-t-4 border-primary-500">
+        <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center mr-4">
+                <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+            </div>
+            <h3 class="text-xl font-semibold">Gamification</h3>
+        </div>
+        <p class="text-gray-600 mb-4">Motivate your team with points, achievements, and levels. Create a competitive and rewarding environment.</p>
+        <a href="/gamification" class="btn-primary inline-block">Explore Gamification</a>
+    </div>
+    
+    <div class="card hover:shadow-lg transition-shadow duration-200 border-t-4 border-primary-500">
+        <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center mr-4">
+                <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+            </div>
+            <h3 class="text-xl font-semibold">Leaderboards</h3>
+        </div>
+        <p class="text-gray-600 mb-4">Track performance across regions, franchises, and individuals. Foster healthy competition with real-time leaderboards.</p>
+        <a href="/leaderboards" class="btn-primary inline-block">View Leaderboards</a>
+    </div>
+    
+    <div class="card hover:shadow-lg transition-shadow duration-200 border-t-4 border-primary-500">
+        <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center mr-4">
+                <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
+            </div>
+            <h3 class="text-xl font-semibold">Certifications</h3>
+        </div>
+        <p class="text-gray-600 mb-4">Develop skills with structured training courses. Track progress and celebrate achievements with certifications.</p>
+        <a href="/certifications" class="btn-primary inline-block">Browse Courses</a>
+    </div>
+</div>
+
+<!-- Demo Section -->
+<div class="bg-gray-50 rounded-xl p-8 mb-16">
+    <div class="text-center mb-8">
+        <h2 class="text-3xl font-display font-bold mb-2">Top Performers This Week</h2>
+        <p class="text-gray-600">Celebrating excellence across our network</p>
+    </div>
+    
+    <div class="max-w-3xl mx-auto">
+        <div class="bg-white rounded-xl shadow-card overflow-hidden">
+            <!-- Leaderboard Header -->
+            <div class="bg-primary-600 text-white px-6 py-4 flex justify-between items-center">
+                <h3 class="font-semibold">Global Weekly Leaderboard</h3>
+                <span class="text-sm bg-white text-primary-700 px-3 py-1 rounded-full">Week 15</span>
+            </div>
+            
+            <!-- Leaderboard Items -->
+            <div>
+                <div class="leaderboard-item">
+                    <div class="flex items-center">
+                        <div class="leaderboard-rank rank-1 mr-4">1</div>
+                        <div>
+                            <p class="font-medium">Sarah Johnson</p>
+                            <p class="text-sm text-gray-500">West Region</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="font-bold mr-2">1,425</span>
+                        <span class="text-xs badge-primary">+312 this week</span>
+                    </div>
+                </div>
+                
+                <div class="leaderboard-item">
+                    <div class="flex items-center">
+                        <div class="leaderboard-rank rank-2 mr-4">2</div>
+                        <div>
+                            <p class="font-medium">Michael Chen</p>
+                            <p class="text-sm text-gray-500">East Region</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="font-bold mr-2">1,380</span>
+                        <span class="text-xs badge-primary">+280 this week</span>
+                    </div>
+                </div>
+                
+                <div class="leaderboard-item">
+                    <div class="flex items-center">
+                        <div class="leaderboard-rank rank-3 mr-4">3</div>
+                        <div>
+                            <p class="font-medium">Emily Rodriguez</p>
+                            <p class="text-sm text-gray-500">Central Region</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="font-bold mr-2">1,320</span>
+                        <span class="text-xs badge-primary">+215 this week</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="px-6 py-3 bg-gray-50 text-center">
+                <a href="/leaderboards" class="text-primary-600 font-medium hover:text-primary-800">View Full Leaderboard</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Featured Certifications -->
+<div class="mb-16">
+    <div class="text-center mb-8">
+        <h2 class="text-3xl font-display font-bold mb-2">Featured Courses</h2>
+        <p class="text-gray-600">Enhance your skills with our curated certification courses</p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="course-card course-card-beginner">
+            <div class="flex justify-between items-start mb-4">
+                <h3 class="text-xl font-semibold">GMB Optimization Fundamentals</h3>
+                <span class="badge-primary">Beginner</span>
+            </div>
+            <p class="text-gray-600 mb-3">Learn the basics of optimizing Google My Business listings to improve local visibility.</p>
+            <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-500">5 Modules • 2 Hours</span>
+                <span class="font-medium text-primary-600">50 Points</span>
+            </div>
+            <div class="mt-4 pt-4 border-t border-gray-100">
+                <a href="/certifications/courses/1" class="btn-outline inline-block">Start Course</a>
+            </div>
+        </div>
+        
+        <div class="course-card course-card-intermediate">
+            <div class="flex justify-between items-start mb-4">
+                <h3 class="text-xl font-semibold">Local SEO Best Practices</h3>
+                <span class="badge-secondary">Intermediate</span>
+            </div>
+            <p class="text-gray-600 mb-3">Master core principles of local search optimization to increase regional visibility.</p>
+            <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-500">7 Modules • 4 Hours</span>
+                <span class="font-medium text-primary-600">100 Points</span>
+            </div>
+            <div class="mt-4 pt-4 border-t border-gray-100">
+                <a href="/certifications/courses/3" class="btn-outline inline-block">Start Course</a>
+            </div>
+        </div>
+        
+        <div class="course-card course-card-advanced">
+            <div class="flex justify-between items-start mb-4">
+                <h3 class="text-xl font-semibold">Local Performance Analytics</h3>
+                <span class="badge bg-purple-100 text-purple-800">Advanced</span>
+            </div>
+            <p class="text-gray-600 mb-3">Learn how to measure and analyze local marketing performance metrics.</p>
+            <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-500">6 Modules • 3.5 Hours</span>
+                <span class="font-medium text-primary-600">125 Points</span>
+            </div>
+            <div class="mt-4 pt-4 border-t border-gray-100">
+                <a href="/certifications/courses/7" class="btn-outline inline-block">Start Course</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Call to Action -->
+<div class="bg-primary-600 text-white rounded-xl p-8 text-center">
+    <h2 class="text-3xl font-display font-bold mb-4">Ready to elevate your local business?</h2>
+    <p class="text-xl mb-6 max-w-3xl mx-auto">Join LocalLift today and transform how you manage your regional teams with powerful CRM tools and engaging gamification features.</p>
+    <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+        <a href="/signup" class="btn bg-white text-primary-700 hover:bg-gray-100">Get Started</a>
+        <a href="/demo" class="btn border-2 border-white text-white hover:bg-primary-700">Request Demo</a>
+    </div>
+</div>
+{% endblock %}
