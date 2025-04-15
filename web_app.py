@@ -1,7 +1,7 @@
 """
 LocalLift Web Application
 """
-from fastapi import FastAPI, Request, Depends
+from fastapi import FastAPI, Request, Depends, BackgroundTasks
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
@@ -181,6 +181,25 @@ async def health_check():
             "certifications": settings.enable_certifications
         }
     }
+
+# Import and include the badge status and email API routers
+from apps.client.api.badge_status import router as badge_status_router
+from apps.client.api.badge_email_api import router as badge_email_router
+
+app.include_router(badge_status_router)
+app.include_router(badge_email_router)
+
+@app.post("/api/scheduled/weekly-badge-emails")
+async def trigger_weekly_badge_emails(background_tasks: BackgroundTasks):
+    """
+    Endpoint to trigger weekly badge emails for all clients.
+    This endpoint can be called by a scheduled job (e.g., cron)
+    to send weekly badge status reports.
+    """
+    from apps.client.badge_weekly_emailer import send_all_weekly_reports
+    
+    result = await send_all_weekly_reports(background_tasks)
+    return result
 
 
 if __name__ == "__main__":
