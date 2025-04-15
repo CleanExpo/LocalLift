@@ -1,30 +1,203 @@
 /**
  * Badge Admin Dashboard JavaScript
  * 
- * This script handles the functionality for the badge administration dashboard,
- * including data fetching, chart rendering, and interactive components.
+ * This script provides interactive functionality for the badge admin dashboard,
+ * including data loading, filtering, and visualization.
  */
 
-// Global state
+// Global state to track dashboard data and filters
 const state = {
   timeframe: 'all',
-  clientData: [],
-  regionData: [],
-  trendsData: [],
-  activeTab: 'trends'
+  region: '',
+  leaderboardData: [],
+  regionalData: [],
+  weeklyTrendData: []
 };
 
 // Chart instances
-let trendsChart = null;
-let regionsChart = null;
+let weeklyTrendChart = null;
+let regionalChart = null;
 
-// DOM Ready
+// Initialize dashboard when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-  // Initialize dashboard
+  // Load initial data
+  loadLeaderboardData();
+  loadDashboardStats();
+  
+  // Set up UI interactions
   setupEventListeners();
-  loadDashboardData();
-  setupTabs();
+  initializeCharts();
 });
+
+/**
+ * Load the badge leaderboard data and populate the table
+ */
+async function loadLeaderboardData() {
+  try {
+    // Show loading state
+    const tableBody = document.getElementById("badge-rows");
+    tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4">Loading data...</td></tr>';
+    
+    // Apply filters if set
+    let url = "/api/admin/badges/leaderboard";
+    const params = new URLSearchParams();
+    
+    if (state.timeframe !== 'all') {
+      params.append('timeframe', state.timeframe);
+    }
+    
+    if (state.region) {
+      params.append('region', state.region);
+    }
+    
+    if (params.toString()) {
+      url += '?' + params.toString();
+    }
+    
+    // Fetch data from API
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      throw new Error(`Failed to load leaderboard: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    state.leaderboardData = data;
+    
+    // Clear and populate table
+    tableBody.innerHTML = '';
+    
+    if (data.length === 0) {
+      tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4">No badge data available</td></tr>';
+      return;
+    }
+    
+    // Populate table rows
+    data.forEach(client => {
+      const row = document.createElement('tr');
+      const lastBadgeDate = client.last_earned ? new Date(client.last_earned).toLocaleDateString() : 'Never';
+      
+      row.innerHTML = `
+        <td class="px-4 py-2 border">${client.rank || '-'}</td>
+        <td class="px-4 py-2 border">${client.client_name || client.client_email}</td>
+        <td class="px-4 py-2 border">${client.region || 'Unknown'}</td>
+        <td class="px-4 py-2 border">${client.badge_count}</td>
+        <td class="px-4 py-2 border">${client.streak || 0}</td>
+        <td class="px-4 py-2 border">${lastBadgeDate}</td>
+        <td class="px-4 py-2 border">
+          <button 
+            class="text-blue-600 hover:text-blue-800 recalc-btn"
+            data-client-id="${client.client_id}"
+            data-client-name="${client.client_name || client.client_email}"
+          >
+            Recalculate
+          </button>
+        </td>
+      `;
+      
+      tableBody.appendChild(row);
+    });
+    
+    // Add event listeners to recalculate buttons
+    document.querySelectorAll('.recalc-btn').forEach(btn => {
+      btn.addEventListener('click', openRecalculateModal);
+    });
+    
+  } catch (error) {
+    console.error('Error loading leaderboard:', error);
+    document.getElementById("badge-rows").innerHTML = 
+      `<tr><td colspan="7" class="text-center py-4 text-red-500">
+        Error loading data: ${error.message}
+      </td></tr>`;
+  }
+}
+
+/**
+ * Load dashboard summary statistics
+ */
+async function loadDashboardStats() {
+  try {
+    const response = await fetch(`/api/admin/badges/statistics?timeframe=${state.timeframe}`);
+    
+    if (!response.ok) {
+      throw new Error(`Failed to load statistics: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    
+    // Update dashboard metrics
+    document.getElementById("total-badges").textContent = data.total_badges_earned || 0;
+    document.getElementById("active-clients").textContent = data.clients_with_badges || 0;
+    document.getElementById("weekly-rate").textContent = `${data.current_week_completion || 0}%`;
+    
+    // Also fetch region data for the chart
+    await loadRegionalData();
+    await loadWeeklyTrendData();
+    
+  } catch (error) {
+    console.error('Error loading statistics:', error);
+  }
+}
+
+/**
+ * Load regional performance data
+ */
+async function loadRegionalData() {
+  try {
+    const response = await fetch(`/api/admin/badges/by-region?timeframe=${state.timeframe}`);
+    
+    if (!response.ok) {
+      throw new Error(`Failed to load regional data: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    state.regionalData = data.regions || [];
+    
+    // Update the region filter dropdown
+    const regionFilter = document.getElementById('region-filter');
+    
+    // Keep the "All Regions" option
+    regionFilter.innerHTML = '<option value="">All Regions</option>';
+    
+    // Add options for each region
+    if (state.regionalData.length > 0) {
+      state.regionalData.forEach(region => {
+        const option = document.createElement('option');
+        option.value = region.name;
+        option.textContent = region.name;
+        regionFilter.appendChild(option);
+      });
+    }
+    
+    // Update the regional chart
+    updateRegionalChart();
+    
+  } catch (error) {
+    console.error('Error loading regional data:', error);
+  }
+}
+
+/**
+ * Load weekly trend data
+ */
+async function loadWeeklyTrendData() {
+  try {
+    const response = await fetch('/api/admin/badges/trends?weeks=12');
+    
+    if (!response.ok) {
+      throw new Error(`Failed to load trend data: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    state.weeklyTrendData = data.trends || [];
+    
+    // Update the weekly trend chart
+    updateWeeklyTrendChart();
+    
+  } catch (error) {
+    console.error('Error loading trend data:', error);
+  }
+}
 
 /**
  * Set up event listeners for interactive components

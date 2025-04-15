@@ -189,6 +189,7 @@ from apps.client.api.badge_history_api import router as badge_history_router
 from apps.client.api.badge_leaderboard_api import router as badge_leaderboard_router
 from backend.api import router as backend_api_router
 from apps.admin.badge_dashboard_admin import router as badge_admin_router
+from apps.admin.api.badge_admin_api import router as badge_admin_api_router
 
 app.include_router(badge_status_router)
 app.include_router(badge_email_router)
@@ -196,6 +197,7 @@ app.include_router(badge_history_router)
 app.include_router(badge_leaderboard_router)
 app.include_router(backend_api_router)
 app.include_router(badge_admin_router)
+app.include_router(badge_admin_api_router)
 
 @app.post("/api/scheduled/weekly-badge-emails")
 async def trigger_weekly_badge_emails(background_tasks: BackgroundTasks):
