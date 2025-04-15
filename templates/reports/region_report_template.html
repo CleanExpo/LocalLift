@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocalLift Region Badge Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 20px;
+        }
+        .logo {
+            margin-bottom: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #3366cc;
+        }
+        h1 {
+            color: #3366cc;
+            margin-top: 0;
+            font-size: 28px;
+        }
+        h2 {
+            color: #2c5282;
+            font-size: 20px;
+            margin-top: 25px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 8px;
+        }
+        .region-info {
+            background-color: #f0f7ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 25px;
+        }
+        .region-info p {
+            margin: 5px 0;
+        }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+            padding: 15px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3366cc;
+            margin: 10px 0 5px;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #718096;
+        }
+        .client-list {
+            margin-bottom: 30px;
+        }
+        .client-item {
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            background-color: #f8fafc;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .client-item:nth-child(even) {
+            background-color: #f0f7ff;
+        }
+        .client-rank {
+            font-weight: 700;
+            width: 30px;
+            text-align: center;
+        }
+        .client-name {
+            flex: 1;
+            padding: 0 15px;
+            font-weight: 500;
+        }
+        .client-badges {
+            font-weight: 600;
+            color: #3366cc;
+        }
+        .trends-section {
+            margin-bottom: 30px;
+        }
+        .trend-chart {
+            height: 200px;
+            margin: 20px 0;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+            padding: 15px;
+            position: relative;
+        }
+        .trend-bar {
+            position: absolute;
+            bottom: 15px;
+            background-color: #4299e1;
+            border-radius: 3px 3px 0 0;
+            width: 20px;
+            transition: height 0.3s ease;
+        }
+        .achievements-section {
+            margin-bottom: 30px;
+        }
+        .achievement-type {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #fffbeb;
+            border-radius: 5px;
+            border-left: 4px solid #f59e0b;
+        }
+        .achievement-label {
+            font-weight: 500;
+            color: #723b13;
+        }
+        .achievement-count {
+            float: right;
+            background-color: #fbd38d;
+            color: #723b13;
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            font-size: 12px;
+            color: #718096;
+            text-align: center;
+        }
+        .insights-box {
+            background-color: #ebf8ff;
+            border: 1px solid #bee3f8;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #2c5282;
+        }
+        .insights-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2b6cb0;
+        }
+        @page {
+            margin: 1cm;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🏆 LocalLift</div>
+            <h1>Region Badge Report: {{ region_name }}</h1>
+            <p>Generated on {{ generated_at }}</p>
+        </div>
+        
+        <div class="region-info">
+            <p><strong>Region:</strong> {{ region_name }}</p>
+            <p><strong>Timeframe:</strong> {{ timeframe }}</p>
+            <p><strong>Report ID:</strong> {{ report_id }}</p>
+        </div>
+        
+        <h2>Performance Overview</h2>
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-value">{{ total_clients }}</div>
+                <div class="stat-label">Total Clients</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ active_clients }}</div>
+                <div class="stat-label">Active Clients</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ total_badges }}</div>
+                <div class="stat-label">Total Badges Earned</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ compliance_rate }}%</div>
+                <div class="stat-label">Average Compliance Rate</div>
+            </div>
+        </div>
+        
+        <div class="insights-box">
+            <div class="insights-title">Key Insights</div>
+            <ul>
+                <li>{{ region_name }} has a {{ participation_rate }}% participation rate in the badge program.</li>
+                <li>The region averages {{ compliance_rate }}% compliance with badge requirements.</li>
+                {% if compliance_rate > 75 %}
+                <li>This region is performing well above average in badge compliance.</li>
+                {% elif compliance_rate < 50 %}
+                <li>This region may need additional support to improve badge compliance.</li>
+                {% endif %}
+            </ul>
+        </div>
+        
+        <h2>Top Performing Clients</h2>
+        <div class="client-list">
+            {% if top_clients|length > 0 %}
+                {% for client in top_clients %}
+                <div class="client-item">
+                    <span class="client-rank">{{ loop.index }}</span>
+                    <span class="client-name">{{ client.name }}</span>
+                    <span class="client-badges">{{ client.badges_earned }} badges</span>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No client data available for this region.</p>
+            {% endif %}
+        </div>
+        
+        <h2>Achievement Distribution</h2>
+        <div class="achievements-section">
+            {% if achievements_distribution|length > 0 %}
+                {% for achievement in achievements_distribution %}
+                <div class="achievement-type">
+                    <span class="achievement-label">{{ achievement.label }}</span>
+                    <span class="achievement-count">{{ achievement.count }}</span>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No achievement data available for this region.</p>
+            {% endif %}
+        </div>
+        
+        <h2>Weekly Performance Trends</h2>
+        <div class="trends-section">
+            {% if weekly_trends|length > 0 %}
+                <div class="trend-chart">
+                    {% for trend in weekly_trends %}
+                    <div class="trend-bar" style="left: {{ loop.index0 * (100 / weekly_trends|length) }}%; height: {{ trend.compliance_rate }}%; width: {{ 80 / weekly_trends|length }}%;">
+                    </div>
+                    {% endfor %}
+                </div>
+                <p>The chart above shows the weekly badge compliance rate over the last {{ weekly_trends|length }} weeks.</p>
+            {% else %}
+                <p>No trend data available for this region.</p>
+            {% endif %}
+        </div>
+        
+        <div class="footer">
+            <p>LocalLift Badge System - Confidential Report</p>
+            <p>Contact admin@locallift.com for any questions regarding this report.</p>
+        </div>
+    </div>
+</body>
+</html>

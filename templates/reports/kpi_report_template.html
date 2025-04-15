@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocalLift Internal KPI Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 20px;
+        }
+        .logo {
+            margin-bottom: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #3366cc;
+        }
+        h1 {
+            color: #3366cc;
+            margin-top: 0;
+            font-size: 28px;
+        }
+        h2 {
+            color: #2c5282;
+            font-size: 20px;
+            margin-top: 25px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 8px;
+        }
+        h3 {
+            color: #2d3748;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        .report-info {
+            background-color: #f0f7ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 25px;
+        }
+        .report-info p {
+            margin: 5px 0;
+        }
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .kpi-card {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+        }
+        .kpi-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3366cc;
+            margin: 10px 0 5px;
+        }
+        .kpi-label {
+            font-size: 14px;
+            color: #718096;
+        }
+        .change-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+        .change-positive {
+            background-color: #c6f6d5;
+            color: #22543d;
+        }
+        .change-negative {
+            background-color: #fed7d7;
+            color: #822727;
+        }
+        .change-neutral {
+            background-color: #e2e8f0;
+            color: #4a5568;
+        }
+        .region-breakdown {
+            margin-bottom: 30px;
+        }
+        .region-item {
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            background-color: #f8fafc;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .region-item:nth-child(even) {
+            background-color: #f0f7ff;
+        }
+        .region-name {
+            font-weight: 500;
+        }
+        .region-data {
+            display: flex;
+            gap: 15px;
+        }
+        .region-stat {
+            text-align: right;
+        }
+        .region-stat-value {
+            font-weight: 600;
+            color: #3366cc;
+        }
+        .region-stat-label {
+            font-size: 12px;
+            color: #718096;
+        }
+        .achievement-stats {
+            margin-bottom: 30px;
+        }
+        .achievement-item {
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background-color: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .achievement-name {
+            font-weight: 500;
+            color: #723b13;
+        }
+        .achievement-count {
+            font-weight: 600;
+            color: #723b13;
+        }
+        .client-section {
+            margin-bottom: 30px;
+        }
+        .client-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .client-column-header {
+            font-weight: 600;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .client-item {
+            padding: 8px;
+            background-color: #f8fafc;
+            border-radius: 5px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .client-item:nth-child(even) {
+            background-color: #f0f7ff;
+        }
+        .client-name {
+            font-weight: 500;
+        }
+        .client-badges {
+            font-weight: 600;
+            color: #3366cc;
+        }
+        .executive-summary {
+            background-color: #ebf8ff;
+            border: 1px solid #bee3f8;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0 30px;
+        }
+        .summary-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2b6cb0;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            font-size: 12px;
+            color: #718096;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        th {
+            background-color: #f8fafc;
+            font-weight: 600;
+            color: #4a5568;
+        }
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        @page {
+            margin: 1cm;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">📊 LocalLift</div>
+            <h1>Internal KPI Report</h1>
+            <p>Generated on {{ generated_at }}</p>
+        </div>
+        
+        <div class="report-info">
+            <p><strong>Timeframe:</strong> {{ timeframe_label }}</p>
+            {% if previous_timeframe_label %}
+            <p><strong>Previous Period:</strong> {{ previous_timeframe_label }}</p>
+            {% endif %}
+            <p><strong>Report ID:</strong> {{ report_id }}</p>
+        </div>
+        
+        <div class="executive-summary">
+            <div class="summary-title">Executive Summary</div>
+            <p>This report provides an overview of badge system performance {% if timeframe != "all" %}during {{ timeframe_label }}{% else %}across all time{% endif %}.</p>
+            {% if previous_stats %}
+            <p>Compared to the previous period ({{ previous_timeframe_label }}), 
+                {% if changes.total_badges > 0 %}
+                    badge earnings have increased by {{ changes.total_badges }}%, 
+                {% elif changes.total_badges < 0 %}
+                    badge earnings have decreased by {{ changes.total_badges|abs }}%, 
+                {% else %}
+                    badge earnings have remained stable, 
+                {% endif %}
+                and 
+                {% if changes.compliance_rate > 0 %}
+                    compliance rate has improved by {{ changes.compliance_rate }}%.
+                {% elif changes.compliance_rate < 0 %}
+                    compliance rate has declined by {{ changes.compliance_rate|abs }}%.
+                {% else %}
+                    compliance rate has remained stable.
+                {% endif %}
+            </p>
+            {% endif %}
+        </div>
+        
+        <h2>Key Performance Indicators</h2>
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-value">{{ current_stats.total_badges }}</div>
+                <div class="kpi-label">Total Badges Earned</div>
+                {% if changes and changes.total_badges %}
+                <div class="change-indicator {% if changes.total_badges > 0 %}change-positive{% elif changes.total_badges < 0 %}change-negative{% else %}change-neutral{% endif %}">
+                    {% if changes.total_badges > 0 %}+{% endif %}{{ changes.total_badges }}%
+                </div>
+                {% endif %}
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">{{ current_stats.active_clients }}</div>
+                <div class="kpi-label">Active Clients</div>
+                {% if changes and changes.active_clients %}
+                <div class="change-indicator {% if changes.active_clients > 0 %}change-positive{% elif changes.active_clients < 0 %}change-negative{% else %}change-neutral{% endif %}">
+                    {% if changes.active_clients > 0 %}+{% endif %}{{ changes.active_clients }}%
+                </div>
+                {% endif %}
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">{{ current_stats.participation_rate }}%</div>
+                <div class="kpi-label">Participation Rate</div>
+                {% if changes and changes.participation_rate %}
+                <div class="change-indicator {% if changes.participation_rate > 0 %}change-positive{% elif changes.participation_rate < 0 %}change-negative{% else %}change-neutral{% endif %}">
+                    {% if changes.participation_rate > 0 %}+{% endif %}{{ changes.participation_rate }}%
+                </div>
+                {% endif %}
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">{{ current_stats.compliance_rate }}%</div>
+                <div class="kpi-label">Average Compliance Rate</div>
+                {% if changes and changes.compliance_rate %}
+                <div class="change-indicator {% if changes.compliance_rate > 0 %}change-positive{% elif changes.compliance_rate < 0 %}change-negative{% else %}change-neutral{% endif %}">
+                    {% if changes.compliance_rate > 0 %}+{% endif %}{{ changes.compliance_rate }}%
+                </div>
+                {% endif %}
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">{{ current_stats.achievements_earned }}</div>
+                <div class="kpi-label">Achievements Earned</div>
+                {% if changes and changes.achievements_earned %}
+                <div class="change-indicator {% if changes.achievements_earned > 0 %}change-positive{% elif changes.achievements_earned < 0 %}change-negative{% else %}change-neutral{% endif %}">
+                    {% if changes.achievements_earned > 0 %}+{% endif %}{{ changes.achievements_earned }}%
+                </div>
+                {% endif %}
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">{{ current_stats.average_streak }}</div>
+                <div class="kpi-label">Average Streak</div>
+                {% if changes and changes.average_streak %}
+                <div class="change-indicator {% if changes.average_streak > 0 %}change-positive{% elif changes.average_streak < 0 %}change-negative{% else %}change-neutral{% endif %}">
+                    {% if changes.average_streak > 0 %}+{% endif %}{{ changes.average_streak }}%
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <h2>Region Breakdown</h2>
+        <div class="region-breakdown">
+            {% if region_breakdown|length > 0 %}
+                {% for region in region_breakdown %}
+                <div class="region-item">
+                    <div class="region-name">{{ region.region_name }}</div>
+                    <div class="region-data">
+                        <div class="region-stat">
+                            <div class="region-stat-value">{{ region.total_badges }}</div>
+                            <div class="region-stat-label">Badges</div>
+                        </div>
+                        <div class="region-stat">
+                            <div class="region-stat-value">{{ region.compliance_rate }}%</div>
+                            <div class="region-stat-label">Compliance</div>
+                        </div>
+                        <div class="region-stat">
+                            <div class="region-stat-value">{{ region.active_clients }}/{{ region.total_clients }}</div>
+                            <div class="region-stat-label">Active/Total</div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No region data available for this period.</p>
+            {% endif %}
+        </div>
+        
+        <h2>Achievement Statistics</h2>
+        <div class="achievement-stats">
+            {% if achievement_stats|length > 0 %}
+                {% for achievement in achievement_stats %}
+                <div class="achievement-item">
+                    <div class="achievement-name">{{ achievement.label }}</div>
+                    <div class="achievement-count">{{ achievement.count }}</div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No achievement data available for this period.</p>
+            {% endif %}
+        </div>
+        
+        <h2>Client Performance</h2>
+        <div class="client-section">
+            <div class="client-list">
+                <div>
+                    <div class="client-column-header">Top Performing Clients</div>
+                    {% if top_clients|length > 0 %}
+                        {% for client in top_clients %}
+                        <div class="client-item">
+                            <div class="client-name">{{ client.name }}</div>
+                            <div class="client-badges">{{ client.badges_earned }}</div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>No client data available.</p>
+                    {% endif %}
+                </div>
+                <div>
+                    <div class="client-column-header">Underperforming Clients</div>
+                    {% if bottom_clients|length > 0 %}
+                        {% for client in bottom_clients %}
+                        <div class="client-item">
+                            <div class="client-name">{{ client.name }}</div>
+                            <div class="client-badges">{{ client.badges_earned }}</div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>No client data available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        {% if previous_stats %}
+        <h2>Period Comparison</h2>
+        <table>
+            <tr>
+                <th>Metric</th>
+                <th>{{ timeframe_label }}</th>
+                <th>{{ previous_timeframe_label }}</th>
+                <th>Change</th>
+            </tr>
+            <tr>
+                <td>Total Badges</td>
+                <td>{{ current_stats.total_badges }}</td>
+                <td>{{ previous_stats.total_badges }}</td>
+                <td>{% if changes.total_badges > 0 %}+{% endif %}{{ changes.total_badges }}%</td>
+            </tr>
+            <tr>
+                <td>Active Clients</td>
+                <td>{{ current_stats.active_clients }}</td>
+                <td>{{ previous_stats.active_clients }}</td>
+                <td>{% if changes.active_clients > 0 %}+{% endif %}{{ changes.active_clients }}%</td>
+            </tr>
+            <tr>
+                <td>Participation Rate</td>
+                <td>{{ current_stats.participation_rate }}%</td>
+                <td>{{ previous_stats.participation_rate }}%</td>
+                <td>{% if changes.participation_rate > 0 %}+{% endif %}{{ changes.participation_rate }}%</td>
+            </tr>
+            <tr>
+                <td>Compliance Rate</td>
+                <td>{{ current_stats.compliance_rate }}%</td>
+                <td>{{ previous_stats.compliance_rate }}%</td>
+                <td>{% if changes.compliance_rate > 0 %}+{% endif %}{{ changes.compliance_rate }}%</td>
+            </tr>
+            <tr>
+                <td>Achievements Earned</td>
+                <td>{{ current_stats.achievements_earned }}</td>
+                <td>{{ previous_stats.achievements_earned }}</td>
+                <td>{% if changes.achievements_earned > 0 %}+{% endif %}{{ changes.achievements_earned }}%</td>
+            </tr>
+        </table>
+        {% endif %}
+        
+        <div class="footer">
+            <p>LocalLift Badge System - Confidential Internal Report</p>
+            <p>For authorized management and administrative use only.</p>
+        </div>
+    </div>
+</body>
+</html>

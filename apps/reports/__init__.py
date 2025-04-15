@@ -1,4 +1,5 @@
 """
-Automated weekly report showing engagement metrics, trends, and actionable insights for clients and managers.
-"""
+Reports Package
 
+This package provides PDF report generation capabilities for LocalLift.
+"""
