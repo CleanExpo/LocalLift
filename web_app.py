@@ -187,6 +187,7 @@ from apps.client.api.badge_status import router as badge_status_router
 from apps.client.api.badge_email_api import router as badge_email_router
 from apps.client.api.badge_history_api import router as badge_history_router
 from apps.client.api.badge_leaderboard_api import router as badge_leaderboard_router
+from apps.client.api.achievement_api import router as achievement_api_router
 from backend.api import router as backend_api_router
 from apps.admin.badge_dashboard_admin import router as badge_admin_router
 from apps.admin.api.badge_admin_api import router as badge_admin_api_router
@@ -195,6 +196,7 @@ app.include_router(badge_status_router)
 app.include_router(badge_email_router)
 app.include_router(badge_history_router)
 app.include_router(badge_leaderboard_router)
+app.include_router(achievement_api_router)
 app.include_router(backend_api_router)
 app.include_router(badge_admin_router)
 app.include_router(badge_admin_api_router)
