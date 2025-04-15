@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Client Dashboard - LocalLift{% endblock %}
+
+{% block head %}
+<!-- Additional head content for client_dashboard -->
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-6">
+    <h1 class="text-3xl font-display font-bold mb-6">Client Dashboard</h1>
+    
+    <!-- Client dashboard template with badge display and GMB status -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Sidebar -->
+        <div class="md:col-span-1">
+            <div class="card mb-6">
+                <h2 class="text-xl font-semibold mb-3">Navigation</h2>
+                <nav class="space-y-2">
+                    <a href="#" class="block text-primary-600 hover:text-primary-800">Dashboard</a>
+                    <a href="#" class="block text-gray-700 hover:text-primary-600">Reports</a>
+                    <a href="#" class="block text-gray-700 hover:text-primary-600">Settings</a>
+                </nav>
+            </div>
+        </div>
+        
+        <!-- Main content -->
+        <div class="md:col-span-2">
+            <div class="card mb-6">
+                <h2 class="text-xl font-semibold mb-4">Overview</h2>
+                <p class="text-gray-700 mb-4">
+                    Welcome to the Client Dashboard for client users. 
+                    This dashboard provides tools for managing your data.
+                </p>
+                
+                <!-- Add content specific to this module -->
+                <div id="client-dashboard-content" class="mt-6">
+                    <!-- Content will be loaded here -->
+                    <div class="animate-pulse">
+                        <div class="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
+                        <div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
+                        <div class="h-4 bg-gray-200 rounded w-5/6 mb-4"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- JavaScript for client_dashboard -->
+<script src="{{ url_for('static', path='js/client_dashboard.js') }}"></script>
+{% endblock %}
