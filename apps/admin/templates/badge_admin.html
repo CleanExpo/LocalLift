@@ -1,0 +1,388 @@
+{% extends "base.html" %}
+
+{% block title %}Badge System Administration{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.css">
+<link rel="stylesheet" href="{{ url_for('static', path='/css/admin.css') }}">
+<style>
+  .dashboard-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .metric-card {
+    text-align: center;
+    padding: 1rem;
+  }
+  
+  .metric-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #3b82f6;
+    margin-bottom: 0.5rem;
+  }
+  
+  .metric-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    text-transform: uppercase;
+  }
+  
+  .badge-gold {
+    color: #f59e0b;
+  }
+  
+  .badge-icon {
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
+  }
+  
+  .chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+  }
+  
+  .table-container {
+    overflow-x: auto;
+  }
+  
+  .badge-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .badge-table th, .badge-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .badge-table th {
+    background-color: #f3f4f6;
+    font-weight: 600;
+  }
+  
+  .badge-table tr:hover {
+    background-color: #f9fafb;
+  }
+  
+  .filter-controls {
+    display: flex;
+    margin-bottom: 1rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  .filter-control {
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .compliance-warning {
+    color: #dc2626;
+  }
+  
+  .compliance-good {
+    color: #10b981;
+  }
+  
+  .tab-container {
+    margin-bottom: 2rem;
+  }
+  
+  .tabs {
+    display: flex;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 1.5rem;
+  }
+  
+  .tab {
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    font-weight: 500;
+    color: #6b7280;
+    border-bottom: 2px solid transparent;
+  }
+  
+  .tab.active {
+    color: #3b82f6;
+    border-bottom-color: #3b82f6;
+  }
+  
+  .tab-content {
+    display: none;
+  }
+  
+  .tab-content.active {
+    display: block;
+  }
+  
+  @media (max-width: 768px) {
+    .metric-value {
+      font-size: 2rem;
+    }
+    
+    .filter-controls {
+      flex-direction: column;
+    }
+    
+    .filter-control {
+      width: 100%;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+  <div class="flex items-center justify-between mb-8">
+    <h1 class="text-3xl font-bold">Badge System Administration</h1>
+    <div class="flex items-center">
+      <select id="timeframe-select" class="form-select rounded-md shadow-sm border-gray-300 mr-2" aria-label="Select timeframe for data analysis">
+        <option value="week">This Week</option>
+        <option value="month">This Month</option>
+        <option value="quarter">This Quarter</option>
+        <option value="year">This Year</option>
+        <option value="all" selected>All Time</option>
+      </select>
+      <button id="refresh-btn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
+        <span class="mr-1">↻</span> Refresh Data
+      </button>
+    </div>
+  </div>
+  
+  <!-- Overview Metrics -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="dashboard-card metric-card">
+      <div class="metric-value" id="total-badges">--</div>
+      <div class="metric-label">Total Badges Earned</div>
+    </div>
+    <div class="dashboard-card metric-card">
+      <div class="metric-value" id="compliance-rate">--</div>
+      <div class="metric-label">Compliance Rate</div>
+    </div>
+    <div class="dashboard-card metric-card">
+      <div class="metric-value" id="participation-rate">--</div>
+      <div class="metric-label">Client Participation</div>
+    </div>
+    <div class="dashboard-card metric-card">
+      <div class="metric-value" id="current-week">--</div>
+      <div class="metric-label">Current Week Completion</div>
+    </div>
+  </div>
+  
+  <!-- Tab Navigation -->
+  <div class="tab-container">
+    <div class="tabs">
+      <div class="tab active" data-tab="trends">Badge Trends</div>
+      <div class="tab" data-tab="regions">Regional Analysis</div>
+      <div class="tab" data-tab="clients">Client Management</div>
+      <div class="tab" data-tab="non-compliant">Non-Compliant Clients</div>
+    </div>
+    
+    <!-- Tab Content -->
+    <div id="trends" class="tab-content active">
+      <div class="dashboard-card">
+        <h2 class="text-xl font-semibold mb-4">Badge Earning Trends</h2>
+        <div class="chart-container">
+          <canvas id="trends-chart"></canvas>
+        </div>
+        <div class="text-sm text-gray-500 mt-2">
+          Weekly badge earning rate and compliance over time
+        </div>
+      </div>
+      
+      <div class="dashboard-card">
+        <h2 class="text-xl font-semibold mb-4">Weekly Badge Performance</h2>
+        <div class="table-container">
+          <table class="badge-table" id="trends-table">
+            <thead>
+              <tr>
+                <th>Week</th>
+                <th>Badges Earned</th>
+                <th>Total Clients</th>
+                <th>Badge Rate</th>
+                <th>Compliance Rate</th>
+                <th>Total Posts</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="6" class="text-center py-4">Loading data...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <div id="regions" class="tab-content">
+      <div class="dashboard-card">
+        <h2 class="text-xl font-semibold mb-4">Regional Badge Performance</h2>
+        <div class="chart-container">
+          <canvas id="regions-chart"></canvas>
+        </div>
+        <div class="text-sm text-gray-500 mt-2">
+          Badge distribution across different regions
+        </div>
+      </div>
+      
+      <div class="dashboard-card">
+        <h2 class="text-xl font-semibold mb-4">Regional Statistics</h2>
+        <div class="table-container">
+          <table class="badge-table" id="regions-table">
+            <thead>
+              <tr>
+                <th>Region</th>
+                <th>Total Badges</th>
+                <th>Total Clients</th>
+                <th>Participation Rate</th>
+                <th>Avg Badges/Client</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="5" class="text-center py-4">Loading data...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <div id="clients" class="tab-content">
+      <div class="dashboard-card">
+        <h2 class="text-xl font-semibold mb-4">Client Badge Leaderboard</h2>
+        <div class="filter-controls">
+          <div class="filter-control">
+            <input type="text" id="client-search" placeholder="Search clients..." class="w-full rounded-md border-gray-300 shadow-sm">
+          </div>
+          <div class="filter-control">
+            <select id="region-filter" class="w-full rounded-md border-gray-300 shadow-sm">
+              <option value="">All Regions</option>
+              <!-- Dynamically populated -->
+            </select>
+          </div>
+        </div>
+        <div class="table-container">
+          <table class="badge-table" id="clients-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Client</th>
+                <th>Region</th>
+                <th>Badges Earned</th>
+                <th>Compliance Rate</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="6" class="text-center py-4">Loading data...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <div id="non-compliant" class="tab-content">
+      <div class="dashboard-card">
+        <h2 class="text-xl font-semibold mb-4">Non-Compliant Clients</h2>
+        <div class="filter-controls">
+          <div class="filter-control">
+            <label for="weeks-threshold" class="block text-sm font-medium text-gray-700 mb-1">Analysis Period</label>
+            <select id="weeks-threshold" class="w-full rounded-md border-gray-300 shadow-sm">
+              <option value="2">Last 2 Weeks</option>
+              <option value="4" selected>Last 4 Weeks</option>
+              <option value="8">Last 8 Weeks</option>
+              <option value="12">Last 12 Weeks</option>
+            </select>
+          </div>
+          <div class="filter-control">
+            <label for="compliance-threshold" class="block text-sm font-medium text-gray-700 mb-1">Compliance Threshold</label>
+            <select id="compliance-threshold" class="w-full rounded-md border-gray-300 shadow-sm">
+              <option value="25">Below 25%</option>
+              <option value="50" selected>Below 50%</option>
+              <option value="75">Below 75%</option>
+            </select>
+          </div>
+          <div class="filter-control flex items-end">
+            <button id="analyze-btn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md w-full">
+              Analyze
+            </button>
+          </div>
+        </div>
+        <div class="table-container mt-4">
+          <table class="badge-table" id="non-compliant-table">
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Region</th>
+                <th>Compliance Rate</th>
+                <th>Badges Earned</th>
+                <th>Tracked Weeks</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="6" class="text-center py-4">Loading data...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Badge Recalculation Modal -->
+<div id="recalculate-modal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+  <div class="fixed inset-0 bg-black bg-opacity-50"></div>
+  <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md z-10">
+    <h3 class="text-xl font-semibold mb-4">Recalculate Badge</h3>
+    <div id="modal-content">
+      <p class="mb-4">
+        You are about to recalculate the badge status for:
+        <strong id="recalc-client-name">Client Name</strong>
+      </p>
+      <div class="mb-4">
+        <label for="recalc-week" class="block text-sm font-medium text-gray-700 mb-1">Week</label>
+        <select id="recalc-week" class="w-full rounded-md border-gray-300 shadow-sm">
+          <!-- Dynamically populated -->
+        </select>
+      </div>
+      <div id="recalc-result" class="border p-3 rounded bg-gray-50 mb-4 hidden">
+        <div id="recalc-result-content"></div>
+      </div>
+    </div>
+    <div class="flex justify-end space-x-3">
+      <button id="cancel-recalc" class="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
+        Cancel
+      </button>
+      <button id="confirm-recalc" class="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">
+        Recalculate
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<script src="{{ url_for('static', path='/js/badge_admin.js') }}"></script>
+{% endblock %}
