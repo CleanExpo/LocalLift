@@ -1,0 +1,92 @@
+{
+  "modules": {
+    "client_dashboard": {
+      "description": "Creates a dashboard for clients showing their latest GMB post status, weekly badge display, and compliance tracking graph.",
+      "role": "client",
+      "module_type": "dashboard",
+      "target_folder": "/apps/client",
+      "templates": [
+        {
+          "path": "templates/dashboard_client.html",
+          "description": "Client dashboard template with badge display and GMB status"
+        },
+        {
+          "path": "static/js/dashboard_client.js",
+          "description": "JavaScript for client dashboard interactive elements"
+        },
+        {
+          "path": "api/dashboard_client.py",
+          "description": "API endpoints for client dashboard data"
+        }
+      ],
+      "dependencies": [
+        "gamification",
+        "leaderboards",
+        "certifications"
+      ],
+      "models": [
+        {
+          "name": "ClientDashboardStats",
+          "attributes": [
+            "client_id: str (foreign key to users.id)",
+            "post_status: Dict[str, Any]",
+            "badges_earned: List[str]",
+            "compliance_score: float",
+            "last_updated: datetime"
+          ]
+        }
+      ]
+    },
+    "admin_crm_manager": {
+      "description": "Generates an admin interface to view, filter, and manage all clients and assign to sales team.",
+      "role": "admin",
+      "module_type": "crm",
+      "target_folder": "/apps/admin",
+      "templates": [
+        {
+          "path": "templates/crm_admin.html",
+          "description": "Admin CRM manager interface with filtering and assignment capabilities"
+        },
+        {
+          "path": "static/js/crm_admin.js",
+          "description": "JavaScript for admin CRM interface with search and filtering"
+        },
+        {
+          "path": "api/crm_admin.py",
+          "description": "API endpoints for admin CRM operations"
+        }
+      ],
+      "dependencies": [
+        "core.auth",
+        "core.database"
+      ],
+      "models": [
+        {
+          "name": "ClientAssignment",
+          "attributes": [
+            "client_id: str (foreign key to users.id)",
+            "sales_rep_id: str (foreign key to users.id)",
+            "assignment_date: datetime",
+            "notes: Optional[str]",
+            "status: str ('active', 'inactive', 'pending')"
+          ]
+        },
+        {
+          "name": "ClientFilter",
+          "attributes": [
+            "name: str",
+            "created_by: str (foreign key to users.id)",
+            "criteria: Dict[str, Any]",
+            "is_public: bool",
+            "created_at: datetime"
+          ]
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "description": "Module configurations for LocalLift module generator",
+    "lastUpdated": "2025-04-14"
+  }
+}
