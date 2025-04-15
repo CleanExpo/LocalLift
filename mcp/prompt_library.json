@@ -160,18 +160,38 @@
           "required": true
         }
       }
+    },
+    "sales_conversion_graph": {
+      "name": "Sales Conversion Graph",
+      "description": "Generate a dashboard graph module for sales conversion visualization",
+      "prompt": "Create a comprehensive module for the LocalLift platform that implements a dashboard graph to show conversion rates per sales rep and region over time. The module should:\n\n1. Process data from the sales_conversion_graph models in the database\n2. Create interactive visualizations that compare conversion rates between different sales reps\n3. Allow filtering by region, time period, and conversion stage\n4. Implement D3.js or Chart.js for the frontend visualizations\n5. Include proper authentication and permission handling\n\nThe implementation should follow the LocalLift architectural patterns with a clear separation between controller logic, API endpoints, and frontend components.",
+      "parameters": {
+        "view_type": {
+          "description": "Type of visualization view to generate",
+          "type": "string",
+          "enum": ["comparison", "trend", "regional", "rep-focused"],
+          "default": "comparison"
+        },
+        "time_period": {
+          "description": "Default time period for data analysis",
+          "type": "string", 
+          "enum": ["daily", "weekly", "monthly", "quarterly", "yearly"],
+          "default": "monthly"
+        }
+      }
     }
   },
   "categories": {
-    "code_generation": ["feature_module", "api_route", "data_model", "frontend_component"],
+    "code_generation": ["feature_module", "api_route", "data_model", "frontend_component", "sales_conversion_graph"],
     "database": ["data_model", "database_migration"],
     "testing": ["test_suite"],
     "documentation": ["documentation"],
-    "code_quality": ["code_review", "refactoring", "optimization"]
+    "code_quality": ["code_review", "refactoring", "optimization"],
+    "visualization": ["sales_conversion_graph"]
   },
   "metadata": {
     "version": "1.0.0",
     "description": "Prompt library for LocalLift development",
-    "lastUpdated": "2025-04-14"
+    "lastUpdated": "2025-04-15"
   }
 }
