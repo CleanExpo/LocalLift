@@ -40,7 +40,30 @@ async def get_badge_status(client_id: str):
     compliant = sum(1 for p in posts if p.get("compliant") is True)
 
     # Badge logic
-    if total >= 5 and compliant == 5:
+    badge_earned = total >= 5 and compliant == 5
+    
+    # Save result to badge history if not already recorded
+    existing = supabase_admin_client \
+        .from_("badge_history") \
+        .select("id") \
+        .eq("client_id", client_id) \
+        .eq("week_id", week_id) \
+        .maybe_single() \
+        .execute()
+
+    if not existing.data:
+        supabase_admin_client \
+            .from_("badge_history") \
+            .insert({
+                "client_id": client_id,
+                "week_id": week_id,
+                "earned": badge_earned,
+                "compliant": compliant,
+                "total": total
+            }) \
+            .execute()
+    
+    if badge_earned:
         return {
             "badge": True,
             "message": "🎖️ Congrats! You earned your weekly compliance badge!",
