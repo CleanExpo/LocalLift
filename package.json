@@ -4,6 +4,7 @@
   "description": "Regional group CRM with gamification features",
   "main": "index.js",
   "scripts": {
+    "start": "uvicorn mini_main:app --host 0.0.0.0 --port $PORT",
     "start:api": "uvicorn mini_main:app --reload --port 8001",
     "start:supabase": "npx supabase start",
     "stop:supabase": "npx supabase stop",
