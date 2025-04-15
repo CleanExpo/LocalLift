@@ -135,6 +135,121 @@
           ]
         }
       ]
+    },
+    "admin_region_leaderboard": {
+      "description": "Regional performance leaderboard for administrators showing key metrics by geographic area with ranking and comparative analysis.",
+      "role": "admin",
+      "module_type": "leaderboard",
+      "target_folder": "/apps/admin",
+      "templates": [
+        {
+          "path": "templates/region_leaderboard.html",
+          "description": "Regional leaderboard interface with sorting, filtering, and map visualization"
+        },
+        {
+          "path": "static/js/region_leaderboard.js",
+          "description": "JavaScript for interactive leaderboard with animations and data visualization"
+        },
+        {
+          "path": "api/region_leaderboard.py",
+          "description": "API endpoints for regional performance data"
+        }
+      ],
+      "dependencies": [
+        "core.auth",
+        "core.database",
+        "core.analytics",
+        "core.geo"
+      ],
+      "models": [
+        {
+          "name": "RegionStats",
+          "attributes": [
+            "region_id: str (primary key)",
+            "name: str",
+            "country: str",
+            "state_province: str",
+            "city: Optional[str]",
+            "total_clients: int",
+            "active_clients: int",
+            "average_engagement: float",
+            "total_revenue: float",
+            "year_over_year_growth: float",
+            "last_updated: datetime"
+          ]
+        },
+        {
+          "name": "LeaderboardEntry",
+          "attributes": [
+            "id: str (primary key)",
+            "region_id: str (foreign key to RegionStats.region_id)",
+            "rank: int",
+            "score: float",
+            "metric_type: str ('revenue', 'growth', 'engagement', 'compliance')",
+            "previous_rank: Optional[int]",
+            "trend: str ('up', 'down', 'stable')",
+            "created_at: datetime"
+          ]
+        }
+      ]
+    },
+    "sales_conversion_graph": {
+      "description": "Interactive sales funnel and conversion visualization showing lead acquisition, qualification, proposal, and close rates with trend analysis.",
+      "role": "sales",
+      "module_type": "graph",
+      "target_folder": "/apps/sales",
+      "templates": [
+        {
+          "path": "templates/conversion_graph.html",
+          "description": "Sales conversion graph interface with interactive funnel visualization"
+        },
+        {
+          "path": "static/js/conversion_graph.js",
+          "description": "JavaScript for interactive conversion funnel with D3.js visualizations"
+        },
+        {
+          "path": "api/conversion_graph.py",
+          "description": "API endpoints for sales conversion data"
+        }
+      ],
+      "dependencies": [
+        "core.auth",
+        "core.database",
+        "core.analytics",
+        "core.sales"
+      ],
+      "models": [
+        {
+          "name": "ConversionData",
+          "attributes": [
+            "id: str (primary key)",
+            "team_id: str (foreign key to teams.id)",
+            "date_range: str ('daily', 'weekly', 'monthly', 'quarterly', 'yearly')",
+            "start_date: datetime",
+            "end_date: datetime",
+            "lead_count: int",
+            "qualified_count: int",
+            "proposal_count: int",
+            "closed_count: int",
+            "conversion_rates: Dict[str, float]",
+            "average_sale_value: float",
+            "last_updated: datetime"
+          ]
+        },
+        {
+          "name": "SalesFunnelStage",
+          "attributes": [
+            "id: str (primary key)",
+            "conversion_data_id: str (foreign key to ConversionData.id)",
+            "stage_name: str",
+            "entry_count: int",
+            "exit_count: int",
+            "conversion_rate: float",
+            "average_time_in_stage: float",
+            "created_at: datetime"
+          ]
+        }
+      ]
     }
   },
   "metadata": {
