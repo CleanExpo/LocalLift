@@ -1,6 +1,6 @@
 # LocalLift Deployment Guide
 
-This document outlines the deployment process for the LocalLift platform, including setting up continuous deployment with Railway.
+This document outlines the deployment process for the LocalLift platform, including setting up continuous deployment with Railway and Supabase integration.
 
 ## Deployment Options
 
@@ -19,11 +19,14 @@ LocalLift supports the following deployment options:
 - GitHub account (for CI/CD integration)
 - Railway account
 - Railway CLI (optional for local testing)
+- Supabase account (for database, auth, and storage)
 
 ### Setup Railway Project
 
 1. Log in to [Railway Dashboard](https://railway.app)
 2. Create a new project
+   - Project ID: `0e58b112-f5f5-4285-ad1f-f47d1481045b`
+   - Project Name: `locallift`
 3. Select "Deploy from GitHub repo"
 4. Connect your GitHub account and select the LocalLift repository
 5. Configure your environment variables (see below)
@@ -33,11 +36,25 @@ LocalLift supports the following deployment options:
 The following environment variables must be set in your Railway project:
 
 ```
+# Database Configuration
 DATABASE_URL=postgresql://<username>:<password>@<host>:<port>/<database>
+
+# Application Configuration
 SECRET_KEY=<your-secret-key>
 API_KEY=<your-api-key>
 DOMAIN=<your-domain>
 ENVIRONMENT=production
+
+# Supabase Configuration
+SUPABASE_URL=https://rsooolwhapkkkwbmybdb.supabase.co
+SUPABASE_KEY=<your-supabase-anon-key>
+SUPABASE_SERVICE_KEY=<your-supabase-service-role-key>
+SUPABASE_JWT_SECRET=<your-supabase-jwt-secret>
+SUPABASE_PROJECT_ID=rsooolwhapkkkwbmybdb
+
+# Railway Configuration
+RAILWAY_PROJECT_ID=0e58b112-f5f5-4285-ad1f-f47d1481045b
+RAILWAY_STATIC_URL=1
 ```
 
 Additional optional variables:
@@ -47,6 +64,22 @@ DEBUG=false
 LOG_LEVEL=info
 REDIS_URL=redis://<username>:<password>@<host>:<port>
 ```
+
+### Supabase Integration
+
+LocalLift integrates with Supabase for:
+
+1. **Database**: PostgreSQL database with Row Level Security
+2. **Authentication**: User management and JWT-based authentication
+3. **Storage**: File storage for user uploads
+4. **Realtime**: Realtime subscriptions for collaborative features
+
+To set up Supabase:
+
+1. Create a project at [Supabase](https://supabase.com)
+2. Get your project credentials from the API settings page
+3. Add those credentials to your Railway environment variables
+4. Run migrations to set up your database schema
 
 ### GitHub Actions Integration
 

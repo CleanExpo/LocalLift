@@ -13,6 +13,16 @@ restartPolicyMaxRetries = 10
 python = { version = "3.10" }
 node = { version = "18" }
 
+# Railway project configuration
+[project]
+id = "0e58b112-f5f5-4285-ad1f-f47d1481045b"
+name = "locallift"
+
 [variables]
 PORT = "8000"
 ENVIRONMENT = "production"
+RAILWAY_PROJECT_ID = "0e58b112-f5f5-4285-ad1f-f47d1481045b"
+RAILWAY_STATIC_URL = "1"
+
+# Database variables will be automatically injected by Railway
+# Supabase variables are managed in .env and injected during build
