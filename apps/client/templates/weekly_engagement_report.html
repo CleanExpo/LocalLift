@@ -1,0 +1,437 @@
+{% extends "base.html" %}
+
+{% block title %}Weekly Engagement Report{% endblock %}
+
+{% block styles %}
+<style>
+  .report-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+
+  .report-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .report-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .report-period {
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .metric-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    padding: 1.5rem;
+    position: relative;
+    transition: transform 0.15s ease-in-out;
+  }
+
+  .metric-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .metric-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+  }
+
+  .metric-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #4b5563;
+  }
+
+  .metrics-trend {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+  }
+
+  .trend-up {
+    color: #10b981;
+  }
+
+  .trend-down {
+    color: #ef4444;
+  }
+
+  .trend-stable {
+    color: #9ca3af;
+  }
+
+  .charts-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .charts-section {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .chart-container {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    padding: 1.5rem;
+  }
+
+  .chart-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 1rem;
+  }
+
+  .chart-canvas {
+    width: 100%;
+    height: 300px;
+  }
+
+  .insights-section {
+    margin-bottom: 2rem;
+  }
+
+  .insights-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+  }
+
+  .insight-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    padding: 1.5rem;
+    border-left: 4px solid transparent;
+  }
+
+  .insight-card.positive {
+    border-left-color: #10b981;
+  }
+
+  .insight-card.negative {
+    border-left-color: #ef4444;
+  }
+
+  .insight-card.neutral {
+    border-left-color: #9ca3af;
+  }
+
+  .insight-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .insight-description {
+    font-size: 0.875rem;
+    color: #4b5563;
+  }
+
+  .category-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 0.25rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+
+  .category-badge.visibility {
+    background-color: #e0f2fe;
+    color: #0369a1;
+  }
+
+  .category-badge.engagement {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+
+  .category-badge.conversion {
+    background-color: #dcfce7;
+    color: #166534;
+  }
+
+  .category-badge.responsiveness {
+    background-color: #f3e8ff;
+    color: #7e22ce;
+  }
+
+  .recommendations-section {
+    margin-bottom: 2rem;
+  }
+
+  .recommendation-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .recommendation-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .recommendation-icon {
+    font-size: 1.5rem;
+    color: #4f46e5;
+  }
+
+  .recommendation-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+  }
+
+  .recommendation-description {
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    color: #4b5563;
+  }
+
+  .actions-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .action-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .action-item:last-child {
+    border-bottom: none;
+  }
+
+  .action-icon {
+    color: #4f46e5;
+  }
+
+  .action-text {
+    font-size: 0.875rem;
+    color: #4b5563;
+  }
+
+  .history-section {
+    margin-bottom: 2rem;
+  }
+
+  .history-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: white;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+
+  .history-table th {
+    background-color: #f9fafb;
+    padding: 0.75rem 1.5rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .history-table td {
+    padding: 1rem 1.5rem;
+    font-size: 0.875rem;
+    color: #4b5563;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .history-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 9999px;
+  }
+
+  .status-badge.viewed {
+    background-color: #dcfce7;
+    color: #166534;
+  }
+
+  .status-badge.unviewed {
+    background-color: #e0f2fe;
+    color: #0369a1;
+  }
+
+  .view-report-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 0.25rem;
+    background-color: #4f46e5;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out;
+  }
+
+  .view-report-btn:hover {
+    background-color: #4338ca;
+  }
+
+  .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 50;
+  }
+
+  .spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #4f46e5;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="report-container">
+  <!-- Report Header -->
+  <div class="report-header">
+    <div class="report-title">
+      <h1 class="text-2xl font-bold text-gray-900">Weekly Engagement Report</h1>
+      <button id="generate-report-btn" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+        Generate New Report
+      </button>
+    </div>
+    <div id="report-period" class="report-period">
+      Week <span id="week-number"></span>, <span id="year"></span> (<span id="date-range"></span>)
+    </div>
+  </div>
+
+  <!-- Key Metrics Section -->
+  <section class="mb-8">
+    <h2 class="text-xl font-semibold text-gray-900 mb-4">Key Metrics</h2>
+    <div id="metrics-grid" class="metrics-grid">
+      <!-- Metrics cards will be inserted here -->
+    </div>
+  </section>
+
+  <!-- Charts Section -->
+  <section class="mb-8">
+    <h2 class="text-xl font-semibold text-gray-900 mb-4">Performance Trends</h2>
+    <div class="charts-section">
+      <div class="chart-container">
+        <h3 class="chart-title">Traffic Metrics</h3>
+        <canvas id="traffic-chart" class="chart-canvas"></canvas>
+      </div>
+      <div class="chart-container">
+        <h3 class="chart-title">Engagement Rates</h3>
+        <canvas id="engagement-chart" class="chart-canvas"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- Insights Section -->
+  <section class="insights-section">
+    <h2 class="text-xl font-semibold text-gray-900 mb-4">Key Insights</h2>
+    <div id="insights-container" class="insights-container">
+      <!-- Insights cards will be inserted here -->
+    </div>
+  </section>
+
+  <!-- Recommendations Section -->
+  <section class="recommendations-section">
+    <h2 class="text-xl font-semibold text-gray-900 mb-4">Recommendations</h2>
+    <div id="recommendations-container">
+      <!-- Recommendation cards will be inserted here -->
+    </div>
+  </section>
+
+  <!-- History Section -->
+  <section class="history-section">
+    <h2 class="text-xl font-semibold text-gray-900 mb-4">Report History</h2>
+    <table class="history-table">
+      <thead>
+        <tr>
+          <th>Week</th>
+          <th>Period</th>
+          <th>Views</th>
+          <th>Engagement</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="history-table-body">
+        <!-- History rows will be inserted here -->
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="loading-overlay" style="display: none">
+    <div class="spinner"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<script src="/static/weekly_engagement_report.js"></script>
+{% endblock %}
