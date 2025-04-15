@@ -250,6 +250,81 @@
           ]
         }
       ]
+    },
+    "weekly_engagement_report": {
+      "description": "Automated weekly report showing engagement metrics, trends, and actionable insights for clients and managers.",
+      "role": "client",
+      "module_type": "report",
+      "target_folder": "/apps/reports",
+      "templates": [
+        {
+          "path": "templates/weekly_engagement_report.html",
+          "description": "Weekly engagement report template with metrics visualization and insights"
+        },
+        {
+          "path": "static/js/weekly_engagement_report.js",
+          "description": "JavaScript for interactive report elements and data visualization"
+        },
+        {
+          "path": "api/weekly_engagement_report.py",
+          "description": "API endpoints for report data and scheduled generation"
+        }
+      ],
+      "dependencies": [
+        "core.auth",
+        "core.database",
+        "core.analytics",
+        "core.reporting",
+        "core.notifications"
+      ],
+      "models": [
+        {
+          "name": "WeeklyReport",
+          "attributes": [
+            "id: str (primary key)",
+            "client_id: str (foreign key to users.id)",
+            "report_date: datetime",
+            "week_number: int",
+            "year: int",
+            "metrics: Dict[str, Any]",
+            "insights: List[Dict[str, Any]]",
+            "recommendations: List[Dict[str, Any]]",
+            "status: str ('draft', 'generated', 'delivered', 'viewed')",
+            "delivered_at: Optional[datetime]",
+            "viewed_at: Optional[datetime]",
+            "created_at: datetime"
+          ]
+        },
+        {
+          "name": "EngagementMetric",
+          "attributes": [
+            "id: str (primary key)",
+            "report_id: str (foreign key to WeeklyReport.id)",
+            "metric_type: str ('views', 'clicks', 'calls', 'direction_requests', 'messages', 'bookings')",
+            "current_value: int",
+            "previous_value: int",
+            "change_percentage: float",
+            "trend: str ('up', 'down', 'stable')",
+            "benchmark_value: Optional[float]",
+            "benchmark_comparison: Optional[str] ('above', 'below', 'equal')",
+            "created_at: datetime"
+          ]
+        },
+        {
+          "name": "ReportDeliveryPreference",
+          "attributes": [
+            "id: str (primary key)",
+            "client_id: str (foreign key to users.id)",
+            "delivery_method: str ('email', 'sms', 'dashboard', 'api')",
+            "delivery_day: str ('monday', 'tuesday', 'wednesday', 'thursday', 'friday')",
+            "delivery_time: time",
+            "recipients: List[str]",
+            "is_active: bool",
+            "created_at: datetime",
+            "updated_at: datetime"
+          ]
+        }
+      ]
     }
   },
   "metadata": {
