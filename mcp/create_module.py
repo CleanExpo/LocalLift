@@ -382,19 +382,20 @@ async def create_{self._to_snake_case(module_id)}(request: {self._to_class_name(
         role = config.get("role", "")
         module_type = config.get("module_type", "")
         
-        content = f'''{% extends "base.html" %}
+        # Using regular string to avoid f-string and Jinja template syntax conflicts
+        content = '''{% extends "base.html" %}
 
-{% block title %}{self._to_title_case(module_id)} - LocalLift{% endblock %}
+{% block title %}''' + self._to_title_case(module_id) + ''' - LocalLift{% endblock %}
 
 {% block head %}
-<!-- Additional head content for {module_id} -->
+<!-- Additional head content for ''' + module_id + ''' -->
 {% endblock %}
 
 {% block content %}
 <div class="container mx-auto px-4 py-6">
-    <h1 class="text-3xl font-display font-bold mb-6">{self._to_title_case(module_id)}</h1>
+    <h1 class="text-3xl font-display font-bold mb-6">''' + self._to_title_case(module_id) + '''</h1>
     
-    <!-- {description} -->
+    <!-- ''' + description + ''' -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Sidebar -->
         <div class="md:col-span-1">
@@ -413,12 +414,12 @@ async def create_{self._to_snake_case(module_id)}(request: {self._to_class_name(
             <div class="card mb-6">
                 <h2 class="text-xl font-semibold mb-4">Overview</h2>
                 <p class="text-gray-700 mb-4">
-                    Welcome to the {self._to_title_case(module_id)} for {role} users. 
-                    This {module_type} provides tools for managing your data.
+                    Welcome to the ''' + self._to_title_case(module_id) + ''' for ''' + role + ''' users. 
+                    This ''' + module_type + ''' provides tools for managing your data.
                 </p>
                 
                 <!-- Add content specific to this module -->
-                <div id="{self._to_kebab_case(module_id)}-content" class="mt-6">
+                <div id="''' + self._to_kebab_case(module_id) + '''-content" class="mt-6">
                     <!-- Content will be loaded here -->
                     <div class="animate-pulse">
                         <div class="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
@@ -433,8 +434,8 @@ async def create_{self._to_snake_case(module_id)}(request: {self._to_class_name(
 {% endblock %}
 
 {% block scripts %}
-<!-- JavaScript for {module_id} -->
-<script src="{{ url_for('static', path='js/{self._to_snake_case(module_id)}.js') }}"></script>
+<!-- JavaScript for ''' + module_id + ''' -->
+<script src="{{ url_for('static', path='js/''' + self._to_snake_case(module_id) + '''.js') }}"></script>
 {% endblock %}
 '''
         
