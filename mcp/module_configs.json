@@ -82,11 +82,64 @@
           ]
         }
       ]
+    },
+    "client_gmb_post_tracker": {
+      "description": "Tracks Google My Business posts for clients, including scheduling, performance metrics, and content suggestions.",
+      "role": "client",
+      "module_type": "tracker",
+      "target_folder": "/apps/client",
+      "templates": [
+        {
+          "path": "templates/gmb_post_tracker.html",
+          "description": "GMB post tracking interface showing post history, status, and analytics"
+        },
+        {
+          "path": "static/js/gmb_post_tracker.js",
+          "description": "JavaScript for interactive post tracking experience"
+        },
+        {
+          "path": "api/gmb_post_tracker.py",
+          "description": "API endpoints for GMB post data and tracking"
+        }
+      ],
+      "dependencies": [
+        "core.auth",
+        "core.database",
+        "core.external.gmb_api"
+      ],
+      "models": [
+        {
+          "name": "GmbPost",
+          "attributes": [
+            "client_id: str (foreign key to users.id)",
+            "post_id: str",
+            "content: str",
+            "image_url: Optional[str]",
+            "scheduled_date: datetime",
+            "published_date: Optional[datetime]",
+            "status: str ('draft', 'scheduled', 'published', 'failed')",
+            "metrics: Dict[str, Any]",
+            "last_updated: datetime"
+          ]
+        },
+        {
+          "name": "PostTemplate",
+          "attributes": [
+            "name: str",
+            "content_template: str",
+            "category: str",
+            "tags: List[str]",
+            "created_by: str (foreign key to users.id)",
+            "is_public: bool",
+            "created_at: datetime"
+          ]
+        }
+      ]
     }
   },
   "metadata": {
     "version": "1.0.0",
     "description": "Module configurations for LocalLift module generator",
-    "lastUpdated": "2025-04-14"
+    "lastUpdated": "2025-04-15"
   }
 }
