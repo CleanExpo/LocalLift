@@ -325,6 +325,86 @@
           ]
         }
       ]
+    },
+    "education_hub_client": {
+      "description": "Learning center for clients featuring tutorials, best practices, industry knowledge, and interactive guides for GMB optimization.",
+      "role": "client",
+      "module_type": "education",
+      "target_folder": "/apps/client",
+      "templates": [
+        {
+          "path": "templates/education_hub.html",
+          "description": "Education hub main interface with categorized learning materials and progress tracking"
+        },
+        {
+          "path": "templates/education_article.html",
+          "description": "Template for individual educational articles and guides"
+        },
+        {
+          "path": "static/js/education_hub.js",
+          "description": "JavaScript for interactive learning features and progress tracking"
+        },
+        {
+          "path": "api/education_hub.py",
+          "description": "API endpoints for educational content and user progress"
+        }
+      ],
+      "dependencies": [
+        "core.auth",
+        "core.database",
+        "core.content"
+      ],
+      "models": [
+        {
+          "name": "EducationalContent",
+          "attributes": [
+            "id: str (primary key)",
+            "title: str",
+            "slug: str",
+            "category: str",
+            "subcategory: Optional[str]",
+            "content: str",
+            "format: str ('article', 'video', 'guide', 'checklist')",
+            "difficulty: str ('beginner', 'intermediate', 'advanced')",
+            "estimated_time: int",
+            "published: bool",
+            "created_at: datetime",
+            "updated_at: datetime"
+          ]
+        },
+        {
+          "name": "LearningProgress",
+          "attributes": [
+            "id: str (primary key)",
+            "client_id: str (foreign key to users.id)",
+            "content_id: str (foreign key to EducationalContent.id)",
+            "status: str ('not_started', 'in_progress', 'completed')",
+            "progress_percentage: float",
+            "last_accessed: datetime",
+            "completed_at: Optional[datetime]",
+            "notes: Optional[str]",
+            "bookmarked: bool",
+            "created_at: datetime",
+            "updated_at: datetime"
+          ]
+        },
+        {
+          "name": "LearningPath",
+          "attributes": [
+            "id: str (primary key)",
+            "title: str",
+            "description: str",
+            "category: str",
+            "content_ids: List[str]",
+            "required_order: bool",
+            "estimated_completion_days: int",
+            "difficulty: str ('beginner', 'intermediate', 'advanced')",
+            "published: bool",
+            "created_at: datetime",
+            "updated_at: datetime"
+          ]
+        }
+      ]
     }
   },
   "metadata": {
