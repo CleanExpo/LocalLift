@@ -1,0 +1,543 @@
+{% extends "base.html" %}
+
+{% block title %}Sales Conversion Rates{% endblock %}
+
+{% block styles %}
+<style>
+  .conversion-graph-container {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    margin-bottom: 1.5rem;
+  }
+
+  .filter-section {
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1rem;
+  }
+
+  .chart-container {
+    position: relative;
+    height: 400px;
+    padding: 1rem;
+  }
+
+  .summary-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .metric-card {
+    background-color: #f9fafb;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .metric-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1f2937;
+  }
+
+  .metric-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+
+  .trend-indicator {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.75rem;
+    margin-left: 0.5rem;
+  }
+
+  .trend-up {
+    color: #10b981;
+  }
+
+  .trend-down {
+    color: #ef4444;
+  }
+
+  .loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+  }
+
+  .spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-2xl font-bold mb-6">Sales Conversion Rates</h1>
+
+  <div class="conversion-graph-container">
+    <div class="filter-section">
+      <div class="flex flex-wrap gap-4 items-center">
+        <div>
+          <label for="time-period" class="block text-sm font-medium text-gray-700 mb-1">Time Period</label>
+          <select id="time-period" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly" selected>Monthly</option>
+            <option value="quarterly">Quarterly</option>
+            <option value="yearly">Yearly</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="start-date" class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+          <input type="date" id="start-date" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+        </div>
+
+        <div>
+          <label for="end-date" class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+          <input type="date" id="end-date" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+        </div>
+
+        <div>
+          <label for="team-id" class="block text-sm font-medium text-gray-700 mb-1">Team</label>
+          <select id="team-id" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+            <option value="">All Teams</option>
+            <!-- Teams will be populated dynamically -->
+          </select>
+        </div>
+
+        <div>
+          <label for="region-id" class="block text-sm font-medium text-gray-700 mb-1">Region</label>
+          <select id="region-id" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+            <option value="">All Regions</option>
+            <!-- Regions will be populated dynamically -->
+          </select>
+        </div>
+
+        <div class="mt-6">
+          <button id="apply-filters" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Apply Filters
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-4">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-semibold">Conversion Rate Comparison</h2>
+        <div class="flex space-x-2">
+          <button id="view-comparison" class="px-3 py-1 bg-indigo-600 text-white text-sm font-medium rounded-md">Comparison</button>
+          <button id="view-trends" class="px-3 py-1 bg-gray-200 text-gray-700 text-sm font-medium rounded-md">Trends</button>
+        </div>
+      </div>
+
+      <div id="chart-container" class="chart-container relative">
+        <canvas id="conversion-chart"></canvas>
+        <div id="loading-overlay" class="loading-overlay">
+          <div class="spinner"></div>
+        </div>
+      </div>
+
+      <div class="summary-metrics">
+        <div class="metric-card">
+          <div class="metric-value" id="metric-lead-qualified">0%</div>
+          <div class="metric-label">Lead → Qualified</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" id="metric-qualified-proposal">0%</div>
+          <div class="metric-label">Qualified → Proposal</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" id="metric-proposal-closed">0%</div>
+          <div class="metric-label">Proposal → Closed</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" id="metric-overall">0%</div>
+          <div class="metric-label">Overall Conversion</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" id="metric-avg-value">$0</div>
+          <div class="metric-label">Avg. Sale Value</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="conversion-graph-container">
+    <div class="p-4">
+      <h2 class="text-lg font-semibold mb-4">Conversion Funnel</h2>
+      <div class="relative" style="height: 200px;">
+        <div id="funnel-chart"></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.4.0/dist/d3.min.js"></script>
+
+<script>
+  // Global chart instance
+  let conversionChart = null;
+  let trendChart = null;
+
+  // Current view mode
+  let currentView = 'comparison';
+
+  // DOM elements
+  const chartContainer = document.getElementById('chart-container');
+  const loadingOverlay = document.getElementById('loading-overlay');
+  const timePeriodSelect = document.getElementById('time-period');
+  const startDateInput = document.getElementById('start-date');
+  const endDateInput = document.getElementById('end-date');
+  const teamIdSelect = document.getElementById('team-id');
+  const regionIdSelect = document.getElementById('region-id');
+  const applyFiltersButton = document.getElementById('apply-filters');
+  const viewComparisonButton = document.getElementById('view-comparison');
+  const viewTrendsButton = document.getElementById('view-trends');
+
+  // Set default dates
+  const today = new Date();
+  const threeMonthsAgo = new Date();
+  threeMonthsAgo.setMonth(today.getMonth() - 3);
+  
+  endDateInput.valueAsDate = today;
+  startDateInput.valueAsDate = threeMonthsAgo;
+
+  // Event listeners
+  applyFiltersButton.addEventListener('click', fetchData);
+  viewComparisonButton.addEventListener('click', () => switchView('comparison'));
+  viewTrendsButton.addEventListener('click', () => switchView('trends'));
+
+  // Initialize data
+  fetchData();
+
+  // Function to switch between comparison and trends views
+  function switchView(view) {
+    currentView = view;
+    
+    if (view === 'comparison') {
+      viewComparisonButton.classList.add('bg-indigo-600', 'text-white');
+      viewComparisonButton.classList.remove('bg-gray-200', 'text-gray-700');
+      viewTrendsButton.classList.add('bg-gray-200', 'text-gray-700');
+      viewTrendsButton.classList.remove('bg-indigo-600', 'text-white');
+    } else {
+      viewTrendsButton.classList.add('bg-indigo-600', 'text-white');
+      viewTrendsButton.classList.remove('bg-gray-200', 'text-gray-700');
+      viewComparisonButton.classList.add('bg-gray-200', 'text-gray-700');
+      viewComparisonButton.classList.remove('bg-indigo-600', 'text-white');
+    }
+    
+    fetchData();
+  }
+
+  // Function to fetch data based on filters
+  async function fetchData() {
+    showLoading();
+    
+    try {
+      if (currentView === 'comparison') {
+        await fetchComparisonData();
+      } else {
+        await fetchTrendData();
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      showError('Failed to load data. Please try again.');
+    } finally {
+      hideLoading();
+    }
+  }
+
+  // Function to fetch comparison data
+  async function fetchComparisonData() {
+    // Build query parameters
+    const params = new URLSearchParams({
+      time_period: timePeriodSelect.value
+    });
+    
+    if (startDateInput.value) {
+      params.append('start_date', new Date(startDateInput.value).toISOString());
+    }
+    
+    if (endDateInput.value) {
+      params.append('end_date', new Date(endDateInput.value).toISOString());
+    }
+    
+    if (teamIdSelect.value) {
+      params.append('team_id', teamIdSelect.value);
+    }
+    
+    if (regionIdSelect.value) {
+      params.append('region_id', regionIdSelect.value);
+    }
+    
+    // Fetch data
+    const dataResponse = await fetch(`/api/sales/conversion/data?${params.toString()}`);
+    const data = await dataResponse.json();
+    
+    // Fetch chart configuration
+    const configResponse = await fetch(`/api/sales/conversion/chart-config?${params.toString()}`);
+    const chartConfig = await configResponse.json();
+    
+    // Update chart
+    updateComparisonChart(chartConfig);
+    
+    // Update summary metrics
+    updateSummaryMetrics(data.summary);
+    
+    // Update teams dropdown if needed
+    if (Object.keys(data.teams).length > 0 && teamIdSelect.options.length <= 1) {
+      populateTeamsDropdown(data.teams);
+    }
+  }
+
+  // Function to fetch trend data
+  async function fetchTrendData() {
+    // Build query parameters
+    const params = new URLSearchParams({
+      period_type: timePeriodSelect.value,
+      time_periods: 6
+    });
+    
+    if (teamIdSelect.value) {
+      params.append('team_id', teamIdSelect.value);
+    }
+    
+    // Fetch trend data
+    const response = await fetch(`/api/sales/conversion/trends?${params.toString()}`);
+    const trendData = await response.json();
+    
+    // Update trend chart
+    updateTrendChart(trendData);
+  }
+
+  // Function to update the comparison chart
+  function updateComparisonChart(config) {
+    // Destroy existing chart if exists
+    if (conversionChart) {
+      conversionChart.destroy();
+    }
+    
+    // Create new chart
+    const ctx = document.getElementById('conversion-chart').getContext('2d');
+    conversionChart = new Chart(ctx, config);
+  }
+
+  // Function to update the trend chart
+  function updateTrendChart(data) {
+    // Destroy existing chart if exists
+    if (conversionChart) {
+      conversionChart.destroy();
+    }
+    
+    // Prepare datasets
+    const datasets = [
+      {
+        label: 'Lead to Qualified',
+        data: data.datasets.lead_to_qualified,
+        borderColor: '#4c78a8',
+        backgroundColor: 'rgba(76, 120, 168, 0.1)',
+        fill: true,
+        tension: 0.4
+      },
+      {
+        label: 'Qualified to Proposal',
+        data: data.datasets.qualified_to_proposal,
+        borderColor: '#f58518',
+        backgroundColor: 'rgba(245, 133, 24, 0.1)',
+        fill: true,
+        tension: 0.4
+      },
+      {
+        label: 'Proposal to Closed',
+        data: data.datasets.proposal_to_closed,
+        borderColor: '#e45756',
+        backgroundColor: 'rgba(228, 87, 86, 0.1)',
+        fill: true,
+        tension: 0.4
+      },
+      {
+        label: 'Overall',
+        data: data.datasets.overall,
+        borderColor: '#72b7b2',
+        backgroundColor: 'rgba(114, 183, 178, 0.1)',
+        fill: true,
+        tension: 0.4,
+        borderWidth: 3
+      }
+    ];
+    
+    // Create chart config
+    const config = {
+      type: 'line',
+      data: {
+        labels: data.labels,
+        datasets: datasets
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Conversion Rate (%)'
+            },
+            ticks: {
+              callback: function(value) {
+                return value + '%';
+              }
+            }
+          }
+        },
+        plugins: {
+          title: {
+            display: true,
+            text: 'Conversion Rate Trends Over Time'
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return context.dataset.label + ': ' + context.raw.toFixed(1) + '%';
+              }
+            }
+          }
+        }
+      }
+    };
+    
+    // Create new chart
+    const ctx = document.getElementById('conversion-chart').getContext('2d');
+    conversionChart = new Chart(ctx, config);
+  }
+
+  // Function to update summary metrics
+  function updateSummaryMetrics(summary) {
+    document.getElementById('metric-lead-qualified').textContent = summary.average_lead_to_qualified.toFixed(1) + '%';
+    document.getElementById('metric-qualified-proposal').textContent = summary.average_qualified_to_proposal.toFixed(1) + '%';
+    document.getElementById('metric-proposal-closed').textContent = summary.average_proposal_to_closed.toFixed(1) + '%';
+    document.getElementById('metric-overall').textContent = summary.average_overall.toFixed(1) + '%';
+    document.getElementById('metric-avg-value').textContent = '$' + summary.average_sale_value.toFixed(2);
+  }
+
+  // Function to populate teams dropdown
+  function populateTeamsDropdown(teams) {
+    // Clear existing options except the first one
+    while (teamIdSelect.options.length > 1) {
+      teamIdSelect.remove(1);
+    }
+    
+    // Add team options
+    for (const teamId in teams) {
+      const team = teams[teamId];
+      const option = document.createElement('option');
+      option.value = teamId;
+      option.textContent = team.name;
+      teamIdSelect.appendChild(option);
+    }
+  }
+
+  // Helper functions
+  function showLoading() {
+    loadingOverlay.style.display = 'flex';
+  }
+
+  function hideLoading() {
+    loadingOverlay.style.display = 'none';
+  }
+
+  function showError(message) {
+    // Simple error notification
+    alert(message);
+  }
+
+  // Funnel chart initialization
+  function initFunnelChart() {
+    const width = document.getElementById('funnel-chart').clientWidth;
+    const height = 200;
+    
+    // Sample funnel data - would be replaced with real data
+    const data = [
+      { stage: 'Leads', count: 1000, color: '#4c78a8' },
+      { stage: 'Qualified', count: 700, color: '#f58518' },
+      { stage: 'Proposals', count: 400, color: '#e45756' },
+      { stage: 'Closed', count: 200, color: '#72b7b2' }
+    ];
+    
+    // Create SVG
+    const svg = d3.select('#funnel-chart')
+      .append('svg')
+      .attr('width', width)
+      .attr('height', height);
+    
+    // Calculate funnel dimensions
+    const funnelWidth = width * 0.8;
+    const stageHeight = height / data.length;
+    const maxCount = d3.max(data, d => d.count);
+    
+    // Create funnel group and center it
+    const funnelGroup = svg.append('g')
+      .attr('transform', `translate(${(width - funnelWidth) / 2}, 0)`);
+    
+    // Create funnel stages
+    for (let i = 0; i < data.length; i++) {
+      const stage = data[i];
+      const nextStage = data[i + 1] || { count: 0 };
+      
+      const topWidth = (stage.count / maxCount) * funnelWidth;
+      const bottomWidth = (nextStage.count / maxCount) * funnelWidth;
+      
+      // Draw trapezoid
+      const trapezoid = funnelGroup.append('path')
+        .attr('d', `
+          M ${(funnelWidth - topWidth) / 2} ${i * stageHeight}
+          L ${(funnelWidth - topWidth) / 2 + topWidth} ${i * stageHeight}
+          L ${(funnelWidth - bottomWidth) / 2 + bottomWidth} ${(i + 1) * stageHeight}
+          L ${(funnelWidth - bottomWidth) / 2} ${(i + 1) * stageHeight}
+          Z
+        `)
+        .attr('fill', stage.color)
+        .attr('stroke', 'white')
+        .attr('stroke-width', 1);
+      
+      // Add label
+      funnelGroup.append('text')
+        .attr('x', funnelWidth / 2)
+        .attr('y', i * stageHeight + stageHeight / 2)
+        .attr('text-anchor', 'middle')
+        .attr('dominant-baseline', 'middle')
+        .attr('fill', 'white')
+        .attr('font-size', '12px')
+        .text(`${stage.stage}: ${stage.count}`);
+    }
+  }
+  
+  // Initialize funnel chart
+  initFunnelChart();
+</script>
+{% endblock %}
