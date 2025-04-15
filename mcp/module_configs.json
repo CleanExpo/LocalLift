@@ -194,7 +194,7 @@
       ]
     },
     "sales_conversion_graph": {
-      "description": "Interactive sales funnel and conversion visualization showing lead acquisition, qualification, proposal, and close rates with trend analysis.",
+      "description": "Dashboard graph to show conversion rate per sales rep and region over time.",
       "role": "sales",
       "module_type": "graph",
       "target_folder": "/apps/sales",
