@@ -6,8 +6,8 @@ buildCommand = "npm ci && pip install -r requirements.txt"
 startCommand = "npm start"
 healthcheckPath = "/"
 healthcheckTimeout = 300
-restartPolicyType = "on-failure"
-restartPolicyMaxRetries = 10
+restartPolicy = "always"
+maxRetries = 10
 
 [nixpacks]
 python = { version = "3.10" }
