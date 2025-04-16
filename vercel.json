@@ -3,9 +3,5 @@
   "rewrites": [
     { "source": "/admin/guide", "destination": "/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }
-  ],
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/.*", "dest": "/index.html" }
   ]
 }
