@@ -8,7 +8,7 @@
 
 const CONFIG = {
   // Production API URL (Railway deployment)
-  PRODUCTION_API_URL: "https://local-lift-production.up.railway.app",
+  PRODUCTION_API_URL: "https://locallift-production.up.railway.app",
   
   // Local development API URL
   DEVELOPMENT_API_URL: "http://localhost:8000",

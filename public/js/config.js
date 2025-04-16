@@ -7,10 +7,10 @@
 window.LOCALLIFT_CONFIG = {
   // API base URL - will be different for different environments
   API_BASE_URL: 'https://locallift-production.up.railway.app',
-  
+
   // Version information
   VERSION: '1.0.0',
-  
+
   // Feature flags
   FEATURES: {
     GAMIFICATION: true,
@@ -18,13 +18,13 @@ window.LOCALLIFT_CONFIG = {
     LEADERBOARDS: true,
     CERTIFICATIONS: true
   },
-  
+
   // Authentication configuration
   AUTH: {
     TOKEN_KEY: 'locallift_auth_token',
     REFRESH_TOKEN_KEY: 'locallift_refresh_token',
     EXPIRY_KEY: 'locallift_token_expiry',
-    SESSION_DURATION: 86400, // 24 hours in seconds
+    SESSION_DURATION: 86400 // 24 hours in seconds
   },
 
   // Environment - will be 'production' for deployed app
