@@ -1,43 +1,46 @@
 /**
- * LocalLift Frontend Configuration
- *
- * This file contains configuration settings for the LocalLift frontend application.
- * It specifies API endpoints and other important settings for the application.
+ * LocalLift Configuration
+ * This file contains configuration settings for the LocalLift application
+ * It is used by all frontend components to connect to the backend API
  */
 
-// API endpoint configuration
-const CONFIG = {
-  // Base URL for API requests (default points to Railway deployment)
-  API_BASE_URL: "https://locallift-production.up.railway.app",
+window.LOCALLIFT_CONFIG = {
+  // API base URL - will be different for different environments
+  API_BASE_URL: 'https://locallift-production.up.railway.app',
   
-  // API version
-  API_VERSION: "v1",
-  
-  // Full API URL with version
-  get API_URL() {
-    return `${this.API_BASE_URL}/api/${this.API_VERSION}`;
-  },
-  
-  // Health check endpoint
-  get HEALTH_CHECK_URL() {
-    return `${this.API_BASE_URL}/api/health`;
-  },
-  
-  // Authentication settings
-  AUTH: {
-    TOKEN_KEY: "locallift_auth_token",
-    REFRESH_TOKEN_KEY: "locallift_refresh_token",
-    EXPIRY_KEY: "locallift_token_expiry",
-    SESSION_DURATION: 3600 * 24 // 24 hours in seconds
-  },
+  // Version information
+  VERSION: '1.0.0',
   
   // Feature flags
   FEATURES: {
-    ENABLE_NOTIFICATIONS: true,
-    ENABLE_ANALYTICS: true,
-    DARK_MODE: true
-  }
-};
+    GAMIFICATION: true,
+    ACHIEVEMENTS: true,
+    LEADERBOARDS: true,
+    CERTIFICATIONS: true
+  },
+  
+  // Authentication configuration
+  AUTH: {
+    TOKEN_KEY: 'locallift_auth_token',
+    REFRESH_TOKEN_KEY: 'locallift_refresh_token',
+    EXPIRY_KEY: 'locallift_token_expiry',
+    SESSION_DURATION: 86400, // 24 hours in seconds
+  },
 
-// Export the configuration for use in other modules
-window.LOCALLIFT_CONFIG = CONFIG;
+  // Environment - will be 'production' for deployed app
+  ENVIRONMENT: 'production',
+
+  // Default health check endpoint
+  HEALTH_CHECK_ENDPOINT: '/api/health',
+
+  // Routes configuration
+  ROUTES: {
+    HOME: '/',
+    DASHBOARD: '/dashboard',
+    LOGIN: '/login',
+    GUIDE: '/admin/guide'
+  },
+
+  // Default error page
+  ERROR_PAGE: '/404.html'
+};
