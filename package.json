@@ -12,7 +12,8 @@
     "migrate": "npx supabase db reset",
     "test": "pytest",
     "build:css": "tailwindcss -i ./frontend/styles/tailwind.css -o ./public/style.css",
-    "watch:css": "tailwindcss -i ./frontend/styles/tailwind.css -o ./public/style.css --watch"
+    "watch:css": "tailwindcss -i ./frontend/styles/tailwind.css -o ./public/style.css --watch",
+    "build": "npm run build:css"
   },
   "repository": {
     "type": "git",
