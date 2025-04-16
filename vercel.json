@@ -1,7 +1,9 @@
 {
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/admin/guide", "destination": "/index.html" },
+    { "source": "/dashboard", "destination": "/dashboard/index.html" },
+    { "source": "/login", "destination": "/login/index.html" },
+    { "source": "/admin/guide", "destination": "/admin/guide/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "buildCommand": "",
