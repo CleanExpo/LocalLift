@@ -47,7 +47,7 @@ app.include_router(certifications_router, prefix="/api/certifications", tags=["C
 
 
 @app.get("/api/health", tags=["Health"])
-async def health_check(settings: Settings = Depends(get_settings)):
+async def api_health_check(settings: Settings = Depends(get_settings)):
     """
     Health check endpoint to verify the API is running
     """
@@ -60,6 +60,13 @@ async def health_check(settings: Settings = Depends(get_settings)):
             "certifications": settings.enable_certifications
         }
     }
+
+@app.get("/health", tags=["Health"])
+async def root_health_check():
+    """
+    Root health check endpoint for Railway deployment
+    """
+    return {"status": "OK", "message": "API is operational"}
 
 
 @app.exception_handler(HTTPException)
