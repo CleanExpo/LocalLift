@@ -3,9 +3,25 @@
   "rewrites": [
     { "source": "/dashboard", "destination": "/dashboard/index.html" },
     { "source": "/login", "destination": "/login/index.html" },
-    { "source": "/admin/guide", "destination": "/admin/guide/index.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/admin/guide", "destination": "/admin/guide/index.html" }
+  ],
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/404.html", "status": 404 },
+    { "src": "/(.*)", "dest": "/index.html", "status": 200 }
   ],
   "buildCommand": "",
-  "outputDirectory": "public"
+  "outputDirectory": "public",
+  "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "s-maxage=1, stale-while-revalidate"
+        }
+      ]
+    }
+  ]
 }
