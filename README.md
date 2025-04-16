@@ -2,6 +2,9 @@
 
 LocalLift is a platform designed to support local businesses through technology and community engagement tools.
 
+[![Deploy to Railway](https://github.com/LocalLift/locallift/workflows/Deploy%20to%20Railway/badge.svg)](https://github.com/LocalLift/locallift/actions/workflows/railway-deploy.yml)
+[![Deploy LocalLift](https://github.com/LocalLift/locallift/workflows/Deploy%20LocalLift/badge.svg)](https://github.com/LocalLift/locallift/actions/workflows/deploy.yml)
+
 ## Deployment System Documentation
 
 This project includes a comprehensive deployment system for both the backend (FastAPI on Railway) and frontend (Static files on Vercel). The following documentation guides will help you deploy, monitor, and maintain the LocalLift application.
@@ -70,6 +73,21 @@ See the [GitHub Actions Guide](./GITHUB_ACTIONS_GUIDE.md) for detailed instructi
    ```
 
 See the [Deployment Guide](./DEPLOYMENT_GUIDE.md) for detailed instructions.
+
+## Public Repository Deployment
+
+This project now supports deployment from a public GitHub repository. The main workflow files have been updated with appropriate permissions:
+
+- Added explicit permissions to workflow files to ensure secure operation
+- Added workflow status badges to display current deployment status
+- Maintained all secret management through GitHub repository secrets
+
+When working with the public repository, make sure to:
+1. Never commit sensitive information (API keys, passwords, etc.)
+2. Use GitHub secrets for all sensitive values
+3. Be mindful of which branches trigger deployments
+
+NOTE: The deployment workflows now include explicit permission settings to ensure they function correctly in a public repository environment.
 
 ## Troubleshooting
 

@@ -116,6 +116,37 @@ You can customize the workflow by editing `.github/workflows/deploy.yml`:
 - Customize the notification format
 - Add more sophisticated health checks
 
+## Public Repository Deployment
+
+The workflow has been updated to support deployment from a public GitHub repository:
+
+### Security Considerations
+
+When deploying from a public repository, security becomes even more critical:
+
+1. **Explicit Permissions**: The workflow files now include explicit permission settings:
+   ```yaml
+   permissions:
+     contents: read
+     actions: write
+     deployments: write
+   ```
+   This limits what the workflow can access, following the principle of least privilege.
+
+2. **Secrets Management**: Continue using GitHub repository secrets for all sensitive information. These remain securely encrypted even in public repositories.
+
+3. **Fork Protection**: The workflow is configured to prevent unauthorized deployments from repository forks.
+
+4. **Status Badges**: The README now includes deployment status badges that show the current state of your workflows.
+
+### Best Practices for Public Repositories
+
+1. **Never commit sensitive data**: Always use GitHub secrets for tokens, passwords, and API keys.
+2. **Limit branch access**: Configure branch protection rules for deployment branches.
+3. **Review Pull Requests carefully**: Especially check for any changes to workflow files or deployment scripts.
+4. **Monitor workflow runs**: Check logs regularly for any unauthorized or unexpected deployments.
+5. **Rotate secrets regularly**: Update your Railway and Vercel tokens periodically.
+
 ## Troubleshooting
 
 If the workflow fails, check:
