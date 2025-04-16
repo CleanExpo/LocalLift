@@ -1,30 +1,43 @@
 /**
- * API Configuration
- * 
- * This file centralizes API endpoint configuration for the LocalLift frontend.
- * It automatically detects whether we're in a production or development environment
- * and sets the appropriate base URL for API calls.
+ * LocalLift Frontend Configuration
+ *
+ * This file contains configuration settings for the LocalLift frontend application.
+ * It specifies API endpoints and other important settings for the application.
  */
 
+// API endpoint configuration
 const CONFIG = {
-  // Production API URL (Railway deployment)
-  // This URL pattern follows Railway's standard format for production apps
-  PRODUCTION_API_URL: "https://locallift-production.up.railway.app",
+  // Base URL for API requests (default points to Railway deployment)
+  API_BASE_URL: "https://locallift-production.up.railway.app",
   
-  // Local development API URL
-  DEVELOPMENT_API_URL: "http://localhost:8000",
+  // API version
+  API_VERSION: "v1",
   
-  // Determine if we're in production based on the hostname
-  isProduction() {
-    return window.location.hostname.includes('vercel.app') || 
-           !window.location.hostname.includes('localhost');
+  // Full API URL with version
+  get API_URL() {
+    return `${this.API_BASE_URL}/api/${this.API_VERSION}`;
   },
   
-  // Get the appropriate API base URL
-  getApiBaseUrl() {
-    return this.isProduction() ? this.PRODUCTION_API_URL : this.DEVELOPMENT_API_URL;
+  // Health check endpoint
+  get HEALTH_CHECK_URL() {
+    return `${this.API_BASE_URL}/api/health`;
+  },
+  
+  // Authentication settings
+  AUTH: {
+    TOKEN_KEY: "locallift_auth_token",
+    REFRESH_TOKEN_KEY: "locallift_refresh_token",
+    EXPIRY_KEY: "locallift_token_expiry",
+    SESSION_DURATION: 3600 * 24 // 24 hours in seconds
+  },
+  
+  // Feature flags
+  FEATURES: {
+    ENABLE_NOTIFICATIONS: true,
+    ENABLE_ANALYTICS: true,
+    DARK_MODE: true
   }
 };
 
-// Export the API base URL for use in other JS files
-const apiBase = CONFIG.getApiBaseUrl();
+// Export the configuration for use in other modules
+window.LOCALLIFT_CONFIG = CONFIG;

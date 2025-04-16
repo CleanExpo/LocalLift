@@ -1,14 +1,2 @@
-# DEPRECATED: This file is no longer used.
-# Please refer to railway.json for the current Railway configuration.
-#
-# The LocalLift application now uses railway.json which provides more
-# advanced deployment features including:
-# - Multi-region deployment
-# - Advanced restart policies
-# - NIXPACKS builder support
-# - V2 runtime environment
-#
-# The original contents are preserved below for reference only.
-
 [deploy]
   restartPolicy = "always"

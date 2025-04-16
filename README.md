@@ -1,76 +1,91 @@
 # LocalLift
 
-## 📦 Deployment Status
+LocalLift is a platform designed to support local businesses through technology and community engagement tools.
 
-![CI/CD](https://github.com/CleanExpo/LocalLift/actions/workflows/main.yml/badge.svg)
+## Deployment System Documentation
 
-## Project Overview
+This project includes a comprehensive deployment system for both the backend (FastAPI on Railway) and frontend (Static files on Vercel). The following documentation guides will help you deploy, monitor, and maintain the LocalLift application.
 
-LocalLift is a comprehensive platform designed to help local businesses improve their online presence and customer engagement through automated tools, analytics, and educational resources.
+### Main Documentation
 
-## Environment Setup
+- **[Deployment Guide](./DEPLOYMENT_GUIDE.md)** - Step-by-step manual deployment instructions
+- **[GitHub Actions Guide](./GITHUB_ACTIONS_GUIDE.md)** - Automated CI/CD deployment workflow
+- **[Railway Deployment](./RAILWAY_DEPLOYMENT.md)** - Specific details for Railway backend deployment
 
-The project has been configured with all necessary environment variables:
+### Tools Reference
 
-- **Supabase**: Database and authentication
-- **SendGrid**: Email services 
-- **Railway**: Deployment infrastructure
+The `tools/` directory contains several utilities to help with deployment and maintenance:
 
-## Deployment
+- **pre_deploy_check.py** - Validates configuration before deployment
+- **check_null_bytes.py** - Detects files with null byte encoding issues
+- **fix_null_bytes.py** - Fixes null byte encoding issues
+- **cleanup_temp_files.py** - Removes temporary files
+- **monitor_deployment.py** - Monitors the health of deployed services
 
-The application is automatically deployed through GitHub Actions CI/CD pipeline, with current status displayed by the badge above.
+### Deployment Files
 
-### Deployment Options
+The system uses the following key configuration files:
 
-- **Production**: Railway platform deployment
-- **Documentation**: Vercel static hosting
+#### Backend (Railway)
+- `Dockerfile` - Container configuration
+- `railway.json` - Railway project settings
+- `railway.toml` - Additional Railway configuration
+- `railway_entry.py` - Application entry point
+- `.env.railway` - Environment variables template
 
-## Getting Started
+#### Frontend (Vercel)
+- `vercel.json` - Vercel configuration
+- `package.json` - Project configuration
+- `public/config.js` - Frontend API configuration
 
-1. **Prerequisites**
-   - Python 3.10+
-   - Node.js 16+
-   - Docker (optional for local development)
+## Quick Start
 
-2. **Environment Configuration**
-   - Copy `.env.template` to `.env` 
-   - Run `python tools/env_check.py` to verify your configuration
+### Using GitHub Actions (Recommended)
 
-3. **Local Development**
-   ```bash
-   # Start the application
-   python main.py
-   # OR
-   ./start.sh  # macOS/Linux
-   ./start.bat # Windows
+1. Set up the required GitHub repository secrets:
+   - RAILWAY_TOKEN
+   - VERCEL_TOKEN
+   - VERCEL_ORG_ID
+   - VERCEL_PROJECT_ID
+
+2. Push to the main branch to trigger deployment
+
+See the [GitHub Actions Guide](./GITHUB_ACTIONS_GUIDE.md) for detailed instructions.
+
+### Manual Deployment
+
+1. Run pre-deployment validation:
+   ```
+   python tools/pre_deploy_check.py --fix
    ```
 
-4. **Build & Deployment**
-   ```bash
-   # For documentation
-   bash tools/doc_build.sh  # macOS/Linux
-   
-   # For application
-   ./deploy.sh  # Standard deployment
-   ./deploy-secure.sh  # Deployment with sensitive operations
+2. Deploy the backend to Railway:
+   ```
+   ./deploy-railway.ps1
    ```
 
-## Project Structure
+3. Deploy the frontend to Vercel:
+   ```
+   ./deploy-vercel.ps1
+   ```
 
-- `/apps`: Application modules for different user types and features
-- `/core`: Core functionality and configurations
-- `/docs`: Documentation source files
-- `/public`: Static assets for Vercel hosting
-- `/supabase`: Database schema and migrations
-- `/templates`: HTML templates
-- `/tools`: Utility scripts for development and deployment
+See the [Deployment Guide](./DEPLOYMENT_GUIDE.md) for detailed instructions.
 
-## Environment Management
+## Troubleshooting
 
-Use the included validation tool to ensure all environment variables are properly configured:
+If you encounter deployment issues:
 
-```bash
-python tools/env_check.py
-```
+1. Check the pre-deployment validation results
+2. Run the deployment monitoring tool:
+   ```
+   python tools/monitor_deployment.py
+   ```
+3. Check for null bytes in source files:
+   ```
+   python tools/check_null_bytes.py .
+   ```
+4. For persistent issues, refer to the specific deployment guides
 
-This will verify all required credentials for Supabase, SendGrid, and Railway are properly set.
+## License
+
+© 2025 LocalLift. All rights reserved.

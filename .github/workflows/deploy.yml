@@ -1,0 +1,122 @@
+name: Deploy LocalLift
+
+on:
+  push:
+    branches:
+      - main
+      - production
+  workflow_dispatch:
+    inputs:
+      deploy_backend:
+        description: 'Deploy backend to Railway'
+        type: boolean
+        default: true
+      deploy_frontend:
+        description: 'Deploy frontend to Vercel'
+        type: boolean
+        default: true
+
+jobs:
+  validate:
+    name: Validate deployment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run pre-deployment validation
+        run: python tools/pre_deploy_check.py --fix
+      
+      - name: Check for null bytes
+        run: python tools/check_null_bytes.py .
+
+  deploy-backend:
+    name: Deploy backend to Railway
+    needs: validate
+    if: ${{ github.event.inputs.deploy_backend != 'false' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+      
+      - name: Login to Railway
+        run: railway login
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      
+      - name: Link Railway project
+        run: railway link -p 0e58b112-f5f5-4285-ad1f-f47d1481045b
+      
+      - name: Deploy to Railway
+        run: railway up
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      
+      - name: Wait for deployment
+        run: sleep 60
+
+      - name: Health check
+        run: |
+          curl -f https://locallift-production.up.railway.app/api/health || exit 1
+
+  deploy-frontend:
+    name: Deploy frontend to Vercel
+    needs: [validate, deploy-backend]
+    if: ${{ github.event.inputs.deploy_frontend != 'false' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+      
+      - name: Deploy to Vercel
+        run: vercel --prod --yes
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+  notify:
+    name: Notify about deployment result
+    needs: [deploy-backend, deploy-frontend]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify about successful deployment
+        if: ${{ needs.deploy-backend.result == 'success' && needs.deploy-frontend.result == 'success' }}
+        run: |
+          echo "LocalLift deployment completed successfully!"
+          echo "Backend: https://locallift-production.up.railway.app"
+          echo "Frontend: https://local-lift-frontend.vercel.app"
+      
+      - name: Notify about failed deployment
+        if: ${{ needs.deploy-backend.result != 'success' || needs.deploy-frontend.result != 'success' }}
+        run: |
+          echo "LocalLift deployment failed!"
+          echo "Backend status: ${{ needs.deploy-backend.result }}"
+          echo "Frontend status: ${{ needs.deploy-frontend.result }}"
