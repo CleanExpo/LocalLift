@@ -106,10 +106,34 @@ The deployment uses several configuration files:
 
 ### railway.json
 
-This file configures Railway's deployment settings:
-- Specifies the startup command
-- Sets the health check path
-- Configures restart policies
+This file configures Railway's advanced deployment settings:
+```json
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "build": {
+    "builder": "NIXPACKS"
+  },
+  "deploy": {
+    "runtime": "V2",
+    "numReplicas": 1,
+    "sleepApplication": false,
+    "multiRegionConfig": {
+      "asia-southeast1-eqsg3a": {
+        "numReplicas": 1
+      }
+    },
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 10
+  }
+}
+```
+
+Key features:
+- Uses NIXPACKS builder for optimized builds
+- Deploys with V2 runtime for improved performance
+- Configures multi-region deployment with Asia Southeast replica
+- Prevents application sleep for 24/7 availability
+- Sets failure-based restart policy with up to 10 retries
 
 ### Dockerfile
 

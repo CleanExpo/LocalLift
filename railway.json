@@ -1,18 +1,20 @@
 {
+  "$schema": "https://railway.com/railway.schema.json",
   "build": {
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "python railway_entry.py",
-    "healthcheckPath": "/health",
-    "healthcheckTimeout": 100,
+    "runtime": "V2",
+    "numReplicas": 1,
+    "sleepApplication": false,
+    "multiRegionConfig": {
+      "asia-southeast1-eqsg3a": {
+        "numReplicas": 1
+      }
+    },
     "restartPolicyType": "ON_FAILURE",
-    "restartPolicyMaxRetries": 10
-  },
-  "nixpacks": {
-    "python": {
-      "version": "3.11"
-    }
-  },
-  "project": "0e58b112-f5f5-4285-ad1f-f47d1481045b"
+    "restartPolicyMaxRetries": 10,
+    "healthcheckPath": "/health",
+    "healthcheckTimeout": 10
+  }
 }

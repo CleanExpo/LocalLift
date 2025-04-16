@@ -18,13 +18,20 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 # Get Supabase credentials
-SUPABASE_URL = os.getenv("SUPABASE_URL", "https://rsooolwhapkkkwbmybdb.supabase.co")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY")
-SUPABASE_PROJECT_ID = os.getenv("SUPABASE_PROJECT_ID", "rsooolwhapkkkwbmybdb")
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
+SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+SUPABASE_PROJECT_ID = os.getenv("SUPABASE_PROJECT_ID")
 
-if not SUPABASE_KEY:
-    logger.warning("SUPABASE_KEY environment variable is not set")
+# Log configuration status with environment check
+if not SUPABASE_URL:
+    logger.warning("SUPABASE_URL environment variable is not set")
+if not SUPABASE_ANON_KEY:
+    logger.warning("SUPABASE_ANON_KEY environment variable is not set")
+if not SUPABASE_SERVICE_KEY:
+    logger.warning("SUPABASE_SERVICE_ROLE_KEY environment variable is not set")
+if not SUPABASE_PROJECT_ID:
+    logger.warning("SUPABASE_PROJECT_ID environment variable is not set")
 
 def get_supabase_client() -> Client:
     """
@@ -34,11 +41,15 @@ def get_supabase_client() -> Client:
         Client: A configured Supabase client with anonymous role permissions
     
     Raises:
-        ValueError: If SUPABASE_KEY environment variable is not set
+        ValueError: If SUPABASE_ANON_KEY environment variable is not set
     """
-    if not SUPABASE_KEY:
-        raise ValueError("SUPABASE_KEY environment variable is not set")
-    return create_client(SUPABASE_URL, SUPABASE_KEY)
+    if not SUPABASE_URL:
+        raise ValueError("SUPABASE_URL environment variable is not set")
+    if not SUPABASE_ANON_KEY:
+        raise ValueError("SUPABASE_ANON_KEY environment variable is not set")
+    
+    logger.debug(f"Creating Supabase client with URL: {SUPABASE_URL}")
+    return create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 def get_supabase_admin_client() -> Client:
     """
@@ -50,23 +61,41 @@ def get_supabase_admin_client() -> Client:
         Client: A configured Supabase client with service role permissions
     
     Raises:
-        ValueError: If SUPABASE_SERVICE_KEY environment variable is not set
+        ValueError: If SUPABASE_SERVICE_ROLE_KEY environment variable is not set
     """
+    if not SUPABASE_URL:
+        raise ValueError("SUPABASE_URL environment variable is not set")
     if not SUPABASE_SERVICE_KEY:
-        raise ValueError("SUPABASE_SERVICE_KEY environment variable is not set")
+        raise ValueError("SUPABASE_SERVICE_ROLE_KEY environment variable is not set")
+    
+    logger.debug(f"Creating Supabase admin client with URL: {SUPABASE_URL}")
     return create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 
 # Initialize default clients for convenience
 try:
-    supabase_client = get_supabase_client()
-    logger.info("Initialized Supabase client with anonymous role")
+    if SUPABASE_URL and SUPABASE_ANON_KEY:
+        supabase_client = get_supabase_client()
+        logger.info(f"Initialized Supabase client with anonymous role for URL: {SUPABASE_URL}")
+    else:
+        logger.warning("Skipping Supabase client initialization due to missing credentials")
+        supabase_client = None
 except ValueError as e:
     logger.error(f"Failed to initialize default Supabase client: {e}")
     supabase_client = None
+except Exception as e:
+    logger.error(f"Unexpected error initializing Supabase client: {str(e)}")
+    supabase_client = None
 
 try:
-    supabase_admin_client = get_supabase_admin_client()
-    logger.info("Initialized Supabase client with service role")
+    if SUPABASE_URL and SUPABASE_SERVICE_KEY:
+        supabase_admin_client = get_supabase_admin_client()
+        logger.info(f"Initialized Supabase admin client with service role for URL: {SUPABASE_URL}")
+    else:
+        logger.warning("Skipping Supabase admin client initialization due to missing credentials")
+        supabase_admin_client = None
 except ValueError as e:
     logger.error(f"Failed to initialize admin Supabase client: {e}")
+    supabase_admin_client = None
+except Exception as e:
+    logger.error(f"Unexpected error initializing Supabase admin client: {str(e)}")
     supabase_admin_client = None

@@ -65,8 +65,11 @@ async def api_health_check(settings: Settings = Depends(get_settings)):
 async def root_health_check():
     """
     Root health check endpoint for Railway deployment
+    This endpoint is used by Railway for its health checks
     """
-    return {"status": "OK", "message": "API is operational"}
+    # Return a simple "ok" text response that's highly compatible with health check systems
+    from fastapi.responses import PlainTextResponse
+    return PlainTextResponse(content="ok", status_code=200)
 
 
 @app.exception_handler(HTTPException)

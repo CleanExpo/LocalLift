@@ -1,47 +1,8 @@
 {
-  "name": "local-lift",
-  "version": "0.1.0",
-  "description": "Regional group CRM with gamification features",
-  "main": "index.js",
+  "name": "locallift",
+  "version": "1.0.0",
   "scripts": {
-    "start": "uvicorn mini_main:app --host 0.0.0.0 --port $PORT",
-    "start:api": "uvicorn mini_main:app --reload --port 8001",
-    "start:supabase": "npx supabase start",
-    "stop:supabase": "npx supabase stop",
-    "status:supabase": "npx supabase status",
-    "migrate": "npx supabase db reset",
-    "test": "pytest",
-    "build:css": "tailwindcss -i ./frontend/styles/tailwind.css -o ./public/style.css",
-    "watch:css": "tailwindcss -i ./frontend/styles/tailwind.css -o ./public/style.css --watch",
-    "build": "npm run build:css"
+    "build": "echo 'Static deployment only'"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/yourusername/local-lift.git"
-  },
-  "keywords": [
-    "crm",
-    "gamification",
-    "leaderboards",
-    "fastapi",
-    "supabase"
-  ],
-  "author": "",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/yourusername/local-lift/issues"
-  },
-  "homepage": "https://github.com/yourusername/local-lift#readme",
-  "devDependencies": {
-    "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.3",
-    "supabase": "^2.15.0",
-    "tailwindcss": "^4.1.4"
-  },
-  "dependencies": {
-    "dotenv": "^16.0.3"
-  },
-  "directories": {
-    "test": "tests"
-  }
+  "license": "MIT"
 }

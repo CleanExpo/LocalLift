@@ -4,6 +4,6 @@
     { "source": "/admin/guide", "destination": "/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
-  "buildCommand": false,
+  "buildCommand": "",
   "outputDirectory": "public"
 }
