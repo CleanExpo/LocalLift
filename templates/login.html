@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Local Lift{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/login.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="login-container flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="w-full max-w-md space-y-8">
+        <div class="text-center">
+            <h2 class="login-title mt-6 text-center text-3xl font-display font-bold text-gray-900">
+                Welcome Back
+            </h2>
+            <p class="login-subtitle mt-2 text-center text-sm text-gray-600">
+                Sign in to access your LocalLift dashboard
+            </p>
+        </div>
+        
+        <div class="login-card rounded-lg shadow-card bg-white p-8">
+            <div id="login-error-message" class="error-message hidden mb-4 text-sm text-red-600 bg-red-50 p-3 rounded-lg border border-red-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+                Invalid email or password. Please try again.
+            </div>
+
+            <form class="space-y-6" id="login-form">
+                <div>
+                    <label for="email" class="form-label block text-sm font-medium text-gray-700">Email address</label>
+                    <div class="mt-1">
+                        <input id="email" name="email" type="email" autocomplete="email" required 
+                            class="form-input block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-primary-500 sm:text-sm" 
+                            placeholder="your.email@example.com">
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex items-center justify-between">
+                        <label for="password" class="form-label block text-sm font-medium text-gray-700">Password</label>
+                        <div class="text-sm">
+                            <a href="/forgot-password" class="forgot-password font-medium text-primary-600 hover:text-primary-500">
+                                Forgot your password?
+                            </a>
+                        </div>
+                    </div>
+                    <div class="mt-1">
+                        <input id="password" name="password" type="password" autocomplete="current-password" required 
+                            class="form-input block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-primary-500 sm:text-sm"
+                            placeholder="••••••••">
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <div class="remember-me flex items-center">
+                        <input id="remember-me" name="remember-me" type="checkbox" 
+                            class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+                        <label for="remember-me" class="ml-2 block text-sm text-gray-900">
+                            Remember me
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit" 
+                        class="btn-primary flex w-full justify-center rounded-md border border-transparent bg-primary-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
+                        Sign in
+                    </button>
+                </div>
+            </form>
+            
+            <div class="mt-6">
+                <div class="social-divider relative">
+                    <span class="bg-white px-2 text-gray-500">Or continue with</span>
+                </div>
+
+                <div class="mt-6 space-y-3">
+                    <button type="button" 
+                        class="social-button google-button flex w-full items-center justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-500 shadow-sm hover:bg-gray-50">
+                        <svg class="h-5 w-5 google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z" fill="currentColor"/>
+                        </svg>
+                        <span class="ml-2">Sign in with Google</span>
+                    </button>
+
+                    <button type="button" 
+                        class="social-button linkedin-button flex w-full items-center justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-500 shadow-sm hover:bg-gray-50">
+                        <svg class="h-5 w-5 linkedin-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" fill="currentColor"/>
+                        </svg>
+                        <span class="ml-2">Sign in with LinkedIn</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="auth-footer mt-8 text-center">
+                <p class="text-sm text-gray-600">
+                    Don't have an account? 
+                    <a href="/signup" class="link font-medium text-primary-600 hover:text-primary-500">
+                        Sign up now
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', path='js/login.js') }}"></script>
+{% endblock %}
