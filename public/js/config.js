@@ -5,7 +5,7 @@
  */
 
 window.LOCALLIFT_CONFIG = {
-  // API base URL - will be different for different environments
+  // Updated API base URL to point to the correct backend endpoint
   API_BASE_URL: 'https://locallift-production.up.railway.app',
 
   // Version information
