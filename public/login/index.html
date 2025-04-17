@@ -59,7 +59,15 @@
                     <input id="remember_me" name="remember_me" type="checkbox" class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
                     <label for="remember_me" class="ml-2 block text-sm text-gray-700">Remember me</label>
                   </div>
-<a href="/forgot-password" class="text-sm text-primary-600 hover:text-primary-700">Forgot password?</a>
+                  <a href="/forgot-password" class="text-sm text-primary-600 hover:text-primary-700">Forgot password?</a>
+                </div>
+                
+                <div class="flex items-center mt-3">
+                  <input id="save_credentials" name="save_credentials" type="checkbox" class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+                  <label for="save_credentials" class="ml-2 block text-sm text-gray-700">Save username and password</label>
+                  <span class="ml-1 inline-block">
+                    <i class="fas fa-info-circle text-gray-400 cursor-help" title="Credentials will be saved in your browser for easier login next time."></i>
+                  </span>
                 </div>
               </div>
               
@@ -123,6 +131,19 @@ Don't have an account? <a href="mailto:support@locallift.com" class="text-primar
       const loginForm = document.getElementById('loginForm');
       const loginStatus = document.querySelector('.login-status');
       
+      // Check for saved credentials
+      try {
+        const savedCredentials = localStorage.getItem('saved_credentials');
+        if (savedCredentials) {
+          const credentials = JSON.parse(savedCredentials);
+          document.getElementById('email').value = credentials.email || '';
+          document.getElementById('password').value = credentials.password || '';
+          document.getElementById('save_credentials').checked = true;
+        }
+      } catch (e) {
+        console.error('Error loading saved credentials:', e);
+      }
+      
       if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
           e.preventDefault();
@@ -131,6 +152,18 @@ Don't have an account? <a href="mailto:support@locallift.com" class="text-primar
           const email = document.getElementById('email').value;
           const password = document.getElementById('password').value;
           const rememberMe = document.getElementById('remember_me').checked;
+          const saveCredentials = document.getElementById('save_credentials').checked;
+          
+          // Save credentials if requested
+          if (saveCredentials) {
+            const credentials = {
+              email: email,
+              password: password
+            };
+            localStorage.setItem('saved_credentials', JSON.stringify(credentials));
+          } else {
+            localStorage.removeItem('saved_credentials');
+          }
           
           // Show loading state
           loginStatus.textContent = 'Authenticating...';

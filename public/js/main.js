@@ -4,22 +4,60 @@
 document.addEventListener('DOMContentLoaded', function() {
   console.log('LocalLift application initialized');
   
-  // Handle dropdown menus
+  // Handle dropdown menus with improved functionality
   const accountDropdown = document.querySelector('.dropdown');
   if (accountDropdown) {
     const dropdownBtn = accountDropdown.querySelector('.btn-primary');
     const dropdownContent = accountDropdown.querySelector('.dropdown-content');
     
+    // Add necessary styles for the dropdown content to be properly positioned and styled
+    if (dropdownContent) {
+      dropdownContent.style.position = 'absolute';
+      dropdownContent.style.backgroundColor = '#fff';
+      dropdownContent.style.minWidth = '180px';
+      dropdownContent.style.boxShadow = '0 8px 16px rgba(0,0,0,0.1)';
+      dropdownContent.style.zIndex = '1000';
+      dropdownContent.style.borderRadius = '0.375rem';
+      dropdownContent.style.overflow = 'hidden';
+      dropdownContent.style.marginTop = '0.25rem';
+      dropdownContent.style.right = '0';
+      dropdownContent.style.display = 'none';  // Hidden by default
+    }
+    
+    // Toggle dropdown visibility
     dropdownBtn.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
-      dropdownContent.classList.toggle('show');
+      // Toggle between hiding and showing
+      if (dropdownContent.style.display === 'block') {
+        dropdownContent.style.display = 'none';
+      } else {
+        dropdownContent.style.display = 'block';
+        
+        // Style each dropdown item
+        const items = dropdownContent.querySelectorAll('.dropdown-item');
+        items.forEach(item => {
+          item.style.display = 'block';
+          item.style.padding = '10px 16px';
+          item.style.textDecoration = 'none';
+          item.style.color = '#374151';
+          item.style.borderBottom = '1px solid #e5e7eb';
+          
+          // Hover effect
+          item.addEventListener('mouseenter', function() {
+            this.style.backgroundColor = '#f3f4f6';
+          });
+          item.addEventListener('mouseleave', function() {
+            this.style.backgroundColor = '#fff';
+          });
+        });
+      }
     });
     
     // Close dropdown when clicking outside
     document.addEventListener('click', function(e) {
       if (!accountDropdown.contains(e.target)) {
-        dropdownContent.classList.remove('show');
+        dropdownContent.style.display = 'none';
       }
     });
   }
