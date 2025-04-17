@@ -233,13 +233,98 @@
           </div>
           <div class="tabs-content mt-4">
             <div class="tab-content" id="overview-tab">
-              <p>Overview content placeholder. Enjoy the clean, animated layout that fades in for a smooth user experience.</p>
+              <div class="bg-white p-4 rounded-lg shadow-sm">
+                <h3 class="text-xl font-semibold mb-4">Business Overview</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                  <div class="p-4 bg-gray-50 rounded-lg">
+                    <h4 class="font-medium mb-2">Weekly Performance</h4>
+                    <div class="flex items-center">
+                      <div class="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mr-4">
+                        <i class="fas fa-arrow-up text-green-600"></i>
+                      </div>
+                      <div>
+                        <p class="text-2xl font-bold text-green-600">+12%</p>
+                        <p class="text-sm text-gray-500">from last week</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="p-4 bg-gray-50 rounded-lg">
+                    <h4 class="font-medium mb-2">Engagement Score</h4>
+                    <div class="flex items-center">
+                      <div class="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mr-4">
+                        <i class="fas fa-star text-primary-600"></i>
+                      </div>
+                      <div>
+                        <p class="text-2xl font-bold">87/100</p>
+                        <p class="text-sm text-gray-500">excellent performance</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="tab-content hidden" id="reports-tab">
-              <p>Reports content placeholder. Reports area will include interactive elements once backend integration is complete.</p>
+              <div class="bg-white p-4 rounded-lg shadow-sm">
+                <h3 class="text-xl font-semibold mb-4">Weekly Reports</h3>
+                <div class="grid gap-4">
+                  <div class="p-4 bg-gray-50 rounded-lg flex items-center justify-between">
+                    <div class="flex items-center">
+                      <i class="fas fa-file-alt text-primary-500 text-xl mr-3"></i>
+                      <div>
+                        <h4 class="font-medium">Engagement Report</h4>
+                        <p class="text-sm text-gray-500">Updated April 15, 2025</p>
+                      </div>
+                    </div>
+                    <button class="btn btn-secondary">Download</button>
+                  </div>
+                  <div class="p-4 bg-gray-50 rounded-lg flex items-center justify-between">
+                    <div class="flex items-center">
+                      <i class="fas fa-chart-pie text-primary-500 text-xl mr-3"></i>
+                      <div>
+                        <h4 class="font-medium">Analytics Report</h4>
+                        <p class="text-sm text-gray-500">Updated April 14, 2025</p>
+                      </div>
+                    </div>
+                    <button class="btn btn-secondary">Download</button>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="tab-content hidden" id="settings-tab">
-              <p>Settings content placeholder. Customize your dashboard settings with intuitive controls.</p>
+              <div class="bg-white p-4 rounded-lg shadow-sm">
+                <h3 class="text-xl font-semibold mb-4">Dashboard Settings</h3>
+                <form class="space-y-4">
+                  <div>
+                    <label for="notification-setting" class="block font-medium mb-1">Email Notifications</label>
+                    <select id="notification-setting" class="w-full p-2 border border-gray-300 rounded-md">
+                      <option>Daily Digest</option>
+                      <option>Weekly Summary</option>
+                      <option>Important Updates Only</option>
+                      <option>Disable All</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block font-medium mb-1">Widget Visibility</label>
+                    <div class="space-y-2">
+                      <div class="flex items-center">
+                        <input type="checkbox" id="show-performance" class="mr-2" checked>
+                        <label for="show-performance">Show Performance Metrics</label>
+                      </div>
+                      <div class="flex items-center">
+                        <input type="checkbox" id="show-tasks" class="mr-2" checked>
+                        <label for="show-tasks">Show Upcoming Tasks</label>
+                      </div>
+                      <div class="flex items-center">
+                        <input type="checkbox" id="show-notifications" class="mr-2" checked>
+                        <label for="show-notifications">Show Notifications</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="pt-4 border-t">
+                    <button type="button" class="btn btn-primary">Save Settings</button>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
         </div>

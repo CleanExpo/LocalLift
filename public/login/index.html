@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="js-dark-mode-init">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,343 +8,886 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <meta name="description" content="Login to your LocalLift account to manage your local business presence">
+  <style>
+    body {
+      background-color: #0f1e2d; /* Updated to match image - dark blue */
+      color: #f9fafb;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .login-container {
+      max-width: 450px;
+      margin: 40px auto;
+      background-color: #1a3a5f; /* Updated to match image - medium blue */
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    /* Digital Marketing Visual Header */
+    .digital-marketing-header {
+      position: relative;
+      height: 180px;
+      background: linear-gradient(135deg, #1a3a5f 0%, #0f1e2d 100%);
+      overflow: hidden;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .icon-grid {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      opacity: 0.2;
+    }
+
+    .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #4a8cff; /* Bright blue from image */
+    }
+
+    .device-overlay {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .device-laptop {
+      width: 160px;
+      height: 100px;
+      background-color: #2c506e; /* Laptop color from image */
+      border-radius: 5px;
+      position: absolute;
+      left: 120px;
+      top: 45px;
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .device-laptop:after {
+      content: '';
+      position: absolute;
+      width: 180px;
+      height: 12px;
+      left: -10px;
+      bottom: -12px;
+      background-color: #1e3b53;
+      border-radius: 0 0 5px 5px;
+    }
+
+    .device-phone {
+      width: 40px;
+      height: 80px;
+      background-color: #1e3b53; /* Phone color from image */
+      border-radius: 5px;
+      position: absolute;
+      right: 110px;
+      top: 50px;
+      transform: rotate(-15deg);
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .device-phone:after {
+      content: '';
+      position: absolute;
+      width: 30px;
+      height: 65px;
+      left: 5px;
+      top: 5px;
+      background-color: #2980b9; /* Screen color */
+      border-radius: 2px;
+    }
+
+    .login-header {
+      padding: 30px 20px 10px;
+      text-align: center;
+    }
+
+    .login-header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: white;
+    }
+
+    .login-header p {
+      color: #94a3b8;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    /* Tab Navigation */
+    .tabs {
+      display: flex;
+      position: relative;
+      margin: 0 20px;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .tab {
+      padding: 10px 15px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      position: relative;
+      color: #94a3b8;
+      transition: color 0.2s;
+    }
+
+    .tab.active {
+      color: #4a8cff;
+    }
+
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: #4a8cff;
+    }
+
+    .tab-content {
+      display: none;
+      padding: 20px;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .login-body {
+      padding: 0 20px 20px;
+    }
+
+    .google-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 12px;
+      background-color: #2d2d2d;
+      border: none;
+      border-radius: 8px;
+      color: #e2e8f0;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      margin-bottom: 20px;
+    }
+
+    .google-btn:hover {
+      background-color: #3d3d3d;
+    }
+
+    .google-btn img {
+      margin-right: 10px;
+      width: 18px;
+      height: 18px;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      color: #64748b;
+      font-size: 14px;
+      margin: 20px 0;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .divider::before {
+      margin-right: 10px;
+    }
+
+    .divider::after {
+      margin-left: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #e2e8f0;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      background-color: #121212;
+      border: 1px solid #2d2d2d;
+      border-radius: 8px;
+      color: #e2e8f0;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input::placeholder {
+      color: #4b5563;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #4a8cff; /* Updated to match image - bright blue */
+      box-shadow: 0 0 0 2px rgba(74, 140, 255, 0.1);
+    }
+
+    .continue-btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #4a8cff; /* Updated to match image - bright blue */
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .continue-btn:hover {
+      background-color: #2d77d8; /* Darker version of the bright blue */
+    }
+
+    .continue-btn i {
+      margin-left: 8px;
+    }
+
+    .login-footer {
+      padding: 20px;
+      text-align: center;
+      border-top: 1px solid #2d2d2d;
+      color: #94a3b8;
+      font-size: 14px;
+    }
+
+    .login-footer a {
+      color: #4a8cff; /* Updated to match image - bright blue */
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .login-footer a:hover {
+      text-decoration: underline;
+    }
+
+    .security-footer {
+      padding: 10px 20px;
+      text-align: center;
+      background-color: rgba(0, 0, 0, 0.2);
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    .security-footer img {
+      height: 16px;
+      vertical-align: middle;
+      margin-right: 5px;
+      filter: grayscale(100%);
+      opacity: 0.7;
+    }
+
+    .development-mode {
+      display: block;
+      text-align: center;
+      color: #f97316;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    /* Response message styling */
+    .login-status {
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .login-status.error {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+    }
+
+    .login-status.success {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: #10b981;
+    }
+
+    .login-status.loading {
+      background-color: rgba(59, 130, 246, 0.1);
+      color: #3b82f6;
+    }
+
+    /* Branding Playbook Tab Styles */
+    .module-container {
+      max-height: 60vh;
+      overflow-y: auto;
+      padding-right: 10px;
+    }
+
+    .module-container::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .module-container::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 3px;
+    }
+
+    .module-container::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+    }
+
+    .module-header {
+      margin-bottom: 20px;
+    }
+
+    .module-header h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 8px;
+    }
+
+    .module-header p {
+      color: #94a3b8;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .module-section {
+      margin-bottom: 24px;
+      border-left: 2px solid #4a8cff;
+      padding-left: 15px;
+    }
+
+    .module-section h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 12px;
+    }
+
+    .module-section p {
+      color: #94a3b8;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .strategy {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 12px;
+    }
+
+    .strategy h4 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #4a8cff;
+      margin-bottom: 8px;
+    }
+
+    .strategy p {
+      font-size: 13px;
+      margin-bottom: 8px;
+      color: #e2e8f0;
+    }
+
+    .strategy-examples {
+      margin-top: 10px;
+    }
+
+    .strategy-example {
+      font-style: italic;
+      padding: 8px 12px;
+      background-color: rgba(74, 140, 255, 0.1);
+      border-radius: 4px;
+      margin-bottom: 8px;
+      font-size: 13px;
+      color: #b4c6ef;
+    }
+
+    .constraints-list {
+      list-style-type: none;
+      padding: 0;
+      margin-top: 10px;
+    }
+
+    .constraints-list li {
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 13px;
+      color: #94a3b8;
+    }
+
+    .constraints-list li:last-child {
+      border-bottom: none;
+    }
+
+    .constraints-list li:before {
+      content: "•";
+      color: #f59e0b;
+      display: inline-block;
+      width: 1em;
+      margin-left: -1em;
+    }
+
+    .module-cta {
+      font-weight: 600;
+      color: #10b981;
+      font-size: 14px;
+      text-align: center;
+      margin-top: 20px;
+      padding: 15px;
+      background-color: rgba(16, 185, 129, 0.1);
+      border-radius: 8px;
+    }
+
+    /* Dropdown styles */
+    .module-dropdown-container {
+      margin-bottom: 20px;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .dropdown-button {
+      width: 100%;
+      padding: 12px 16px;
+      background-color: #2d2d2d;
+      border: 1px solid #3d3d3d;
+      border-radius: 8px;
+      color: #e2e8f0;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dropdown-button:hover {
+      background-color: #3d3d3d;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #2d2d2d;
+      width: 100%;
+      max-height: 250px;
+      overflow-y: auto;
+      z-index: 10;
+      border-radius: 8px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .dropdown-content.show {
+      display: block;
+    }
+
+    .dropdown-option {
+      padding: 12px 16px;
+      display: block;
+      color: #e2e8f0;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .dropdown-option:hover {
+      background-color: #3d3d3d;
+    }
+
+    .module-wrapper {
+      display: none;
+    }
+
+    .module-wrapper.active {
+      display: block;
+    }
+
+    .module-icon {
+      margin-right: 10px;
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-  <div id="root">
-    <header class="bg-white shadow-sm">
-      <nav class="container mx-auto px-4 py-3 md:flex md:items-center md:justify-between">
-        <div class="logo flex items-center">
-          <i class="fas fa-chart-line text-primary-600 mr-2"></i>
-          <h1 class="text-2xl font-bold text-gray-800">LocalLift</h1>
-        </div>
-        <div class="nav-links mt-4 md:mt-0 space-x-6">
-          <a href="/" class="font-medium hover:text-primary-600">Home</a>
-          <a href="/admin/guide" class="font-medium hover:text-primary-600">Guide</a>
-          <a href="/login" class="font-medium text-primary-600">Login</a>
-        </div>
-      </nav>
-    </header>
-    
-    <main>
-      <section class="py-12 bg-gray-50">
-        <div class="container mx-auto px-4">
-          <div class="max-w-md mx-auto bg-white rounded-lg shadow-sm p-8">
-            <div class="text-center mb-8">
-              <i class="fas fa-user-circle text-5xl text-primary-500 mb-4"></i>
-              <h2 class="text-3xl font-bold">Welcome Back</h2>
-              <p class="text-gray-600">Sign in to access your LocalLift dashboard</p>
+  <div class="login-container">
+    <!-- Digital Marketing Visual Header -->
+    <div class="digital-marketing-header">
+      <div class="icon-grid">
+        <span class="icon"><i class="fas fa-chart-line"></i></span>
+        <span class="icon"><i class="fas fa-globe"></i></span>
+        <span class="icon"><i class="fas fa-shopping-cart"></i></span>
+        <span class="icon"><i class="fas fa-envelope"></i></span>
+        <span class="icon"><i class="fas fa-search"></i></span>
+        <span class="icon"><i class="fas fa-bullhorn"></i></span>
+        <span class="icon"><i class="fas fa-mobile-alt"></i></span>
+        <span class="icon"><i class="fas fa-laptop"></i></span>
+      </div>
+      <div class="device-overlay">
+        <div class="device-laptop"></div>
+        <div class="device-phone"></div>
+      </div>
+    </div>
+
+    <div class="login-header">
+      <h1>Sign in to Local Lift</h1>
+      <p>Welcome back! Please sign in to continue</p>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tabs">
+      <div class="tab active" data-tab="login">Login</div>
+      <div class="tab" data-tab="branding-playbook">Branding Playbook</div>
+    </div>
+
+    <!-- Login Tab Content -->
+    <div id="login-tab" class="tab-content active">
+      <div class="login-body">
+        <button class="google-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 186.69 190.5">
+            <g transform="translate(1184.583 765.171)">
+              <path clip-path="none" mask="none" d="M-1089.333-687.239v-36.888h51.262c2.251 11.863 2.85 23.033 2.85 32.548 0 29.971-9.633 56.081-36.323 56.081-20.969 0-37.934-16.965-37.934-37.934 0-13.322 8.284-25.076 20.145-31.656z" fill="#fff"/>
+              <path clip-path="none" mask="none" d="M-1089.333-687.239v-36.888h51.262c2.251 11.863 2.85 23.033 2.85 32.548 0 29.971-9.633 56.081-36.323 56.081-20.969 0-37.934-16.965-37.934-37.934 0-13.322 8.284-25.076 20.145-31.656z" fill="#4285f4"/>
+              <path clip-path="none" mask="none" d="M-1073.867-765.171c-32.767 0-59.996 22.229-59.996 55.996 0 20.181 11.857 38.51 30.322 47.773 10.523 5.205 22.318 8.223 34.756 8.223 28.278 0 50.716-18.825 56.678-44.01l-57.13-0.212v-28.822h83.971c1.256 6.813 1.906 13.765 1.906 20.873 0 68.289-46.1 116.857-114.445 116.857-67.323 0-122.135-54.812-122.135-122.135s54.812-122.135 122.135-122.135c34.711 0 66.831 13.939 89.878 41.202l-21.03 19.57c-16.062-18.604-39.1-29.196-63.91-29.196z" fill="#ea4335"/>
+            </g>
+          </svg>
+          <span style="margin-left: 8px;">Continue with Google</span>
+        </button>
+
+        <div class="divider">or</div>
+
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="email">Email address</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+          </div>
+
+          <div class="login-status hidden"></div>
+
+          <button type="submit" class="continue-btn">
+            Continue <i class="fas fa-arrow-right"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Branding Playbook Tab Content -->
+    <div id="branding-playbook-tab" class="tab-content">
+      <div class="module-dropdown-container">
+        <div class="dropdown">
+          <button type="button" id="module-dropdown" class="dropdown-button">
+            <span class="dropdown-text">Evergreen Edge Branding Playbook</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <div class="dropdown-option" data-module="evergreen-edge-module">
+              <i class="fas fa-chart-pie module-icon"></i>Evergreen Edge Branding Playbook
             </div>
-            
-            <form id="loginForm" class="space-y-6">
-              <div>
-                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                <div class="relative">
-                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i class="fas fa-envelope text-gray-400"></i>
-                  </div>
-                  <input type="email" id="email" name="email" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500" placeholder="you@example.com" required>
-                </div>
-              </div>
-              
-              <div>
-                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                <div class="relative">
-                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i class="fas fa-lock text-gray-400"></i>
-                  </div>
-                  <input type="password" id="password" name="password" class="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500" placeholder="••••••••" required>
-                  <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                    <button type="button" id="toggle-password" class="text-gray-400 hover:text-gray-600 focus:outline-none" aria-label="Toggle password visibility" title="Show password">
-                      <i class="fas fa-eye"></i>
-                    </button>
-                  </div>
-                </div>
-                <div class="flex items-center justify-between mt-2">
-                  <div class="flex items-center">
-                    <input id="remember_me" name="remember_me" type="checkbox" class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
-                    <label for="remember_me" class="ml-2 block text-sm text-gray-700">Remember me</label>
-                  </div>
-                  <a href="/forgot-password" class="text-sm text-primary-600 hover:text-primary-700">Forgot password?</a>
-                </div>
-                
-                <div class="flex items-center mt-3">
-                  <input id="save_credentials" name="save_credentials" type="checkbox" class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
-                  <label for="save_credentials" class="ml-2 block text-sm text-gray-700">Save username and password</label>
-                  <span class="ml-1 inline-block">
-                    <i class="fas fa-info-circle text-gray-400 cursor-help" title="Credentials will be saved in your browser for easier login next time."></i>
-                  </span>
-                </div>
-              </div>
-              
-              <div class="login-status hidden p-3 rounded-md text-sm font-medium">
-                <!-- Status message will be inserted here by JavaScript -->
-              </div>
-              
-              <div>
-                <button type="submit" class="w-full btn btn-primary py-3">
-                  <span class="inline-block mr-2">Sign in</span>
-                  <i class="fas fa-sign-in-alt"></i>
-                </button>
-              </div>
-            </form>
-            
-            <div class="mt-6 text-center">
-              <p class="text-sm text-gray-600">
-Don't have an account? <a href="mailto:support@locallift.com" class="text-primary-600 hover:text-primary-700 font-medium">Contact your administrator</a>
-              </p>
+            <div class="dropdown-option" data-module="local-authority-module">
+              <i class="fas fa-building module-icon"></i>Local Authority Builder
+            </div>
+            <div class="dropdown-option" data-module="narrative-stacking-module">
+              <i class="fas fa-layer-group module-icon"></i>Narrative Stacking
+            </div>
+            <div class="dropdown-option" data-module="local-first-module">
+              <i class="fas fa-map-marker-alt module-icon"></i>Local First Advantage Framework
+            </div>
+            <div class="dropdown-option" data-module="content-flywheel-module">
+              <i class="fas fa-sync-alt module-icon"></i>Long-Term Content Flywheel
             </div>
           </div>
-        </div>
-      </section>
-    </main>
-    
-    <footer class="bg-gray-800 text-white py-10">
-      <div class="container mx-auto px-4">
-        <div class="grid md:grid-cols-3 gap-8 mb-8">
-          <div>
-            <h3 class="text-xl font-semibold mb-4">LocalLift</h3>
-            <p class="text-gray-400">Helping local businesses thrive in the digital age with powerful analytics and engagement tools.</p>
-          </div>
-          <div>
-            <h3 class="text-xl font-semibold mb-4">Quick Links</h3>
-            <ul class="space-y-2">
-              <li><a href="/" class="text-gray-400 hover:text-white">Home</a></li>
-              <li><a href="/dashboard" class="text-gray-400 hover:text-white">Dashboard</a></li>
-              <li><a href="/admin/guide" class="text-gray-400 hover:text-white">Guide</a></li>
-            </ul>
-          </div>
-          <div>
-            <h3 class="text-xl font-semibold mb-4">Support</h3>
-            <p class="text-gray-400 mb-2"><i class="fas fa-envelope mr-2"></i> support@locallift.com</p>
-            <p class="text-gray-400"><i class="fas fa-phone mr-2"></i> (555) 123-4567</p>
-          </div>
-        </div>
-        <div class="border-t border-gray-700 pt-6 text-center">
-          <p class="text-gray-400">&copy; 2025 LocalLift. All rights reserved.</p>
         </div>
       </div>
-    </footer>
+
+      <!-- Evergreen Edge Module -->
+      <div id="evergreen-edge-module" class="module-wrapper active">
+        <div class="module-container">
+          <div class="module-header">
+            <h2>Evergreen Edge Branding Playbook</h2>
+            <p>An interactive learning module that teaches safe, long-term branding and content strategies tailored for local businesses. Built for CRM users aiming to master local engagement through strategic, psychology-backed headline and content ideas.</p>
+            
+            <p style="margin-top: 10px; font-size: 13px; color: #64748b;">
+              <strong style="color: #e2e8f0;">Audience:</strong> Local marketers, content creators, small business owners using LocalLift CRM
+            </p>
+            
+            <div style="margin-top: 15px;">
+              <p style="font-size: 13px; font-weight: 600; color: #f59e0b; margin-bottom: 5px;">Content Constraints:</p>
+              <ul class="constraints-list">
+                <li>Avoid all political, divisive, or culturally sensitive topics.</li>
+                <li>All examples must be evergreen—no time-sensitive language or references.</li>
+                <li>No use of real names, specific individuals, or local businesses.</li>
+                <li>Negative examples must reflect safe, universal frustrations (e.g. traffic, weather, long queues).</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="module-section">
+            <h3>Why Good Titles Aren't Enough</h3>
+            <p>Learn why generic content doesn't go viral and how timeless psychological triggers can help your content reach 2000+ local views.</p>
+          </div>
+
+          <div class="module-section">
+            <h3>Core Strategies for Evergreen Local Reach</h3>
+            
+            <div class="strategy">
+              <h4>The Curiosity Gap Intensifier</h4>
+              <p>Create headlines that tease compelling content without giving it all away.</p>
+              <div class="strategy-examples">
+                <div class="strategy-example">What's Really Inside [Local Bakery]'s Secret Menu?</div>
+                <div class="strategy-example">The Local Road Everyone Avoids—And Why It Might Be a Shortcut</div>
+              </div>
+            </div>
+            
+            <div class="strategy">
+              <h4>Hyper-Local Problem/Solution</h4>
+              <p>Address a shared local frustration with a creative, business-aligned solution.</p>
+              <div class="strategy-examples">
+                <div class="strategy-example">Tired of Weekend Parking Nightmares in [Your Town]? Try This...</div>
+                <div class="strategy-example">Fixing [Local Park]'s Picnic Problem—One Hack at a Time</div>
+              </div>
+            </div>
+            
+            <div class="strategy">
+              <h4>Mild Local Preferences & Friendly Debates</h4>
+              <p>Use harmless, nostalgic, or opinion-based prompts to engage the community.</p>
+              <div class="strategy-examples">
+                <div class="strategy-example">Coast vs. Hinterland—Which Is the Ultimate Weekend Spot?</div>
+                <div class="strategy-example">Gold Coast's Best Coffee—Are We Still Pretending It's Not in [Suburb Name]?</div>
+              </div>
+            </div>
+            
+            <div class="strategy">
+              <h4>Safe Negative Angles</h4>
+              <p>Use shared pain points as a launchpad for advice, humor, or transformation.</p>
+              <div class="strategy-examples">
+                <div class="strategy-example">The 3 Mistakes Tourists Always Make in [Your City]</div>
+                <div class="strategy-example">Why [Common Task] Takes Longer Than It Should in [Local Area]</div>
+              </div>
+            </div>
+            
+            <div class="strategy">
+              <h4>Ultra-Specific Benefit + Location</h4>
+              <p>Create hyper-targeted value-packed titles.</p>
+              <div class="strategy-examples">
+                <div class="strategy-example">How to Get 3x More Foot Traffic in [Your Suburb] This Month</div>
+                <div class="strategy-example">Boost [Business Type] Sales in 5 Days—Even in [Quiet Area]</div>
+              </div>
+            </div>
+            
+            <div class="strategy">
+              <h4>Behind-the-Scenes / Local Access</h4>
+              <p>Create exclusivity and insider access stories.</p>
+              <div class="strategy-examples">
+                <div class="strategy-example">Behind the Shutters: What Happens in [Shop Name] Before 6am</div>
+                <div class="strategy-example">We Asked [Generic Worker Role] in [Town] What People Never See—Here's What They Said</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="module-section">
+            <h3>Adapting These Ideas to Your Business</h3>
+            <p>Learn how to tweak these approaches to your niche—retail, hospitality, services—and align messaging with your local audience's values and interests.</p>
+          </div>
+
+          <div class="module-section">
+            <h3>Best Practices for Sustainable Growth</h3>
+            <p>Focus on value delivery, match content with headline promises, and use visuals that support brand trust and emotional connection. Think long-term, not clickbait.</p>
+          </div>
+
+          <div class="module-section">
+            <h3>Keep Experimenting</h3>
+            <div class="module-cta">
+              Try 1-2 of these strategies per week and track which one resonates most with your local community. Consistency over virality builds brand power.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Local Authority Builder Module -->
+      <div id="local-authority-module" class="module-wrapper">
+        <div class="module-container">
+          <div class="module-header">
+            <h2><i class="fas fa-building"></i> Local Authority Builder</h2>
+            <p>Position your brand as a go-to local expert by consistently providing valuable, location-specific insights and practical solutions over time — without sounding boastful.</p>
+            
+            <p style="margin-top: 10px; font-size: 13px; color: #64748b;">
+              <strong style="color: #e2e8f0;">Underlying Psychology:</strong> People trust brands that consistently show up with value, especially when that value is contextually relevant to where they live and work. Authority is built through frequency + relevance, not self-promotion.
+            </p>
+          </div>
+
+          <div class="module-section">
+            <h3>Strategy Breakdown</h3>
+          </div>
+
+          <div class="strategy">
+            <h4>1. Consistent Local Insight Drops</h4>
+            <p>Educate your audience on overlooked topics specific to your service area. Show you understand the area better than outsiders.</p>
+            <div class="strategy-examples">
+              <div class="strategy-example">"3 Things [New Residents] Don't Realize About [Suburb's] Humidity and Home Care"</div>
+              <div class="strategy-example">"What [Locals] Need to Know About Mould Prevention During [Your Rainy Season]"</div>
+              <div class="strategy-example">"Why [Specific Building Type] in [Your City] Needs Different Maintenance Plans"</div>
+            </div>
+          </div>
+          
+          <div class="strategy">
+            <h4>2. Local Data-Based Tips</h4>
+            <p>Use general, public, or anonymized data to back up content. Builds credibility while avoiding privacy issues.</p>
+            <div class="strategy-examples">
+              <div class="strategy-example">"Based on 200 local service calls, here's what [Your Business Type] learned about common issues in [Neighbourhood]"</div>
+              <div class="strategy-example">"Heatmap: The 5 most overwatered lawns in [Suburb]? Here's what we found (and how to fix it)."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  
-  <script src="../js/config.js"></script>
-  <script src="../js/main.js" defer></script>
+
+  <!-- JavaScript References -->
+  <script src="../js/tab-handler.js"></script>
+  <script src="../js/dropdown-handler.js"></script>
   <script>
-    // Login page specific JavaScript
+    // Login form handling
     document.addEventListener('DOMContentLoaded', function() {
-      console.log('Login page initialized');
-      
       const loginForm = document.getElementById('loginForm');
       const loginStatus = document.querySelector('.login-status');
-      
-      // Check for developer credentials first (for demo purposes)
-      try {
-        const devCredentials = localStorage.getItem('locallift_dev_credentials');
-        if (devCredentials) {
-          const credentials = JSON.parse(devCredentials);
-          document.getElementById('email').value = credentials.username || '';
-          document.getElementById('password').value = credentials.password || '';
-          document.getElementById('save_credentials').checked = true;
-          console.log('Developer credentials auto-filled for demo');
-        } else {
-          // Check for saved credentials as fallback
-          const savedCredentials = localStorage.getItem('saved_credentials');
-          if (savedCredentials) {
-            const credentials = JSON.parse(savedCredentials);
-            document.getElementById('email').value = credentials.email || '';
-            document.getElementById('password').value = credentials.password || '';
-            document.getElementById('save_credentials').checked = true;
-          }
-        }
-      } catch (e) {
-        console.error('Error loading credentials:', e);
-      }
       
       if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
           e.preventDefault();
           
-          // Get form data
           const email = document.getElementById('email').value;
           const password = document.getElementById('password').value;
-          const rememberMe = document.getElementById('remember_me').checked;
-          const saveCredentials = document.getElementById('save_credentials').checked;
           
-          // Save credentials if requested
-          if (saveCredentials) {
-            const credentials = {
-              email: email,
-              password: password
-            };
-            localStorage.setItem('saved_credentials', JSON.stringify(credentials));
-          } else {
-            localStorage.removeItem('saved_credentials');
-          }
+          // Show loading status
+          loginStatus.classList.remove('hidden', 'error', 'success');
+          loginStatus.classList.add('loading');
+          loginStatus.textContent = 'Signing in...';
           
-          // Show loading state
-          loginStatus.textContent = 'Authenticating...';
-          loginStatus.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
-          loginStatus.classList.add('bg-blue-100', 'text-blue-700');
-          
-          // Get API base URL from config
-          const CONFIG = window.LOCALLIFT_CONFIG || {};
-          const API_BASE = CONFIG.API_BASE_URL || 'http://localhost:8000';
-          
-          // For development/demo purposes, bypass actual API call and simulate successful login
-          console.log('Simulating successful login for demo');
-          loginStatus.textContent = 'Login successful! Redirecting...';
-          loginStatus.classList.remove('bg-blue-100', 'text-blue-700', 'bg-red-100', 'text-red-700');
-          loginStatus.classList.add('bg-green-100', 'text-green-700');
-          
-          // Store a demo token
-          localStorage.setItem(CONFIG.AUTH.TOKEN_KEY || 'locallift_auth_token', 'demo_auth_token_12345');
-          
-          // Store demo expiry (24 hours from now)
-          if (CONFIG.AUTH.EXPIRY_KEY) {
-            const expiry = new Date();
-            expiry.setSeconds(expiry.getSeconds() + (CONFIG.AUTH.SESSION_DURATION || 86400));
-            localStorage.setItem(CONFIG.AUTH.EXPIRY_KEY, expiry.toISOString());
-          }
-          
-          // Redirect to dashboard after short delay
+          // Here you would normally connect to your Supabase auth
+          // For demo purposes, simulate login
           setTimeout(() => {
-            window.location.href = '/dashboard';
+            if (email && password) {
+              // Success case
+              loginStatus.classList.remove('loading', 'error');
+              loginStatus.classList.add('success');
+              loginStatus.textContent = 'Sign in successful! Redirecting...';
+              
+              // Redirect to dashboard after successful login
+              setTimeout(() => {
+                window.location.href = '../dashboard/index.html';
+              }, 1500);
+            } else {
+              // Error case
+              loginStatus.classList.remove('loading', 'success');
+              loginStatus.classList.add('error');
+              loginStatus.textContent = 'Invalid email or password. Please try again.';
+            }
           }, 1500);
-          
-          // Return early to skip the actual API call
-          return;
-          
-          // This API call is disabled for demo purposes
-          const API_URL = `${API_BASE}/api/auth/login`;
-          
-          // Attempt login
-          fetch(API_URL, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-              email: email,
-              password: password
-            }),
-            credentials: 'include'
-          })
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('Login failed. Please check your credentials.');
-            }
-            return response.json();
-          })
-          .then(data => {
-            // Successfully logged in
-            loginStatus.textContent = 'Login successful! Redirecting...';
-            loginStatus.classList.remove('bg-blue-100', 'text-blue-700', 'bg-red-100', 'text-red-700');
-            loginStatus.classList.add('bg-green-100', 'text-green-700');
-            
-            // Store authentication token if available
-            if (data.token && CONFIG.AUTH && CONFIG.AUTH.TOKEN_KEY) {
-              localStorage.setItem(CONFIG.AUTH.TOKEN_KEY, data.token);
-              
-              if (data.refresh_token && CONFIG.AUTH.REFRESH_TOKEN_KEY) {
-                localStorage.setItem(CONFIG.AUTH.REFRESH_TOKEN_KEY, data.refresh_token);
-              }
-              
-              if (CONFIG.AUTH.EXPIRY_KEY) {
-                const expiry = new Date();
-                expiry.setSeconds(expiry.getSeconds() + (CONFIG.AUTH.SESSION_DURATION || 86400));
-                localStorage.setItem(CONFIG.AUTH.EXPIRY_KEY, expiry.toISOString());
-              }
-            }
-            
-            // Redirect to dashboard
-            setTimeout(() => {
-              window.location.href = '/dashboard';
-            }, 1500);
-          })
-          .catch(error => {
-            // Show error
-            console.error('Login error:', error);
-            loginStatus.textContent = error.message || 'Login failed. Please try again.';
-            loginStatus.classList.remove('bg-blue-100', 'text-blue-700', 'bg-green-100', 'text-green-700');
-            loginStatus.classList.add('bg-red-100', 'text-red-700');
-          });
         });
       }
       
-      // Check if user is already logged in
-      function checkLoginStatus() {
-        const CONFIG = window.LOCALLIFT_CONFIG || {};
-        if (CONFIG.AUTH && CONFIG.AUTH.TOKEN_KEY) {
-          const token = localStorage.getItem(CONFIG.AUTH.TOKEN_KEY);
-          const expiry = localStorage.getItem(CONFIG.AUTH.EXPIRY_KEY);
+      // Tab switching
+      const tabs = document.querySelectorAll('.tab');
+      const tabContents = document.querySelectorAll('.tab-content');
+      
+      tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+          const tabId = this.getAttribute('data-tab');
           
-          if (token && expiry) {
-            const expiryDate = new Date(expiry);
-            if (expiryDate > new Date()) {
-              // User is already logged in and token is valid
-              window.location.href = '/dashboard';
-            }
-          }
-        }
-      }
-      
-      // Run login check
-      checkLoginStatus();
-      
-      // Toggle password visibility
-      const togglePasswordBtn = document.getElementById('toggle-password');
-      const passwordInput = document.getElementById('password');
-      
-      if (togglePasswordBtn && passwordInput) {
-        togglePasswordBtn.addEventListener('click', function() {
-          const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-          passwordInput.setAttribute('type', type);
+          // Remove active class from all tabs and contents
+          tabs.forEach(t => t.classList.remove('active'));
+          tabContents.forEach(c => c.classList.remove('active'));
           
-          // Toggle icon between eye and eye-slash
-          const icon = this.querySelector('i');
-          if (type === 'text') {
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-            this.setAttribute('title', 'Hide password');
-          } else {
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
-            this.setAttribute('title', 'Show password');
+          // Add active class to current tab and content
+          this.classList.add('active');
+          document.getElementById(tabId + '-tab').classList.add('active');
+        });
+      });
+      
+      // Module dropdown functionality
+      const dropdownButton = document.getElementById('module-dropdown');
+      const dropdownContent = document.querySelector('.dropdown-content');
+      const dropdownOptions = document.querySelectorAll('.dropdown-option');
+      const dropdownText = document.querySelector('.dropdown-text');
+      const moduleWrappers = document.querySelectorAll('.module-wrapper');
+      
+      if (dropdownButton) {
+        dropdownButton.addEventListener('click', function() {
+          dropdownContent.classList.toggle('show');
+        });
+        
+        // Close dropdown when clicking outside
+        window.addEventListener('click', function(e) {
+          if (!e.target.matches('.dropdown-button') && !e.target.matches('.dropdown-text') && !e.target.matches('.fa-chevron-down')) {
+            dropdownContent.classList.remove('show');
           }
+        });
+        
+        // Module selection
+        dropdownOptions.forEach(option => {
+          option.addEventListener('click', function() {
+            const moduleId = this.getAttribute('data-module');
+            const moduleText = this.textContent.trim();
+            
+            // Update dropdown text
+            dropdownText.textContent = moduleText;
+            
+            // Hide all modules
+            moduleWrappers.forEach(wrapper => {
+              wrapper.classList.remove('active');
+            });
+            
+            // Show selected module
+            document.getElementById(moduleId).classList.add('active');
+            
+            // Close dropdown
+            dropdownContent.classList.remove('show');
+          });
         });
       }
     });
   </script>
-  
-  <style>
-    /* Login page specific styles */
-    .login-status {
-      transition: all 0.3s ease;
-    }
-    
-    .bg-red-100 {
-      background-color: #fee2e2;
-    }
-    
-    .text-red-700 {
-      color: #b91c1c;
-    }
-    
-    .bg-green-100 {
-      background-color: #d1fae5;
-    }
-    
-    .text-green-700 {
-      color: #047857;
-    }
-    
-    .bg-blue-100 {
-      background-color: #dbeafe;
-    }
-    
-    .text-blue-700 {
-      color: #1d4ed8;
-    }
-  </style>
-</body>
-</html>

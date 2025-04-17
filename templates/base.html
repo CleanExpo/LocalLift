@@ -30,6 +30,42 @@
                     <a href="/gamification" class="text-gray-700 hover:text-primary-600 font-medium">Gamification</a>
                     <a href="/leaderboards" class="text-gray-700 hover:text-primary-600 font-medium">Leaderboards</a>
                     <a href="/certifications" class="text-gray-700 hover:text-primary-600 font-medium">Certifications</a>
+                    <div class="relative" id="localImpactDropdown">
+                        <button class="text-gray-700 hover:text-primary-600 font-medium focus:outline-none flex items-center" aria-label="Titles for Local Impact menu" title="Titles for Local Impact">
+                            Titles for Local Impact
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="absolute left-0 w-48 mt-2 bg-white rounded-lg shadow-dropdown hidden" id="localImpactMenu">
+                            <div class="py-2">
+                                <a href="/titles/local-business-champion" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Local Business Champion</a>
+                                <a href="/titles/community-catalyst" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Community Catalyst</a>
+                                <a href="/titles/neighborhood-navigator" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Neighborhood Navigator</a>
+                                <a href="/titles/district-developer" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">District Developer</a>
+                                <a href="/titles/regional-revitalizer" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Regional Revitalizer</a>
+                                <a href="/titles/metro-maestro" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Metro Maestro</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative" id="docDropdown">
+                        <button class="text-gray-700 hover:text-primary-600 font-medium focus:outline-none flex items-center" aria-label="Documentation menu" title="Documentation">
+                            Documentation
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="absolute left-0 w-48 mt-2 bg-white rounded-lg shadow-dropdown hidden" id="docMenu">
+                            <div class="py-2">
+                                <a href="/docs/latest" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Latest Documentation</a>
+                                <a href="/docs/v2.1" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">v2.1 Release</a>
+                                <a href="/docs/v2.0" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">v2.0 Release</a>
+                                <a href="/docs/v1.5" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">v1.5 Release</a>
+                                <a href="/docs/v1.0" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">v1.0 Release</a>
+                                <a href="/docs/archive" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Documentation Archive</a>
+                            </div>
+                        </div>
+                    </div>
                 </nav>
             </div>
             <div class="flex items-center space-x-4">
@@ -65,6 +101,26 @@
                 <a href="/gamification" class="block text-gray-700 hover:text-primary-600 font-medium">Gamification</a>
                 <a href="/leaderboards" class="block text-gray-700 hover:text-primary-600 font-medium">Leaderboards</a>
                 <a href="/certifications" class="block text-gray-700 hover:text-primary-600 font-medium">Certifications</a>
+                
+                <div class="block text-gray-700 font-medium pt-2">Titles for Local Impact</div>
+                <div class="pl-4 space-y-2">
+                    <a href="/titles/local-business-champion" class="block text-gray-700 hover:text-primary-600">Local Business Champion</a>
+                    <a href="/titles/community-catalyst" class="block text-gray-700 hover:text-primary-600">Community Catalyst</a>
+                    <a href="/titles/neighborhood-navigator" class="block text-gray-700 hover:text-primary-600">Neighborhood Navigator</a>
+                    <a href="/titles/district-developer" class="block text-gray-700 hover:text-primary-600">District Developer</a>
+                    <a href="/titles/regional-revitalizer" class="block text-gray-700 hover:text-primary-600">Regional Revitalizer</a>
+                    <a href="/titles/metro-maestro" class="block text-gray-700 hover:text-primary-600">Metro Maestro</a>
+                </div>
+                
+                <div class="block text-gray-700 font-medium pt-2">Documentation</div>
+                <div class="pl-4 space-y-2">
+                    <a href="/docs/latest" class="block text-gray-700 hover:text-primary-600">Latest Documentation</a>
+                    <a href="/docs/v2.1" class="block text-gray-700 hover:text-primary-600">v2.1 Release</a>
+                    <a href="/docs/v2.0" class="block text-gray-700 hover:text-primary-600">v2.0 Release</a>
+                    <a href="/docs/v1.5" class="block text-gray-700 hover:text-primary-600">v1.5 Release</a>
+                    <a href="/docs/v1.0" class="block text-gray-700 hover:text-primary-600">v1.0 Release</a>
+                    <a href="/docs/archive" class="block text-gray-700 hover:text-primary-600">Documentation Archive</a>
+                </div>
                 <div class="border-t border-gray-100 my-1 pt-2">
                     <a href="/profile" class="block text-gray-700 hover:text-primary-600 font-medium">Profile</a>
                     <a href="/settings" class="block text-gray-700 hover:text-primary-600 font-medium">Settings</a>
@@ -140,10 +196,32 @@
         document.addEventListener('click', function(event) {
             const profileDropdown = document.getElementById('profileDropdown');
             const profileMenu = document.getElementById('profileMenu');
-            
+            const docDropdown = document.getElementById('docDropdown');
+            const docMenu = document.getElementById('docMenu');
+            const localImpactDropdown = document.getElementById('localImpactDropdown');
+            const localImpactMenu = document.getElementById('localImpactMenu');
+
             if (!profileDropdown.contains(event.target)) {
                 profileMenu.classList.add('hidden');
             }
+            
+            if (!docDropdown.contains(event.target)) {
+                docMenu.classList.add('hidden');
+            }
+            
+            if (!localImpactDropdown.contains(event.target)) {
+                localImpactMenu.classList.add('hidden');
+            }
+        });
+
+        // Toggle documentation dropdown
+        document.getElementById('docDropdown').addEventListener('click', function() {
+            document.getElementById('docMenu').classList.toggle('hidden');
+        });
+        
+        // Toggle Local Impact dropdown
+        document.getElementById('localImpactDropdown').addEventListener('click', function() {
+            document.getElementById('localImpactMenu').classList.toggle('hidden');
         });
     </script>
     
