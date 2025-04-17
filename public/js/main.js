@@ -4,6 +4,26 @@
 document.addEventListener('DOMContentLoaded', function() {
   console.log('LocalLift application initialized');
   
+  // Handle dropdown menus
+  const accountDropdown = document.querySelector('.dropdown');
+  if (accountDropdown) {
+    const dropdownBtn = accountDropdown.querySelector('.btn-primary');
+    const dropdownContent = accountDropdown.querySelector('.dropdown-content');
+    
+    dropdownBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      dropdownContent.classList.toggle('show');
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!accountDropdown.contains(e.target)) {
+        dropdownContent.classList.remove('show');
+      }
+    });
+  }
+  
   // Check for developer credentials
   fetch('/developer_credentials.json')
     .then(response => {
