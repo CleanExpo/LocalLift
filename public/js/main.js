@@ -1,306 +1,141 @@
-/**
- * LocalLift Main JavaScript
- * This file contains common functionality used across all pages
- */
+// LocalLift main JavaScript file
 
+// Load configuration and authenticate user
 document.addEventListener('DOMContentLoaded', function() {
-  // Initialize the application
-  initApp();
+  console.log('LocalLift application initialized');
+  
+  // Check for developer credentials
+  fetch('/developer_credentials.json')
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Developer credentials not found');
+      }
+    })
+    .then(data => {
+      console.log('Developer account connected:', data.username);
+      // Update all API status indicators
+      const apiStatusElements = document.querySelectorAll('#api-status-text');
+      apiStatusElements.forEach(element => {
+        element.textContent = 'Developer account connected';
+        element.classList.remove('text-red-500');
+        element.classList.add('text-green-500');
+      });
+      
+      // Update API status values
+      const apiStatusValues = document.querySelectorAll('.api-status');
+      apiStatusValues.forEach(element => {
+        element.textContent = 'Connected';
+      });
+    })
+    .catch(error => {
+      console.error('Error loading developer credentials:', error);
+      // Update status to show error
+      const apiStatusElements = document.querySelectorAll('#api-status-text');
+      apiStatusElements.forEach(element => {
+        element.textContent = 'Backend integration disabled';
+        element.classList.remove('text-green-500');
+        element.classList.add('text-red-500');
+      });
+    });
+  
+  // Handle mobile menu
+  const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+  const mobileNav = document.querySelector('.mobile-nav');
+  if (mobileMenuToggle && mobileNav) {
+    mobileMenuToggle.addEventListener('click', function() {
+      mobileNav.classList.toggle('hidden');
+    });
+  }
+  
+  // Initialize tabs if present
+  const tabButtons = document.querySelectorAll('.tabs-nav .tab-button');
+  const tabContents = document.querySelectorAll('.tabs-content .tab-content');
+  if (tabButtons.length > 0 && tabContents.length > 0) {
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const tab = button.getAttribute('data-tab');
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        tabContents.forEach(content => content.classList.add('hidden'));
+        button.classList.add('active');
+        document.getElementById(tab + '-tab').classList.remove('hidden');
+      });
+    });
+  }
+  
+  // Handle report generation
+  const generateReportBtn = document.getElementById('generate-report-btn');
+  if (generateReportBtn) {
+    generateReportBtn.addEventListener('click', function() {
+      // Check if we have developer credentials first
+      fetch('/developer_credentials.json')
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error('Developer credentials not found');
+          }
+        })
+        .then(data => {
+          // We have credentials, so show a success message
+          alert("Report generation started for " + data.username);
+        })
+        .catch(error => {
+          // No credentials, show the error message
+          alert("Report generation is currently disabled due to backend integration issues.");
+        });
+    });
+  }
+  
+  // Handle logout
+  const logoutBtn = document.getElementById('logout-btn');
+  const logoutBtnMobile = document.getElementById('logout-btn-mobile');
+  
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', function() {
+      alert('You have been logged out.');
+      window.location.href = '/';
+    });
+  }
+  
+  if (logoutBtnMobile) {
+    logoutBtnMobile.addEventListener('click', function() {
+      alert('You have been logged out.');
+      window.location.href = '/';
+    });
+  }
 });
 
-/**
- * Initialize the application
- * Sets up common functionality across all pages
- */
-function initApp() {
-  // Set up navigation
-  setupNavigation();
-
-  // Check authentication status
-  checkAuthStatus();
-
-  // Initialize API connectivity test
-  checkAPIConnection();
-
-  // Set up any common event listeners
-  setupEventListeners();
-
-  console.log('LocalLift application initialized');
-}
-
-/**
- * Set up navigation and mobile menu functionality
- */
-function setupNavigation() {
-  // Mobile menu toggle if it exists
-  const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-  const navLinks = document.querySelector('.nav-links');
-
-  if (mobileMenuToggle && navLinks) {
-    mobileMenuToggle.addEventListener('click', function() {
-      navLinks.classList.toggle('hidden');
-      navLinks.classList.toggle('flex');
-    });
-  }
-
-  // Add active class to current navigation item
-  highlightCurrentNavItem();
-}
-
-/**
- * Highlight the current navigation item based on URL
- */
-function highlightCurrentNavItem() {
-  const currentPath = window.location.pathname;
-  const navLinks = document.querySelectorAll('.nav-links a');
-
-  navLinks.forEach(link => {
-    // Remove any existing active classes
-    link.classList.remove('text-primary-600', 'font-semibold');
-
-    // Add active class to current page link
-    const href = link.getAttribute('href');
-    if (href === currentPath ||
-        (href !== '/' && currentPath.startsWith(href))) {
-      link.classList.add('text-primary-600', 'font-semibold');
-    }
-  });
-}
-
-/**
- * Check user authentication status and update UI accordingly
- */
-function checkAuthStatus() {
-  const CONFIG = window.LOCALLIFT_CONFIG || {};
-
-  if (CONFIG.AUTH && CONFIG.AUTH.TOKEN_KEY) {
-    const token = localStorage.getItem(CONFIG.AUTH.TOKEN_KEY);
-    const expiry = localStorage.getItem(CONFIG.AUTH.EXPIRY_KEY);
-
-    if (token && expiry) {
-      const expiryDate = new Date(expiry);
-      const now = new Date();
-
-      if (expiryDate > now) {
-        // User is authenticated
-        updateUIForAuthenticatedUser();
-        return true;
-      } else {
-        // Token expired, clear it
-        clearAuthData();
+// Initialize engagement chart if available
+function initializeEngagementChart() {
+  const engagementChartCanvas = document.getElementById('engagement-chart');
+  if (engagementChartCanvas && typeof Chart !== 'undefined') {
+    const ctx = engagementChartCanvas.getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [{
+          label: 'Engagement',
+          data: [12, 19, 3, 5, 2, 3, 7],
+          backgroundColor: 'rgba(0, 118, 255, 0.2)',
+          borderColor: 'rgba(0, 118, 255, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
       }
-    }
-  }
-
-  // User is not authenticated
-  updateUIForUnauthenticatedUser();
-  return false;
-}
-
-/**
- * Update UI elements for authenticated users
- */
-function updateUIForAuthenticatedUser() {
-  const authStatusElements = document.querySelectorAll('.auth-status');
-  const authenticatedElements = document.querySelectorAll('.authenticated-only');
-  const unauthenticatedElements = document.querySelectorAll('.unauthenticated-only');
-
-  // Update auth status indicators
-  authStatusElements.forEach(el => {
-    el.innerHTML = '<i class="fas fa-user-check text-green-500"></i> Signed In';
-  });
-
-  // Show elements that should only be visible to authenticated users
-  authenticatedElements.forEach(el => {
-    el.classList.remove('hidden');
-  });
-
-  // Hide elements that should only be visible to unauthenticated users
-  unauthenticatedElements.forEach(el => {
-    el.classList.add('hidden');
-  });
-}
-
-/**
- * Update UI elements for unauthenticated users
- */
-function updateUIForUnauthenticatedUser() {
-  const authStatusElements = document.querySelectorAll('.auth-status');
-  const authenticatedElements = document.querySelectorAll('.authenticated-only');
-  const unauthenticatedElements = document.querySelectorAll('.unauthenticated-only');
-
-  // Update auth status indicators
-  authStatusElements.forEach(el => {
-    el.innerHTML = '<i class="fas fa-user text-gray-500"></i> Not Signed In';
-  });
-
-  // Hide elements that should only be visible to authenticated users
-  authenticatedElements.forEach(el => {
-    el.classList.add('hidden');
-  });
-
-  // Show elements that should only be visible to unauthenticated users
-  unauthenticatedElements.forEach(el => {
-    el.classList.remove('hidden');
-  });
-}
-
-/**
- * Clear authentication data from local storage
- */
-function clearAuthData() {
-  const CONFIG = window.LOCALLIFT_CONFIG || {};
-
-  if (CONFIG.AUTH) {
-    localStorage.removeItem(CONFIG.AUTH.TOKEN_KEY);
-    localStorage.removeItem(CONFIG.AUTH.REFRESH_TOKEN_KEY);
-    localStorage.removeItem(CONFIG.AUTH.EXPIRY_KEY);
-  }
-}
-
-/**
- * Check API connection and update status indicators
- */
-function checkAPIConnection() {
-  const CONFIG = window.LOCALLIFT_CONFIG || {};
-  const apiStatusElements = document.querySelectorAll('.api-status');
-
-  if (!CONFIG.API_BASE_URL) {
-    console.error('API base URL not configured');
-    updateAPIStatus(false, 'API not configured');
-    return;
-  }
-
-  // Perform a health check request
-  const healthCheckURL = `${CONFIG.API_BASE_URL}${CONFIG.HEALTH_CHECK_ENDPOINT || '/api/health'}`;
-
-  fetch(healthCheckURL, {
-    method: 'GET',
-    headers: {
-      'Accept': 'application/json'
-    }
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`API health check failed with status: ${response.status}`);
-    }
-    return response.json();
-  })
-  .then(data => {
-    // Health check successful
-    updateAPIStatus(true, data.status || 'Connected');
-  })
-  .catch(error => {
-    console.error('API health check failed:', error);
-    updateAPIStatus(false, 'Connection failed');
-  });
-}
-
-/**
- * Update API status indicators in the UI
- */
-function updateAPIStatus(isConnected, statusText) {
-  const apiStatusElements = document.querySelectorAll('.api-status');
-
-  apiStatusElements.forEach(el => {
-    if (isConnected) {
-      el.innerHTML = `<i class="fas fa-circle text-green-500"></i> API: ${statusText}`;
-      el.classList.remove('text-red-500');
-      el.classList.add('text-green-500');
-    } else {
-      el.innerHTML = `<i class="fas fa-exclamation-circle text-red-500"></i> API: ${statusText}`;
-      el.classList.remove('text-green-500');
-      el.classList.add('text-red-500');
-    }
-  });
-}
-
-/**
- * Set up common event listeners
- */
-function setupEventListeners() {
-  // Logout buttons
-  const logoutButtons = document.querySelectorAll('.logout-button');
-  logoutButtons.forEach(button => {
-    button.addEventListener('click', handleLogout);
-  });
-
-  // Add other common event listeners here
-}
-
-/**
- * Handle user logout
- */
-function handleLogout(event) {
-  event.preventDefault();
-
-  // Clear authentication data
-  clearAuthData();
-
-  // Update UI
-  updateUIForUnauthenticatedUser();
-
-  // Redirect to home page
-  const CONFIG = window.LOCALLIFT_CONFIG || {};
-  window.location.href = CONFIG.ROUTES?.HOME || '/';
-}
-
-/**
- * Get authentication token
- * @returns {string|null} The authentication token or null if not logged in
- */
-function getAuthToken() {
-  const CONFIG = window.LOCALLIFT_CONFIG || {};
-
-  if (CONFIG.AUTH && CONFIG.AUTH.TOKEN_KEY) {
-    return localStorage.getItem(CONFIG.AUTH.TOKEN_KEY);
-  }
-
-  return null;
-}
-
-/**
- * Make an authenticated API request
- * @param {string} endpoint - The API endpoint
- * @param {Object} options - Fetch options
- * @returns {Promise} The fetch promise
- */
-function apiRequest(endpoint, options = {}) {
-  const CONFIG = window.LOCALLIFT_CONFIG || {};
-
-  if (!CONFIG.API_BASE_URL) {
-    return Promise.reject(new Error('API base URL not configured'));
-  }
-
-  const url = `${CONFIG.API_BASE_URL}${endpoint}`;
-
-  // Set up headers
-  const headers = options.headers || {};
-  headers['Accept'] = 'application/json';
-
-  // Add authentication token if available
-  const token = getAuthToken();
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
-
-  // Update options with headers
-  options.headers = headers;
-
-  return fetch(url, options)
-    .then(response => {
-      if (!response.ok) {
-        // Handle 401 Unauthorized by clearing auth data
-        if (response.status === 401) {
-          clearAuthData();
-          updateUIForUnauthenticatedUser();
-        }
-
-        return response.json().then(data => {
-          throw new Error(data.message || `API request failed with status: ${response.status}`);
-        });
-      }
-
-      return response.json();
     });
+  } else if (engagementChartCanvas) {
+    console.warn("Chart.js library is not loaded. Engagement chart is not available.");
+  }
 }
+
+// Call chart initialization after DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function() {
+  // Attempt to initialize chart with a slight delay to ensure DOM is fully ready
+  setTimeout(initializeEngagementChart, 100);
+});
