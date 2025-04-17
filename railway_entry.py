@@ -19,23 +19,53 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# Configure CORS
-cors_origins = os.getenv("CORS_ORIGINS", "https://local-lift-*.vercel.app").split(",")
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=cors_origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Configure CORS with more permissive settings for development
+cors_origins = os.getenv("CORS_ORIGINS", "https://local-lift-*.vercel.app,https://locallift-*.vercel.app,http://localhost:*").split(",")
+print(f"Configured CORS with origins: {cors_origins}")
 
-# Add a health check endpoint
+# Make sure to trim whitespace from origins
+cors_origins = [origin.strip() for origin in cors_origins]
+
+# If running in development mode, allow all origins
+if os.getenv("ENVIRONMENT", "production").lower() == "development":
+    print("Running in development mode, allowing all origins")
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+else:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=cors_origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+# Add a more detailed health check endpoint
 @app.get("/api/health", tags=["Health"])
 async def health_check():
     """
-    Health check endpoint for Railway
+    Health check endpoint for Railway with detailed information
     """
-    return {"status": "healthy", "environment": "railway"}
+    return {
+        "status": "healthy", 
+        "environment": os.getenv("ENVIRONMENT", "railway"),
+        "app_version": "1.0.0",
+        "cors_origins": cors_origins,
+        "api_base_url": os.getenv("API_BASE_URL", "https://locallift-production.up.railway.app"),
+    }
+
+# Add public root endpoint for easy access testing
+@app.get("/", tags=["Root"])
+async def root():
+    """
+    Root endpoint for quick testing
+    """
+    return {"message": "Welcome to LocalLift API", "version": "1.0.0"}
 
 # Include all routes from the main application
 app.include_router(main_app.router)
