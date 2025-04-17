@@ -1,0 +1,197 @@
+{
+  "prompts": {
+    "feature_module": {
+      "name": "Feature Module",
+      "description": "Generate a complete feature module for the LocalLift platform",
+      "prompt": "Create a complete feature module for LocalLift that implements {{feature_name}} functionality. Include the following components:\n\n1. Models for data storage\n2. API endpoints for accessing the feature\n3. Service classes for business logic\n4. Integration with the authentication system\n5. Tests for all components\n\nThe feature should follow best practices for FastAPI development and integrate with the existing LocalLift platform architecture.",
+      "parameters": {
+        "feature_name": {
+          "description": "Name of the feature to implement",
+          "type": "string",
+          "required": true
+        },
+        "complexity": {
+          "description": "Complexity level of the feature",
+          "type": "string",
+          "enum": ["simple", "medium", "complex"],
+          "default": "medium"
+        }
+      }
+    },
+    "api_route": {
+      "name": "API Route",
+      "description": "Generate an API route for an existing feature",
+      "prompt": "Create a FastAPI route for the {{feature_name}} module in LocalLift. The route should implement the following endpoints:\n\n{{endpoints}}\n\nEnsure proper validation, error handling, and authentication. Follow RESTful API design principles and integrate with the existing architecture.",
+      "parameters": {
+        "feature_name": {
+          "description": "Name of the feature to implement the route for",
+          "type": "string",
+          "required": true
+        },
+        "endpoints": {
+          "description": "List of endpoints to implement",
+          "type": "string",
+          "required": true
+        }
+      }
+    },
+    "data_model": {
+      "name": "Data Model",
+      "description": "Generate a data model for a feature",
+      "prompt": "Create a SQLAlchemy model for the {{model_name}} entity in the LocalLift platform. The model should have the following attributes:\n\n{{attributes}}\n\nImplement proper relationships, validation, and methods. Ensure compatibility with the Supabase backend.",
+      "parameters": {
+        "model_name": {
+          "description": "Name of the model to create",
+          "type": "string",
+          "required": true
+        },
+        "attributes": {
+          "description": "List of attributes for the model",
+          "type": "string",
+          "required": true
+        }
+      }
+    },
+    "database_migration": {
+      "name": "Database Migration",
+      "description": "Generate a database migration script for Supabase",
+      "prompt": "Create a SQL migration script for Supabase that implements the following schema changes:\n\n{{changes}}\n\nEnsure the migration is idempotent and can be safely run multiple times.",
+      "parameters": {
+        "changes": {
+          "description": "Schema changes to implement",
+          "type": "string",
+          "required": true
+        }
+      }
+    },
+    "frontend_component": {
+      "name": "Frontend Component",
+      "description": "Generate a frontend component template",
+      "prompt": "Create a Jinja2 template for a {{component_name}} component that will be used in the LocalLift platform. The component should:\n\n{{requirements}}\n\nImplement the component using Tailwind CSS and ensure it is responsive across different screen sizes.",
+      "parameters": {
+        "component_name": {
+          "description": "Name of the component to create",
+          "type": "string",
+          "required": true
+        },
+        "requirements": {
+          "description": "List of requirements for the component",
+          "type": "string",
+          "required": true
+        }
+      }
+    },
+    "test_suite": {
+      "name": "Test Suite",
+      "description": "Generate tests for a feature or component",
+      "prompt": "Create a comprehensive test suite for the {{module_name}} module in LocalLift. Include tests for:\n\n1. Unit tests for all functions and methods\n2. Integration tests for API endpoints\n3. Mocking of external dependencies\n4. Edge cases and error conditions\n\nThe tests should use pytest and follow best practices for Python testing.",
+      "parameters": {
+        "module_name": {
+          "description": "Name of the module to test",
+          "type": "string",
+          "required": true
+        }
+      }
+    },
+    "documentation": {
+      "name": "Documentation",
+      "description": "Generate documentation for a feature or component",
+      "prompt": "Create comprehensive documentation for the {{module_name}} module in LocalLift. Include:\n\n1. Overview and purpose\n2. API reference\n3. Usage examples\n4. Configuration options\n5. Troubleshooting\n\nThe documentation should be in Markdown format and follow the project's documentation standards.",
+      "parameters": {
+        "module_name": {
+          "description": "Name of the module to document",
+          "type": "string",
+          "required": true
+        }
+      }
+    },
+    "code_review": {
+      "name": "Code Review",
+      "description": "Perform a code review on a piece of code",
+      "prompt": "Review the following code for the {{module_name}} module in LocalLift:\n\n```python\n{{code}}\n```\n\nProvide feedback on:\n\n1. Code quality and style\n2. Performance considerations\n3. Security issues\n4. Best practices\n5. Suggestions for improvement",
+      "parameters": {
+        "module_name": {
+          "description": "Name of the module being reviewed",
+          "type": "string",
+          "required": true
+        },
+        "code": {
+          "description": "Code to review",
+          "type": "string",
+          "required": true
+        }
+      }
+    },
+    "refactoring": {
+      "name": "Code Refactoring",
+      "description": "Refactor code to improve quality or implement a pattern",
+      "prompt": "Refactor the following code for the {{module_name}} module in LocalLift to {{goal}}:\n\n```python\n{{code}}\n```\n\nExplain the changes made and the benefits of the refactoring.",
+      "parameters": {
+        "module_name": {
+          "description": "Name of the module being refactored",
+          "type": "string",
+          "required": true
+        },
+        "goal": {
+          "description": "Goal of the refactoring",
+          "type": "string",
+          "required": true
+        },
+        "code": {
+          "description": "Code to refactor",
+          "type": "string",
+          "required": true
+        }
+      }
+    },
+    "optimization": {
+      "name": "Performance Optimization",
+      "description": "Optimize code for better performance",
+      "prompt": "Optimize the following code from the {{module_name}} module in LocalLift for better performance:\n\n```python\n{{code}}\n```\n\nIdentify performance bottlenecks and optimize the code. Explain the optimizations made and the expected performance improvements.",
+      "parameters": {
+        "module_name": {
+          "description": "Name of the module being optimized",
+          "type": "string",
+          "required": true
+        },
+        "code": {
+          "description": "Code to optimize",
+          "type": "string",
+          "required": true
+        }
+      }
+    },
+    "sales_conversion_graph": {
+      "name": "Sales Conversion Graph",
+      "description": "Generate a dashboard graph module for sales conversion visualization",
+      "prompt": "Create a comprehensive module for the LocalLift platform that implements a dashboard graph to show conversion rates per sales rep and region over time. The module should:\n\n1. Process data from the sales_conversion_graph models in the database\n2. Create interactive visualizations that compare conversion rates between different sales reps\n3. Allow filtering by region, time period, and conversion stage\n4. Implement D3.js or Chart.js for the frontend visualizations\n5. Include proper authentication and permission handling\n\nThe implementation should follow the LocalLift architectural patterns with a clear separation between controller logic, API endpoints, and frontend components.",
+      "parameters": {
+        "view_type": {
+          "description": "Type of visualization view to generate",
+          "type": "string",
+          "enum": ["comparison", "trend", "regional", "rep-focused"],
+          "default": "comparison"
+        },
+        "time_period": {
+          "description": "Default time period for data analysis",
+          "type": "string", 
+          "enum": ["daily", "weekly", "monthly", "quarterly", "yearly"],
+          "default": "monthly"
+        }
+      }
+    }
+  },
+  "categories": {
+    "code_generation": ["feature_module", "api_route", "data_model", "frontend_component", "sales_conversion_graph"],
+    "database": ["data_model", "database_migration"],
+    "testing": ["test_suite"],
+    "documentation": ["documentation"],
+    "code_quality": ["code_review", "refactoring", "optimization"],
+    "visualization": ["sales_conversion_graph"]
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "description": "Prompt library for LocalLift development",
+    "lastUpdated": "2025-04-15"
+  }
+}

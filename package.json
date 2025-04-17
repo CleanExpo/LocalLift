@@ -1,0 +1,8 @@
+{
+  "name": "locallift",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "echo 'Static deployment only'"
+  },
+  "license": "MIT"
+}

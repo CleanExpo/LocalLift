@@ -1,0 +1,25 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/dashboard", "destination": "/dashboard/index.html" },
+    { "source": "/login", "destination": "/login/index.html" },
+    { "source": "/admin/guide", "destination": "/admin/guide/index.html" },
+    { "source": "/profile", "destination": "/profile/index.html" },
+    { "source": "/settings", "destination": "/settings/index.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "buildCommand": "",
+  "outputDirectory": "public",
+  "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "s-maxage=1, stale-while-revalidate"
+        }
+      ]
+    }
+  ]
+}

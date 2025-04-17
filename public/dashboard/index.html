@@ -1,0 +1,337 @@
+<![CDATA[
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LocalLift Dashboard</title>
+  <link rel="stylesheet" href="../style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <meta name="description" content="LocalLift Dashboard - Manage your local business presence">
+  <style>
+    /* Global Styles */
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f3f4f6;
+      color: #374151;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      background: linear-gradient(135deg, #ffffff, #f0f4ff);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      padding: 12px 0;
+    }
+    main {
+      padding: 40px 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .logo h1 {
+      font-size: 2.25rem;
+    }
+    .nav-links a {
+      padding: 12px 24px;
+    }
+    .mobile-nav a {
+      padding: 14px 20px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    
+    /* Card Styles with Fade-in Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .card {
+      background-color: #fff;
+      padding: 24px;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: fadeIn 0.8s ease-out;
+    }
+    .card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Enhanced Placeholder Card Styles */
+    .placeholder-card.overview {
+      border-left: 6px solid #1d4ed8;
+      background-color: #eff6ff;
+    }
+    .placeholder-card.achievements {
+      border-left: 6px solid #059669;
+      background-color: #f0fdf4;
+    }
+    .placeholder-card.reports {
+      border-left: 6px solid #d97706;
+      background-color: #fff7ed;
+    }
+    /* New Hover Enhancement for Placeholder Cards */
+    .placeholder-card:hover {
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+      transform: translateY(-3px);
+    }
+    
+    .achievement-progress {
+      margin-top: 1.5rem;
+    }
+    .progress-bar {
+      height: 0.75rem;
+      background-color: #e5e7eb;
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background-color: #0369a1;
+      border-radius: 9999px;
+    }
+    .api-status-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+    .graph-placeholder {
+      border: 2px dashed #d1d5db;
+      padding: 10px;
+      border-radius: 0.5rem;
+    }
+    
+    /* Tab Navigation Styles with Transitions */
+    .tabs-nav .tab-button {
+      font-size: 1rem;
+      padding: 10px 20px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      transition: color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+    }
+    .tabs-nav .tab-button:hover {
+      color: #1d4ed8;
+    }
+    .tabs-nav .tab-button.active {
+      border-bottom: 2px solid #1d4ed8;
+      font-weight: bold;
+      transform: scale(1.05);
+    }
+    .tabs-content .tab-content {
+      padding: 20px;
+      background-color: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      margin-top: 10px;
+      animation: fadeIn 0.6s ease-out;
+    }
+    
+    /* Footer Styles */
+    footer {
+      background-color: #1f2937;
+    }
+    footer h3, footer p, footer li a {
+      color: #d1d5db;
+    }
+  </style>
+</head>
+<body>
+  <div id="root">
+    <header>
+      <nav class="container mx-auto px-4 py-3 md:flex md:items-center md:justify-between">
+        <div class="flex items-center justify-between w-full md:w-auto">
+          <div class="logo flex items-center">
+            <i class="fas fa-chart-line text-primary-600 mr-2"></i>
+            <h1 class="text-2xl font-bold">LocalLift</h1>
+          </div>
+          <div class="mobile-menu-toggle md:hidden">
+            <div class="mobile-menu-icon"></div>
+          </div>
+        </div>
+        <div class="nav-links mt-4 md:mt-0 space-x-6 hidden md:flex">
+          <a href="/" class="font-medium hover:text-primary-600">Home</a>
+          <a href="/dashboard" class="font-medium text-primary-600">Dashboard</a>
+          <a href="/admin/guide" class="font-medium hover:text-primary-600">Guide</a>
+          <div class="dropdown">
+            <a href="javascript:void(0)" class="btn btn-primary ml-4">Account</a>
+            <div class="dropdown-content">
+              <a href="/profile" class="dropdown-item">Your Profile</a>
+              <a href="/settings" class="dropdown-item">Settings</a>
+              <a href="javascript:void(0)" class="dropdown-item" id="logout-btn">Logout</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <div class="mobile-nav md:hidden hidden">
+        <a href="/" class="block px-4 py-3 border-b">Home</a>
+        <a href="/dashboard" class="block px-4 py-3 border-b">Dashboard</a>
+        <a href="/admin/guide" class="block px-4 py-3 border-b">Guide</a>
+        <a href="/profile" class="block px-4 py-3 border-b">Your Profile</a>
+        <a href="/settings" class="block px-4 py-3 border-b">Settings</a>
+        <a href="javascript:void(0)" id="logout-btn-mobile" class="block px-4 py-3">Logout</a>
+      </div>
+    </header>
+    
+    <main>
+      <section class="py-8 bg-gray-50">
+        <div class="container mx-auto px-4">
+          <h2 class="text-3xl font-bold mb-6">Business Dashboard</h2>
+          <div class="grid md:grid-cols-3 gap-8">
+            <!-- Performance Overview Card -->
+            <div class="card placeholder-card overview">
+              <div class="text-center mb-4">
+                <i class="fas fa-chart-line text-4xl text-primary-500"></i>
+              </div>
+              <h3 class="text-xl font-semibold mb-2 text-center">Performance Overview</h3>
+              <p class="text-gray-600 text-center mb-4">View your business performance at a glance</p>
+              <div class="api-status-container">
+                <span class="api-status" id="api-status-badge">Connected</span>
+                <span class="text-sm text-green-500" id="api-status-text">Developer account connected</span>
+              </div>
+            </div>
+            
+            <!-- Achievements Card -->
+            <div class="card placeholder-card achievements">
+              <div class="text-center mb-4">
+                <i class="fas fa-trophy text-4xl text-primary-500"></i>
+              </div>
+              <h3 class="text-xl font-semibold mb-2 text-center">Achievements</h3>
+              <p class="text-gray-600 text-center mb-4">Track your business improvement progress</p>
+              <div class="achievement-progress">
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 65%"></div>
+                </div>
+                <p class="text-sm text-gray-500 mt-2">65% complete</p>
+              </div>
+            </div>
+            
+            <!-- Reports Card -->
+            <div class="card placeholder-card reports">
+              <div class="text-center mb-4">
+                <i class="fas fa-file-alt text-4xl text-primary-500"></i>
+              </div>
+              <h3 class="text-xl font-semibold mb-2 text-center">Reports</h3>
+              <p class="text-gray-600 text-center mb-4">Generate and view your business reports</p>
+              <button id="generate-report-btn" class="btn btn-primary w-full">Generate Report</button>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- New Tabs Section -->
+      <section class="tabs py-4 bg-white">
+        <div class="container mx-auto px-4">
+          <div class="tabs-nav flex space-x-4 border-b pb-2">
+            <button class="tab-button active" data-tab="overview">Overview</button>
+            <button class="tab-button" data-tab="reports">Reports</button>
+            <button class="tab-button" data-tab="settings">Settings</button>
+          </div>
+          <div class="tabs-content mt-4">
+            <div class="tab-content" id="overview-tab">
+              <p>Overview content placeholder. Enjoy the clean, animated layout that fades in for a smooth user experience.</p>
+            </div>
+            <div class="tab-content hidden" id="reports-tab">
+              <p>Reports content placeholder. Reports area will include interactive elements once backend integration is complete.</p>
+            </div>
+            <div class="tab-content hidden" id="settings-tab">
+              <p>Settings content placeholder. Customize your dashboard settings with intuitive controls.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- End of New Tabs Section -->
+      
+      <section class="py-8 bg-white">
+        <div class="container mx-auto px-4">
+          <h2 class="text-3xl font-bold mb-6">Recent Activity</h2>
+          <div class="card mb-6">
+            <div class="mb-4">
+              <h3 class="text-xl font-semibold">Weekly Engagement Report</h3>
+              <p class="text-gray-600">Your customer engagement is up 12% from last week</p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <div class="graph-placeholder" style="height: 200px;">
+                <canvas id="engagement-chart" style="width: 100%; height: 100%;"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="grid md:grid-cols-2 gap-8">
+            <div class="card">
+              <h3 class="text-xl font-semibold mb-4">Upcoming Tasks</h3>
+              <ul class="space-y-2">
+                <li class="flex items-center p-2 bg-gray-50 rounded">
+                  <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                  <span>Update business profile</span>
+                </li>
+                <li class="flex items-center p-2 bg-gray-50 rounded">
+                  <i class="fas fa-circle text-gray-300 mr-2"></i>
+                  <span>Schedule social media posts</span>
+                </li>
+                <li class="flex items-center p-2 bg-gray-50 rounded">
+                  <i class="fas fa-circle text-gray-300 mr-2"></i>
+                  <span>Review customer feedback</span>
+                </li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3 class="text-xl font-semibold mb-4">Latest Notifications</h3>
+              <ul class="space-y-2">
+                <li class="p-2 bg-gray-50 rounded">
+                  <p class="font-medium">New customer review received</p>
+                  <p class="text-sm text-gray-500">2 hours ago</p>
+                </li>
+                <li class="p-2 bg-gray-50 rounded">
+                  <p class="font-medium">Weekly report generated</p>
+                  <p class="text-sm text-gray-500">Yesterday</p>
+                </li>
+                <li class="p-2 bg-gray-50 rounded">
+                  <p class="font-medium">Achievement unlocked: 50 customers</p>
+                  <p class="text-sm text-gray-500">3 days ago</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    
+    <footer class="bg-gray-800 text-white py-10">
+      <div class="container mx-auto px-4">
+        <div class="grid md:grid-cols-3 gap-8 mb-8">
+          <div>
+            <h3 class="text-xl font-semibold mb-4">LocalLift</h3>
+            <p class="text-gray-400">Helping local businesses thrive in the digital age with powerful analytics and engagement tools.</p>
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold mb-4">Quick Links</h3>
+            <ul class="space-y-2">
+              <li><a href="/" class="text-gray-400 hover:text-white">Home</a></li>
+              <li><a href="/dashboard" class="text-gray-400 hover:text-white">Dashboard</a></li>
+              <li><a href="/admin/guide" class="text-gray-400 hover:text-white">Guide</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold mb-4">Support</h3>
+            <p class="text-gray-400 mb-2"><i class="fas fa-envelope mr-2"></i> support@locallift.com</p>
+            <p class="text-gray-400"><i class="fas fa-phone mr-2"></i> (555) 123-4567</p>
+          </div>
+        </div>
+        <div class="border-t border-gray-700 pt-6 text-center">
+          <p class="text-gray-400">&copy; 2025 LocalLift. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+  
+  <script src="../js/config.js"></script>
+  <script src="../js/main.js" defer></script>
+  <!-- Chart.js library for graphs and visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html>
+]]>

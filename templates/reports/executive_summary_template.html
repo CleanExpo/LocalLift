@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocalLift Executive Summary Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 20px;
+        }
+        .logo {
+            margin-bottom: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #3366cc;
+        }
+        h1 {
+            color: #3366cc;
+            margin-top: 0;
+            font-size: 28px;
+        }
+        h2 {
+            color: #2c5282;
+            font-size: 20px;
+            margin-top: 25px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 8px;
+        }
+        h3 {
+            color: #2d3748;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        .report-info {
+            background-color: #f0f7ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 25px;
+        }
+        .report-info p {
+            margin: 5px 0;
+        }
+        .highlight-box {
+            background-color: #ebf8ff;
+            border: 1px solid #bee3f8;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0 30px;
+        }
+        .highlight-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2b6cb0;
+        }
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .kpi-card {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+            padding: 15px;
+            text-align: center;
+        }
+        .kpi-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3366cc;
+            margin: 10px 0 5px;
+        }
+        .kpi-label {
+            font-size: 14px;
+            color: #718096;
+        }
+        .region-card {
+            padding: 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f8fafc;
+        }
+        .region-name {
+            font-weight: 600;
+            color: #2d3748;
+        }
+        .region-badges {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #3366cc;
+        }
+        .trend-chart {
+            height: 250px;
+            margin: 20px 0;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+            padding: 15px;
+            position: relative;
+        }
+        .trend-bar {
+            position: absolute;
+            bottom: 15px;
+            background-color: #4299e1;
+            border-radius: 3px 3px 0 0;
+            width: 25px;
+            transition: height 0.3s ease;
+        }
+        .month-label {
+            position: absolute;
+            bottom: -20px;
+            font-size: 10px;
+            text-align: center;
+            color: #718096;
+            transform: rotate(-45deg);
+            transform-origin: top left;
+        }
+        .achievement-dist {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .achievement-item {
+            padding: 12px 15px;
+            background-color: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .achievement-name {
+            font-weight: 500;
+            color: #723b13;
+        }
+        .achievement-count {
+            font-weight: 600;
+            color: #723b13;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .data-table th, 
+        .data-table td {
+            padding: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+        }
+        .data-table th {
+            background-color: #f8fafc;
+            font-weight: 600;
+            color: #4a5568;
+        }
+        .data-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        .recommendations {
+            background-color: #e6fffa;
+            border: 1px solid #b2f5ea;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .recommendations-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #285e61;
+        }
+        .recommendations ul {
+            margin-top: 10px;
+            padding-left: 25px;
+        }
+        .recommendations li {
+            margin-bottom: 5px;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            font-size: 12px;
+            color: #718096;
+            text-align: center;
+        }
+        @page {
+            margin: 1cm;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">📈 LocalLift</div>
+            <h1>Executive Summary</h1>
+            <p>Generated on {{ generated_at }} | For Leadership Team</p>
+        </div>
+        
+        <div class="report-info">
+            <p><strong>Current Month:</strong> {{ current_month }}</p>
+            <p><strong>Report ID:</strong> {{ report_id }}</p>
+        </div>
+        
+        <div class="highlight-box">
+            <div class="highlight-title">Executive Highlights</div>
+            <p>This report provides a comprehensive overview of the badge system's performance across all regions. The badge system continues to be a key driver of client engagement and retention.</p>
+            
+            <p>
+                <strong>Key Metrics:</strong>
+                {% if last_30_days_stats %}
+                In the last 30 days, we've seen {{ last_30_days_stats.total_badges }} badges earned 
+                with a {{ last_30_days_stats.compliance_rate }}% compliance rate.
+                {% endif %}
+                Overall, we have {{ overall_stats.total_badges }} badges earned across {{ overall_stats.total_clients }} clients,
+                with {{ overall_stats.active_clients }} active clients ({{ overall_stats.participation_rate }}% participation rate).
+            </p>
+        </div>
+        
+        <h2>System Performance Overview</h2>
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-value">{{ overall_stats.total_badges }}</div>
+                <div class="kpi-label">Total Badges Earned</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">{{ overall_stats.total_clients }}</div>
+                <div class="kpi-label">Total Clients</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">{{ overall_stats.active_clients }}</div>
+                <div class="kpi-label">Active Clients</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">{{ overall_stats.participation_rate }}%</div>
+                <div class="kpi-label">Participation Rate</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">{{ overall_stats.compliance_rate }}%</div>
+                <div class="kpi-label">Average Compliance Rate</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">{{ overall_stats.achievements_earned }}</div>
+                <div class="kpi-label">Total Achievements Earned</div>
+            </div>
+        </div>
+        
+        <h2>Period Performance Summary</h2>
+        <table class="data-table">
+            <tr>
+                <th>Time Period</th>
+                <th>Badges Earned</th>
+                <th>Active Clients</th>
+                <th>Compliance Rate</th>
+            </tr>
+            <tr>
+                <td>Last Week</td>
+                <td>{{ period_stats.week.total_badges }}</td>
+                <td>{{ period_stats.week.active_clients }}</td>
+                <td>{{ period_stats.week.compliance_rate }}%</td>
+            </tr>
+            <tr>
+                <td>Last Month</td>
+                <td>{{ period_stats.month.total_badges }}</td>
+                <td>{{ period_stats.month.active_clients }}</td>
+                <td>{{ period_stats.month.compliance_rate }}%</td>
+            </tr>
+            <tr>
+                <td>Last Quarter</td>
+                <td>{{ period_stats.quarter.total_badges }}</td>
+                <td>{{ period_stats.quarter.active_clients }}</td>
+                <td>{{ period_stats.quarter.compliance_rate }}%</td>
+            </tr>
+            <tr>
+                <td>Last Year</td>
+                <td>{{ period_stats.year.total_badges }}</td>
+                <td>{{ period_stats.year.active_clients }}</td>
+                <td>{{ period_stats.year.compliance_rate }}%</td>
+            </tr>
+        </table>
+        
+        <h2>Top Performing Regions</h2>
+        <div>
+            {% if top_regions|length > 0 %}
+                {% for region in top_regions %}
+                <div class="region-card">
+                    <div class="region-name">{{ region.region_name }}</div>
+                    <div class="region-badges">{{ region.total_badges }} badges</div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No region data available.</p>
+            {% endif %}
+        </div>
+        
+        <h2>Monthly Badge Trends</h2>
+        <div class="trend-chart">
+            {% if monthly_trends|length > 0 %}
+                {% for trend in monthly_trends %}
+                <div class="trend-bar" 
+                     style="left: {{ loop.index0 * (100 / monthly_trends|length) }}%; 
+                            height: {{ trend.compliance_rate }}%; 
+                            width: {{ 80 / monthly_trends|length }}%;">
+                    <div class="month-label">{{ trend.month }}</div>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <p>The chart above shows monthly badge compliance rates over the past year.</p>
+        
+        <h2>Achievement Distribution</h2>
+        <div class="achievement-dist">
+            {% if achievement_distribution|length > 0 %}
+                {% for achievement in achievement_distribution %}
+                <div class="achievement-item">
+                    <div class="achievement-name">{{ achievement.type }}</div>
+                    <div class="achievement-count">{{ achievement.count }}</div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No achievement distribution data available.</p>
+            {% endif %}
+        </div>
+        
+        <div class="recommendations">
+            <div class="recommendations-title">Strategic Recommendations</div>
+            <ul>
+                <li><strong>Engagement Focus:</strong> Target regions with below-average participation rates for targeted engagement campaigns.</li>
+                <li><strong>Achievement Types:</strong> Consider adding new achievement types to encourage sustained engagement.</li>
+                <li><strong>Client Training:</strong> Provide additional training resources for clients with consistently low compliance rates.</li>
+                <li><strong>Incentive Review:</strong> Analyze the effectiveness of current badge-related incentives and consider adjustments.</li>
+            </ul>
+        </div>
+        
+        <div class="footer">
+            <p>LocalLift Badge System - Confidential Executive Report</p>
+            <p>For executive leadership team use only.</p>
+        </div>
+    </div>
+</body>
+</html>

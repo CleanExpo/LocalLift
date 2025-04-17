@@ -1,0 +1,153 @@
+{% extends "base_admin.html" %}
+
+{% block content %}
+<div class="p-4">
+  <h1 class="text-2xl font-bold mb-4">🏅 Badge Leaderboard & Analytics</h1>
+  
+  <div class="mb-6 flex gap-4">
+    <div class="bg-white shadow rounded p-4 flex-1">
+      <h2 class="text-lg font-semibold mb-2">Overview</h2>
+      <div class="flex justify-between">
+        <div class="text-center">
+          <div class="text-3xl font-bold text-blue-600" id="total-badges">--</div>
+          <div class="text-sm text-gray-500">Total Badges</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl font-bold text-green-600" id="active-clients">--</div>
+          <div class="text-sm text-gray-500">Active Clients</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl font-bold text-purple-600" id="weekly-rate">--</div>
+          <div class="text-sm text-gray-500">Weekly Rate</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="bg-white shadow rounded p-4 flex-1">
+      <h2 class="text-lg font-semibold mb-2">Filters</h2>
+      <div class="flex gap-4">
+        <div class="flex-1">
+          <label class="block text-sm text-gray-500 mb-1">Region</label>
+          <select id="region-filter" class="w-full border rounded p-2" aria-label="Filter by region">
+            <option value="">All Regions</option>
+            <!-- Dynamically populated -->
+          </select>
+        </div>
+        <div class="flex-1">
+          <label class="block text-sm text-gray-500 mb-1">Time Period</label>
+          <select id="time-filter" class="w-full border rounded p-2" aria-label="Filter by time period">
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+            <option value="quarter">This Quarter</option>
+            <option value="year">This Year</option>
+            <option value="all" selected>All Time</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div id="leaderboard-table" class="bg-white shadow rounded p-4 overflow-x-auto mb-6">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-lg font-semibold">Leaderboard</h2>
+      <button id="refresh-button" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        Refresh
+      </button>
+    </div>
+    
+    <table class="min-w-full table-auto border-collapse border border-gray-200">
+      <thead>
+        <tr class="bg-gray-100 text-left">
+          <th class="px-4 py-2 border">Rank</th>
+          <th class="px-4 py-2 border">Client</th>
+          <th class="px-4 py-2 border">Region</th>
+          <th class="px-4 py-2 border">Badges Earned</th>
+          <th class="px-4 py-2 border">Current Streak</th>
+          <th class="px-4 py-2 border">Last Badge</th>
+          <th class="px-4 py-2 border">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="badge-rows">
+        <tr>
+          <td colspan="7" class="text-center py-4">Loading data...</td>
+        </tr>
+        <!-- Dynamic rows inserted by JS -->
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-white shadow rounded p-4">
+      <h2 class="text-lg font-semibold mb-4">Weekly Badge Rate</h2>
+      <div class="h-64">
+        <canvas id="weekly-trend-chart"></canvas>
+      </div>
+    </div>
+    
+    <div class="bg-white shadow rounded p-4">
+      <h2 class="text-lg font-semibold mb-4">Regional Performance</h2>
+      <div class="h-64">
+        <canvas id="regional-chart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Badge Recalculation Modal -->
+<div id="recalc-modal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center hidden">
+  <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
+    <h3 class="text-xl font-semibold mb-4">Recalculate Badge</h3>
+    <div class="mb-4">
+      <p>You are about to recalculate the badge for: <strong id="recalc-client-name">Client Name</strong></p>
+    </div>
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-gray-700 mb-1">Week</label>
+      <select id="recalc-week" class="w-full border rounded p-2" aria-label="Select week for badge recalculation">
+        <!-- Dynamically populated -->
+      </select>
+    </div>
+    <div id="recalc-result" class="mb-4 p-3 bg-gray-50 border rounded hidden"></div>
+    <div class="flex justify-end space-x-3">
+      <button id="cancel-recalc" class="bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded">Cancel</button>
+      <button id="confirm-recalc" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded">Recalculate</button>
+    </div>
+  </div>
+</div>
+
+<!-- Export Modal -->
+<div id="export-modal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center hidden">
+  <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
+    <h3 class="text-xl font-semibold mb-4">Export Badge Data</h3>
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-gray-700 mb-1">Format</label>
+      <select id="export-format" class="w-full border rounded p-2" aria-label="Select export format">
+        <option value="csv">CSV</option>
+        <option value="excel">Excel</option>
+        <option value="json">JSON</option>
+      </select>
+    </div>
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-gray-700 mb-1">Time Period</label>
+      <select id="export-timeframe" class="w-full border rounded p-2" aria-label="Select time period for export">
+        <option value="week">This Week</option>
+        <option value="month">This Month</option>
+        <option value="quarter">This Quarter</option>
+        <option value="year">This Year</option>
+        <option value="all" selected>All Time</option>
+      </select>
+    </div>
+    <div class="flex justify-end space-x-3">
+      <button id="cancel-export" class="bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded">Cancel</button>
+      <button id="confirm-export" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded">Export</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<script src="{{ url_for('static', path='/js/badge_admin.js') }}"></script>
+{% endblock %}

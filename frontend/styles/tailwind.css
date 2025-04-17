@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles below this line */
+
+/* Custom utility classes */
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .text-gradient {
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+/* Custom components */
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200;
+  }
+  
+  .btn-primary {
+    @apply btn bg-primary-500 text-white hover:bg-primary-600;
+  }
+  
+  .btn-secondary {
+    @apply btn bg-secondary-500 text-white hover:bg-secondary-600;
+  }
+  
+  .btn-outline {
+    @apply btn border-2 border-primary-500 text-primary-500 hover:bg-primary-50;
+  }
+  
+  .card {
+    @apply bg-white rounded-xl shadow-card p-6;
+  }
+  
+  .form-input {
+    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+  }
+  
+  .badge {
+    @apply px-2 py-1 text-xs rounded-full font-medium;
+  }
+  
+  .badge-primary {
+    @apply badge bg-primary-100 text-primary-800;
+  }
+  
+  .badge-secondary {
+    @apply badge bg-secondary-100 text-secondary-800;
+  }
+}
+
+/* Custom base styles */
+@layer base {
+  h1 {
+    @apply text-3xl font-display font-bold mb-4;
+  }
+  
+  h2 {
+    @apply text-2xl font-display font-semibold mb-3;
+  }
+  
+  h3 {
+    @apply text-xl font-display font-medium mb-2;
+  }
+  
+  a {
+    @apply text-primary-600 hover:text-primary-800 transition-colors duration-200;
+  }
+  
+  body {
+    @apply font-sans text-gray-800 bg-gray-50;
+  }
+}
+
+/* LocalLift specific styles */
+.achievements-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4;
+}
+
+.course-card {
+  @apply card border-l-4 hover:shadow-lg transition-shadow duration-200;
+}
+
+.course-card-beginner {
+  @apply border-green-400;
+}
+
+.course-card-intermediate {
+  @apply border-blue-400;
+}
+
+.course-card-advanced {
+  @apply border-purple-400;
+}
+
+.leaderboard-item {
+  @apply flex items-center justify-between p-3 border-b border-gray-100 last:border-b-0;
+}
+
+.leaderboard-rank {
+  @apply flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm;
+}
+
+.rank-1 {
+  @apply bg-yellow-100 text-yellow-800;
+}
+
+.rank-2 {
+  @apply bg-gray-100 text-gray-800;
+}
+
+.rank-3 {
+  @apply bg-amber-100 text-amber-800;
+}

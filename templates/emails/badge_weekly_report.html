@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Badge Report</title>
+  </head>
+  <body style="font-family: sans-serif; background-color: #f9fafb; padding: 20px; margin: 0;">
+    <div style="max-width: 600px; margin: auto; background: white; border-radius: 8px; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
+      <h2>🏅 Weekly Badge Report</h2>
+      <p>Hi {{ client_name }},</p>
+      <p>This week, you posted <strong>{{ compliant }}/{{ total }}</strong> times.</p>
+
+      {% if badge %}
+        <p style="color: green;"><strong>🎉 You earned your badge!</strong> Keep up the amazing work!</p>
+      {% else %}
+        <p style="color: orange;">You're getting close! Only {{ remaining }} more compliant post{{ remaining_plural }} to hit your badge next week. You got this! 💪</p>
+      {% endif %}
+
+      <p>Visit your dashboard to view your progress and stay on track!</p>
+
+      <a href="{{ dashboard_link }}" style="background-color: #2563eb; color: white; padding: 10px 20px; border-radius: 4px; display: inline-block; margin-top: 20px; text-decoration: none;">Go to Dashboard</a>
+    </div>
+  </body>
+</html>

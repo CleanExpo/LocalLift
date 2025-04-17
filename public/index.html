@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LocalLift - Help Local Businesses Thrive</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <meta name="description" content="LocalLift helps local businesses improve their online presence and customer engagement.">
+</head>
+<body>
+  <div id="root">
+    <header class="bg-white shadow-sm">
+      <nav class="container mx-auto px-4 py-3 md:flex md:items-center md:justify-between">
+        <div class="logo flex items-center">
+          <i class="fas fa-chart-line text-primary-600 mr-2"></i>
+          <h1 class="text-2xl font-bold text-gray-800">LocalLift</h1>
+        </div>
+        <div class="nav-links mt-4 md:mt-0 space-x-6">
+          <a href="/" class="font-medium hover:text-primary-600">Home</a>
+          <a href="/dashboard" class="font-medium hover:text-primary-600">Dashboard</a>
+          <a href="/admin/guide" class="font-medium hover:text-primary-600">Guide</a>
+          <a href="/login" class="btn btn-primary ml-4">Login</a>
+        </div>
+      </nav>
+    </header>
+    
+    <main>
+      <section class="hero bg-gradient-to-r from-primary-50 to-secondary-50 py-16">
+        <div class="hero-content container mx-auto px-4 md:flex md:items-center">
+          <div class="md:w-1/2 mb-8 md:mb-0">
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">Help Local Businesses Thrive Online</h2>
+            <p class="text-lg text-gray-600 mb-6">Comprehensive tools for improving online presence and customer engagement</p>
+            <a href="/dashboard" class="cta-button btn btn-primary text-lg px-6 py-3">Get Started</a>
+          </div>
+          <div class="md:w-1/2 md:pl-8">
+            <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1050&q=80" 
+                 alt="Local business growth" class="rounded-xl shadow-lg">
+          </div>
+        </div>
+      </section>
+      
+      <section class="features py-16 bg-white">
+        <div class="container mx-auto px-4">
+          <h2 class="text-3xl font-bold text-center mb-12">Our Features</h2>
+          <div class="grid md:grid-cols-3 gap-8">
+            <div class="feature card hover:shadow-lg transition-shadow">
+              <div class="text-center mb-4">
+                <i class="fas fa-chart-bar text-4xl text-primary-500"></i>
+              </div>
+              <h3 class="text-xl font-semibold mb-2 text-center">Business Analytics</h3>
+              <p class="text-gray-600 text-center">Track performance metrics and engagement statistics to make data-driven decisions</p>
+            </div>
+            <div class="feature card hover:shadow-lg transition-shadow">
+              <div class="text-center mb-4">
+                <i class="fas fa-trophy text-4xl text-primary-500"></i>
+              </div>
+              <h3 class="text-xl font-semibold mb-2 text-center">Achievement System</h3>
+              <p class="text-gray-600 text-center">Gamified approach to business improvements to keep your team motivated</p>
+            </div>
+            <div class="feature card hover:shadow-lg transition-shadow">
+              <div class="text-center mb-4">
+                <i class="fas fa-file-alt text-4xl text-primary-500"></i>
+              </div>
+              <h3 class="text-xl font-semibold mb-2 text-center">Reporting Tools</h3>
+              <p class="text-gray-600 text-center">Generate comprehensive business reports to share insights with stakeholders</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <section class="testimonials py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+          <h2 class="text-3xl font-bold text-center mb-12">What Our Clients Say</h2>
+          <div class="grid md:grid-cols-2 gap-8">
+            <div class="testimonial card">
+              <p class="italic mb-4">"LocalLift has transformed how we manage our online presence. Our engagement metrics have increased by 45% in just three months!"</p>
+              <div class="flex items-center">
+                <div class="mr-4">
+                  <i class="fas fa-user-circle text-3xl text-gray-400"></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Sarah Johnson</p>
+                  <p class="text-sm text-gray-500">Main Street Cafe</p>
+                </div>
+              </div>
+            </div>
+            <div class="testimonial card">
+              <p class="italic mb-4">"The analytics tools provided by LocalLift gave us insights we never had before. It's like having a marketing team in your pocket."</p>
+              <div class="flex items-center">
+                <div class="mr-4">
+                  <i class="fas fa-user-circle text-3xl text-gray-400"></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Michael Chen</p>
+                  <p class="text-sm text-gray-500">Chen's Hardware</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    
+    <footer class="bg-gray-800 text-white py-10">
+      <div class="container mx-auto px-4">
+        <div class="grid md:grid-cols-3 gap-8 mb-8">
+          <div>
+            <h3 class="text-xl font-semibold mb-4">LocalLift</h3>
+            <p class="text-gray-400">Helping local businesses thrive in the digital age with powerful analytics and engagement tools.</p>
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold mb-4">Quick Links</h3>
+            <ul class="space-y-2">
+              <li><a href="/" class="text-gray-400 hover:text-white">Home</a></li>
+              <li><a href="/dashboard" class="text-gray-400 hover:text-white">Dashboard</a></li>
+              <li><a href="/admin/guide" class="text-gray-400 hover:text-white">Guide</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold mb-4">Contact Us</h3>
+            <p class="text-gray-400 mb-2"><i class="fas fa-envelope mr-2"></i> support@locallift.com</p>
+            <p class="text-gray-400"><i class="fas fa-phone mr-2"></i> (555) 123-4567</p>
+          </div>
+        </div>
+        <div class="border-t border-gray-700 pt-6 text-center">
+          <p class="text-gray-400">&copy; 2025 LocalLift. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+  
+  <script src="js/config.js"></script>
+  <script src="js/main.js" defer></script>
+</body>
+</html>

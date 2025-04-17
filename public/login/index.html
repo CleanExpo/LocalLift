@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LocalLift Login - Access Your Account</title>
+  <link rel="stylesheet" href="../style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <meta name="description" content="Login to your LocalLift account to manage your local business presence">
+</head>
+<body>
+  <div id="root">
+    <header class="bg-white shadow-sm">
+      <nav class="container mx-auto px-4 py-3 md:flex md:items-center md:justify-between">
+        <div class="logo flex items-center">
+          <i class="fas fa-chart-line text-primary-600 mr-2"></i>
+          <h1 class="text-2xl font-bold text-gray-800">LocalLift</h1>
+        </div>
+        <div class="nav-links mt-4 md:mt-0 space-x-6">
+          <a href="/" class="font-medium hover:text-primary-600">Home</a>
+          <a href="/admin/guide" class="font-medium hover:text-primary-600">Guide</a>
+          <a href="/login" class="font-medium text-primary-600">Login</a>
+        </div>
+      </nav>
+    </header>
+    
+    <main>
+      <section class="py-12 bg-gray-50">
+        <div class="container mx-auto px-4">
+          <div class="max-w-md mx-auto bg-white rounded-lg shadow-sm p-8">
+            <div class="text-center mb-8">
+              <i class="fas fa-user-circle text-5xl text-primary-500 mb-4"></i>
+              <h2 class="text-3xl font-bold">Welcome Back</h2>
+              <p class="text-gray-600">Sign in to access your LocalLift dashboard</p>
+            </div>
+            
+            <form id="loginForm" class="space-y-6">
+              <div>
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-envelope text-gray-400"></i>
+                  </div>
+                  <input type="email" id="email" name="email" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500" placeholder="you@example.com" required>
+                </div>
+              </div>
+              
+              <div>
+                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-lock text-gray-400"></i>
+                  </div>
+                  <input type="password" id="password" name="password" class="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500" placeholder="••••••••" required>
+                  <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                    <button type="button" id="toggle-password" class="text-gray-400 hover:text-gray-600 focus:outline-none" aria-label="Toggle password visibility" title="Show password">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="flex items-center justify-between mt-2">
+                  <div class="flex items-center">
+                    <input id="remember_me" name="remember_me" type="checkbox" class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+                    <label for="remember_me" class="ml-2 block text-sm text-gray-700">Remember me</label>
+                  </div>
+                  <a href="/forgot-password" class="text-sm text-primary-600 hover:text-primary-700">Forgot password?</a>
+                </div>
+                
+                <div class="flex items-center mt-3">
+                  <input id="save_credentials" name="save_credentials" type="checkbox" class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+                  <label for="save_credentials" class="ml-2 block text-sm text-gray-700">Save username and password</label>
+                  <span class="ml-1 inline-block">
+                    <i class="fas fa-info-circle text-gray-400 cursor-help" title="Credentials will be saved in your browser for easier login next time."></i>
+                  </span>
+                </div>
+              </div>
+              
+              <div class="login-status hidden p-3 rounded-md text-sm font-medium">
+                <!-- Status message will be inserted here by JavaScript -->
+              </div>
+              
+              <div>
+                <button type="submit" class="w-full btn btn-primary py-3">
+                  <span class="inline-block mr-2">Sign in</span>
+                  <i class="fas fa-sign-in-alt"></i>
+                </button>
+              </div>
+            </form>
+            
+            <div class="mt-6 text-center">
+              <p class="text-sm text-gray-600">
+Don't have an account? <a href="mailto:support@locallift.com" class="text-primary-600 hover:text-primary-700 font-medium">Contact your administrator</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    
+    <footer class="bg-gray-800 text-white py-10">
+      <div class="container mx-auto px-4">
+        <div class="grid md:grid-cols-3 gap-8 mb-8">
+          <div>
+            <h3 class="text-xl font-semibold mb-4">LocalLift</h3>
+            <p class="text-gray-400">Helping local businesses thrive in the digital age with powerful analytics and engagement tools.</p>
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold mb-4">Quick Links</h3>
+            <ul class="space-y-2">
+              <li><a href="/" class="text-gray-400 hover:text-white">Home</a></li>
+              <li><a href="/dashboard" class="text-gray-400 hover:text-white">Dashboard</a></li>
+              <li><a href="/admin/guide" class="text-gray-400 hover:text-white">Guide</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold mb-4">Support</h3>
+            <p class="text-gray-400 mb-2"><i class="fas fa-envelope mr-2"></i> support@locallift.com</p>
+            <p class="text-gray-400"><i class="fas fa-phone mr-2"></i> (555) 123-4567</p>
+          </div>
+        </div>
+        <div class="border-t border-gray-700 pt-6 text-center">
+          <p class="text-gray-400">&copy; 2025 LocalLift. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+  
+  <script src="../js/config.js"></script>
+  <script src="../js/main.js" defer></script>
+  <script>
+    // Login page specific JavaScript
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Login page initialized');
+      
+      const loginForm = document.getElementById('loginForm');
+      const loginStatus = document.querySelector('.login-status');
+      
+      // Check for developer credentials first (for demo purposes)
+      try {
+        const devCredentials = localStorage.getItem('locallift_dev_credentials');
+        if (devCredentials) {
+          const credentials = JSON.parse(devCredentials);
+          document.getElementById('email').value = credentials.username || '';
+          document.getElementById('password').value = credentials.password || '';
+          document.getElementById('save_credentials').checked = true;
+          console.log('Developer credentials auto-filled for demo');
+        } else {
+          // Check for saved credentials as fallback
+          const savedCredentials = localStorage.getItem('saved_credentials');
+          if (savedCredentials) {
+            const credentials = JSON.parse(savedCredentials);
+            document.getElementById('email').value = credentials.email || '';
+            document.getElementById('password').value = credentials.password || '';
+            document.getElementById('save_credentials').checked = true;
+          }
+        }
+      } catch (e) {
+        console.error('Error loading credentials:', e);
+      }
+      
+      if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          // Get form data
+          const email = document.getElementById('email').value;
+          const password = document.getElementById('password').value;
+          const rememberMe = document.getElementById('remember_me').checked;
+          const saveCredentials = document.getElementById('save_credentials').checked;
+          
+          // Save credentials if requested
+          if (saveCredentials) {
+            const credentials = {
+              email: email,
+              password: password
+            };
+            localStorage.setItem('saved_credentials', JSON.stringify(credentials));
+          } else {
+            localStorage.removeItem('saved_credentials');
+          }
+          
+          // Show loading state
+          loginStatus.textContent = 'Authenticating...';
+          loginStatus.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
+          loginStatus.classList.add('bg-blue-100', 'text-blue-700');
+          
+          // Get API base URL from config
+          const CONFIG = window.LOCALLIFT_CONFIG || {};
+          const API_BASE = CONFIG.API_BASE_URL || 'http://localhost:8000';
+          
+          // For development/demo purposes, bypass actual API call and simulate successful login
+          console.log('Simulating successful login for demo');
+          loginStatus.textContent = 'Login successful! Redirecting...';
+          loginStatus.classList.remove('bg-blue-100', 'text-blue-700', 'bg-red-100', 'text-red-700');
+          loginStatus.classList.add('bg-green-100', 'text-green-700');
+          
+          // Store a demo token
+          localStorage.setItem(CONFIG.AUTH.TOKEN_KEY || 'locallift_auth_token', 'demo_auth_token_12345');
+          
+          // Store demo expiry (24 hours from now)
+          if (CONFIG.AUTH.EXPIRY_KEY) {
+            const expiry = new Date();
+            expiry.setSeconds(expiry.getSeconds() + (CONFIG.AUTH.SESSION_DURATION || 86400));
+            localStorage.setItem(CONFIG.AUTH.EXPIRY_KEY, expiry.toISOString());
+          }
+          
+          // Redirect to dashboard after short delay
+          setTimeout(() => {
+            window.location.href = '/dashboard';
+          }, 1500);
+          
+          // Return early to skip the actual API call
+          return;
+          
+          // This API call is disabled for demo purposes
+          const API_URL = `${API_BASE}/api/auth/login`;
+          
+          // Attempt login
+          fetch(API_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+              email: email,
+              password: password
+            }),
+            credentials: 'include'
+          })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Login failed. Please check your credentials.');
+            }
+            return response.json();
+          })
+          .then(data => {
+            // Successfully logged in
+            loginStatus.textContent = 'Login successful! Redirecting...';
+            loginStatus.classList.remove('bg-blue-100', 'text-blue-700', 'bg-red-100', 'text-red-700');
+            loginStatus.classList.add('bg-green-100', 'text-green-700');
+            
+            // Store authentication token if available
+            if (data.token && CONFIG.AUTH && CONFIG.AUTH.TOKEN_KEY) {
+              localStorage.setItem(CONFIG.AUTH.TOKEN_KEY, data.token);
+              
+              if (data.refresh_token && CONFIG.AUTH.REFRESH_TOKEN_KEY) {
+                localStorage.setItem(CONFIG.AUTH.REFRESH_TOKEN_KEY, data.refresh_token);
+              }
+              
+              if (CONFIG.AUTH.EXPIRY_KEY) {
+                const expiry = new Date();
+                expiry.setSeconds(expiry.getSeconds() + (CONFIG.AUTH.SESSION_DURATION || 86400));
+                localStorage.setItem(CONFIG.AUTH.EXPIRY_KEY, expiry.toISOString());
+              }
+            }
+            
+            // Redirect to dashboard
+            setTimeout(() => {
+              window.location.href = '/dashboard';
+            }, 1500);
+          })
+          .catch(error => {
+            // Show error
+            console.error('Login error:', error);
+            loginStatus.textContent = error.message || 'Login failed. Please try again.';
+            loginStatus.classList.remove('bg-blue-100', 'text-blue-700', 'bg-green-100', 'text-green-700');
+            loginStatus.classList.add('bg-red-100', 'text-red-700');
+          });
+        });
+      }
+      
+      // Check if user is already logged in
+      function checkLoginStatus() {
+        const CONFIG = window.LOCALLIFT_CONFIG || {};
+        if (CONFIG.AUTH && CONFIG.AUTH.TOKEN_KEY) {
+          const token = localStorage.getItem(CONFIG.AUTH.TOKEN_KEY);
+          const expiry = localStorage.getItem(CONFIG.AUTH.EXPIRY_KEY);
+          
+          if (token && expiry) {
+            const expiryDate = new Date(expiry);
+            if (expiryDate > new Date()) {
+              // User is already logged in and token is valid
+              window.location.href = '/dashboard';
+            }
+          }
+        }
+      }
+      
+      // Run login check
+      checkLoginStatus();
+      
+      // Toggle password visibility
+      const togglePasswordBtn = document.getElementById('toggle-password');
+      const passwordInput = document.getElementById('password');
+      
+      if (togglePasswordBtn && passwordInput) {
+        togglePasswordBtn.addEventListener('click', function() {
+          const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+          passwordInput.setAttribute('type', type);
+          
+          // Toggle icon between eye and eye-slash
+          const icon = this.querySelector('i');
+          if (type === 'text') {
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+            this.setAttribute('title', 'Hide password');
+          } else {
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+            this.setAttribute('title', 'Show password');
+          }
+        });
+      }
+    });
+  </script>
+  
+  <style>
+    /* Login page specific styles */
+    .login-status {
+      transition: all 0.3s ease;
+    }
+    
+    .bg-red-100 {
+      background-color: #fee2e2;
+    }
+    
+    .text-red-700 {
+      color: #b91c1c;
+    }
+    
+    .bg-green-100 {
+      background-color: #d1fae5;
+    }
+    
+    .text-green-700 {
+      color: #047857;
+    }
+    
+    .bg-blue-100 {
+      background-color: #dbeafe;
+    }
+    
+    .text-blue-700 {
+      color: #1d4ed8;
+    }
+  </style>
+</body>
+</html>

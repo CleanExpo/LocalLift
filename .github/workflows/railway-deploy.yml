@@ -1,0 +1,39 @@
+name: Deploy to Railway
+on:
+  push:
+    branches: [main]
+
+# Add permissions for public repository
+permissions:
+  contents: read
+  deployments: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          npm ci
+          
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+        
+      - name: Build frontend assets
+        run: npm run build:css
+        
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          NODE_ENV: production
+        run: railway up --detach
