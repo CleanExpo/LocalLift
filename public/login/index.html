@@ -140,6 +140,32 @@ Don't have an account? <a href="mailto:support@locallift.com" class="text-primar
           // Get API base URL from config
           const CONFIG = window.LOCALLIFT_CONFIG || {};
           const API_BASE = CONFIG.API_BASE_URL || 'http://localhost:8000';
+          
+          // For development/demo purposes, bypass actual API call and simulate successful login
+          console.log('Simulating successful login for demo');
+          loginStatus.textContent = 'Login successful! Redirecting...';
+          loginStatus.classList.remove('bg-blue-100', 'text-blue-700', 'bg-red-100', 'text-red-700');
+          loginStatus.classList.add('bg-green-100', 'text-green-700');
+          
+          // Store a demo token
+          localStorage.setItem(CONFIG.AUTH.TOKEN_KEY || 'locallift_auth_token', 'demo_auth_token_12345');
+          
+          // Store demo expiry (24 hours from now)
+          if (CONFIG.AUTH.EXPIRY_KEY) {
+            const expiry = new Date();
+            expiry.setSeconds(expiry.getSeconds() + (CONFIG.AUTH.SESSION_DURATION || 86400));
+            localStorage.setItem(CONFIG.AUTH.EXPIRY_KEY, expiry.toISOString());
+          }
+          
+          // Redirect to dashboard after short delay
+          setTimeout(() => {
+            window.location.href = '/dashboard';
+          }, 1500);
+          
+          // Return early to skip the actual API call
+          return;
+          
+          // This API call is disabled for demo purposes
           const API_URL = `${API_BASE}/api/auth/login`;
           
           // Attempt login
