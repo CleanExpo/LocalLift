@@ -787,11 +787,11 @@
   </div>
 
   <!-- JavaScript References -->
-  <script src="../js/tab-handler.js"></script>
-  <script src="../js/dropdown-handler.js"></script>
+  <script src="/js/tab-handler.js"></script> <!-- Use root-relative path -->
+  <script src="/js/dropdown-handler.js"></script> <!-- Use root-relative path -->
   <script type="module">
     // Import Supabase authentication functionality
-    import { auth } from '../static/js/supabase-client.js';
+    import { auth } from '/static/js/supabase-client.js'; // Use root-relative path
     
     // Login form handling
     document.addEventListener('DOMContentLoaded', function() {
@@ -832,7 +832,7 @@
             
             // Redirect to dashboard after successful login
             setTimeout(() => {
-              window.location.href = '../dashboard/index.html';
+              window.location.href = '/dashboard'; // Use root-relative path
             }, 1000);
           } catch (error) {
             console.error('Login error:', error);
