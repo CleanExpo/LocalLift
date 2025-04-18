@@ -1,1 +1,1 @@
-web: uvicorn railway_entry:app --host 0.0.0.0 --port $PORT --workers 2
+web: python run_server.py
