@@ -826,6 +826,7 @@
             }
             
             // Success case
+            console.log("Supabase sign-in successful. Data:", data); // Add console log
             loginStatus.classList.remove('loading', 'error');
             loginStatus.classList.add('success');
             loginStatus.textContent = 'Sign in successful! Redirecting...';
