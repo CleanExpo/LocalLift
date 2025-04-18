@@ -1,144 +1,187 @@
 /**
- * Dark Mode Functionality for LocalLift
- * 
- * This script handles dark mode functionality:
- * - Checks for user preferences in localStorage
- * - Provides a toggle function to switch between modes
- * - Syncs with system preference if user hasn't set a preference
+ * LocalLift Dark Mode Implementation
+ * Provides consistent dark mode across all pages with system preference detection
+ * and persistent user preference storage.
  */
 
 (function() {
-  // Variables to store preferences
-  const STORAGE_KEY = 'locallift_theme_preference';
-  const DARK_THEME = 'dark';
-  const LIGHT_THEME = 'light';
-  const DEFAULT_THEME = LIGHT_THEME;
-  
-  // Function to set theme on document
-  function setTheme(theme) {
-    if (theme === DARK_THEME) {
-      document.documentElement.setAttribute('data-theme', DARK_THEME);
-    } else {
-      document.documentElement.removeAttribute('data-theme');
+    'use strict';
+    
+    // Configuration
+    const STORAGE_KEY = 'locallift-theme';
+    const AUTO_MODE = 'auto';
+    const DARK_MODE = 'dark';
+    const LIGHT_MODE = 'light';
+    const DARK_CLASS = 'dark-mode';
+    const THEME_ATTRIBUTE = 'data-theme';
+    
+    /**
+     * Get user's preferred theme from localStorage
+     * @returns {string} 'light', 'dark', or 'auto'
+     */
+    function getUserPreference() {
+        return localStorage.getItem(STORAGE_KEY) || AUTO_MODE;
     }
     
-    // Store the preference
-    localStorage.setItem(STORAGE_KEY, theme);
-    
-    // Update any theme toggle buttons
-    updateToggleButtons(theme);
-  }
-  
-  // Function to update toggle buttons to reflect current state
-  function updateToggleButtons(theme) {
-    const toggleButtons = document.querySelectorAll('.theme-toggle');
-    
-    toggleButtons.forEach(button => {
-      const moonIcon = button.querySelector('.fa-moon');
-      const sunIcon = button.querySelector('.fa-sun');
-      
-      if (theme === DARK_THEME) {
-        if (moonIcon) moonIcon.style.display = 'none';
-        if (sunIcon) sunIcon.style.display = 'inline-block';
-        button.setAttribute('title', 'Switch to Light Mode');
-        button.setAttribute('aria-label', 'Switch to Light Mode');
-      } else {
-        if (moonIcon) moonIcon.style.display = 'inline-block';
-        if (sunIcon) sunIcon.style.display = 'none';
-        button.setAttribute('title', 'Switch to Dark Mode');
-        button.setAttribute('aria-label', 'Switch to Dark Mode');
-      }
-    });
-  }
-  
-  // Function to toggle between light and dark mode
-  function toggleTheme() {
-    const currentTheme = localStorage.getItem(STORAGE_KEY) || DEFAULT_THEME;
-    const newTheme = currentTheme === DARK_THEME ? LIGHT_THEME : DARK_THEME;
-    setTheme(newTheme);
-    return newTheme;
-  }
-  
-  // Function to initialize theme based on preference
-  function initializeTheme() {
-    // Remove initialization class to avoid flash
-    document.documentElement.classList.remove('js-dark-mode-init');
-    
-    // Check localStorage first
-    const storedTheme = localStorage.getItem(STORAGE_KEY);
-    
-    if (storedTheme) {
-      // User has a stored preference
-      setTheme(storedTheme);
-    } else {
-      // Check system preference
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setTheme(prefersDark ? DARK_THEME : LIGHT_THEME);
+    /**
+     * Detect if user's system prefers dark mode
+     * @returns {boolean} True if system prefers dark mode
+     */
+    function systemPrefersDark() {
+        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     }
     
-    // Add event listeners to all toggle buttons
-    setupEventListeners();
-  }
-  
-  // Function to set up event listeners
-  function setupEventListeners() {
-    // Add listeners to all toggle buttons
-    const toggleButtons = document.querySelectorAll('.theme-toggle');
-    
-    toggleButtons.forEach(button => {
-      button.addEventListener('click', function() {
-        toggleTheme();
-      });
-    });
-    
-    // Listen for system preference changes
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-      // Only change if user hasn't set a preference
-      if (!localStorage.getItem(STORAGE_KEY)) {
-        setTheme(e.matches ? DARK_THEME : LIGHT_THEME);
-      }
-    });
-  }
-  
-  // Add theme toggle buttons dynamically to header if they don't exist
-  function addThemeToggleButtons() {
-    // Check if a toggle button already exists in the header
-    const header = document.querySelector('header .container');
-    
-    if (header && !header.querySelector('.theme-toggle')) {
-      // Create toggle button
-      const toggleButton = document.createElement('button');
-      toggleButton.className = 'theme-toggle';
-      toggleButton.setAttribute('title', 'Toggle Dark Mode');
-      toggleButton.setAttribute('aria-label', 'Toggle Dark Mode');
-      
-      // Add icons
-      toggleButton.innerHTML = `
-        <i class="fas fa-moon"></i>
-        <i class="fas fa-sun" style="display: none;"></i>
-      `;
-      
-      // Find a good spot to insert it (before any user menu)
-      const userMenu = header.querySelector('.nav-links');
-      if (userMenu) {
-        userMenu.parentNode.insertBefore(toggleButton, userMenu);
-      } else {
-        header.appendChild(toggleButton);
-      }
+    /**
+     * Set theme attribute on html element and update body classes
+     * @param {string} theme - Theme to set ('light' or 'dark')
+     */
+    function applyTheme(theme) {
+        document.documentElement.setAttribute(THEME_ATTRIBUTE, theme);
+        
+        if (theme === DARK_MODE) {
+            document.body.classList.add(DARK_CLASS);
+        } else {
+            document.body.classList.remove(DARK_CLASS);
+        }
+        
+        // Update all theme toggles
+        updateToggles(theme);
+        
+        // Dispatch event for components that need to know about theme changes
+        window.dispatchEvent(new CustomEvent('themechange', { 
+            detail: { theme: theme }
+        }));
     }
-  }
-  
-  // Initialize dark mode system on DOMContentLoaded
-  document.addEventListener('DOMContentLoaded', function() {
-    console.log('Dark mode system initialized');
     
-    // Add toggle buttons if none exist
-    addThemeToggleButtons();
+    /**
+     * Update all theme toggle buttons to match current theme
+     * @param {string} theme - Current theme ('light' or 'dark')
+     */
+    function updateToggles(theme) {
+        // Find all toggle buttons
+        const toggles = document.querySelectorAll('.theme-toggle');
+        
+        toggles.forEach(toggle => {
+            // Update any theme toggle icons
+            const darkIcon = toggle.querySelector('.dark-icon');
+            const lightIcon = toggle.querySelector('.light-icon');
+            
+            if (darkIcon && lightIcon) {
+                if (theme === DARK_MODE) {
+                    darkIcon.classList.add('hidden');
+                    lightIcon.classList.remove('hidden');
+                } else {
+                    darkIcon.classList.remove('hidden');
+                    lightIcon.classList.add('hidden');
+                }
+            }
+            
+            // Update any theme toggle checkboxes
+            const checkbox = toggle.querySelector('input[type="checkbox"]');
+            if (checkbox) {
+                checkbox.checked = (theme === DARK_MODE);
+            }
+            
+            // Update theme toggle buttons' aria-pressed state
+            if (toggle.hasAttribute('aria-pressed')) {
+                toggle.setAttribute('aria-pressed', (theme === DARK_MODE).toString());
+            }
+        });
+    }
     
-    // Initialize theme
-    initializeTheme();
-  });
-  
-  // Make toggle function available globally
-  window.toggleDarkMode = toggleTheme;
+    /**
+     * Set theme based on user preference with consideration for system preference
+     */
+    function setThemePreference() {
+        const userPreference = getUserPreference();
+        
+        if (userPreference === AUTO_MODE) {
+            // Follow system preference
+            applyTheme(systemPrefersDark() ? DARK_MODE : LIGHT_MODE);
+        } else {
+            // Use explicit user preference
+            applyTheme(userPreference);
+        }
+    }
+    
+    /**
+     * Save user preference to localStorage
+     * @param {string} theme - Theme to save ('light', 'dark', or 'auto')
+     */
+    function savePreference(theme) {
+        localStorage.setItem(STORAGE_KEY, theme);
+    }
+    
+    /**
+     * Toggle between light and dark mode
+     */
+    function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute(THEME_ATTRIBUTE);
+        const newTheme = currentTheme === DARK_MODE ? LIGHT_MODE : DARK_MODE;
+        
+        // Save explicit preference
+        savePreference(newTheme);
+        
+        // Apply the new theme
+        applyTheme(newTheme);
+    }
+    
+    /**
+     * Set up theme toggle listeners
+     */
+    function setupThemeToggleListeners() {
+        const toggles = document.querySelectorAll('.theme-toggle');
+        
+        toggles.forEach(toggle => {
+            toggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                toggleTheme();
+            });
+        });
+        
+        // Listen for system preference changes
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                // Only update if user has set to auto mode
+                if (getUserPreference() === AUTO_MODE) {
+                    applyTheme(e.matches ? DARK_MODE : LIGHT_MODE);
+                }
+            });
+        }
+    }
+    
+    /**
+     * Initialize theme management
+     */
+    function init() {
+        // Create global theme API
+        window.LocalLift = window.LocalLift || {};
+        window.LocalLift.theme = {
+            toggle: toggleTheme,
+            setTheme: (theme) => {
+                savePreference(theme);
+                setThemePreference();
+            },
+            getCurrentTheme: () => document.documentElement.getAttribute(THEME_ATTRIBUTE),
+            isDarkMode: () => document.documentElement.getAttribute(THEME_ATTRIBUTE) === DARK_MODE
+        };
+        
+        // Apply initial theme immediately to avoid flash
+        setThemePreference();
+        
+        // Setup toggle listeners once DOM is loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', setupThemeToggleListeners);
+        } else {
+            setupThemeToggleListeners();
+        }
+        
+        // Remove initialization class that might be hiding content
+        document.documentElement.classList.remove('js-dark-mode-init');
+        
+        console.log('LocalLift theme system initialized');
+    }
+    
+    // Run initialization immediately to prevent flash of wrong theme
+    init();
 })();

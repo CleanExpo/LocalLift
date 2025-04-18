@@ -1,211 +1,189 @@
 /**
- * LocalLift main JavaScript file
+ * LocalLift Main JavaScript Handler
+ * This file coordinates module initialization and dependency loading
  */
 
-// Load configuration and authenticate user
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('LocalLift application initialized');
+(function() {
+    'use strict';
 
-  // Handle dropdown menus with improved functionality
-  const accountDropdown = document.querySelector('.dropdown');
-  if (accountDropdown) {
-    const dropdownBtn = accountDropdown.querySelector('.btn-primary');
-    const dropdownContent = accountDropdown.querySelector('.dropdown-content');
+    // Configuration
+    const REQUIRED_MODULES = [
+        // Core utilities
+        '/js/dark-mode.js',
+        '/js/responsive-utils.js',
+        '/js/tab-handler.js',
+        '/js/dropdown-handler.js'
+    ];
 
-    // Add necessary styles for the dropdown content to be properly positioned and styled
-    if (dropdownContent) {
-      dropdownContent.style.position = 'absolute';
-      dropdownContent.style.backgroundColor = '#fff';
-      dropdownContent.style.minWidth = '180px';
-      dropdownContent.style.boxShadow = '0 8px 16px rgba(0,0,0,0.1)';
-      dropdownContent.style.zIndex = '1000';
-      dropdownContent.style.borderRadius = '0.375rem';
-      dropdownContent.style.overflow = 'hidden';
-      dropdownContent.style.marginTop = '0.25rem';
-      dropdownContent.style.right = '0';
-      dropdownContent.style.display = 'none';  // Hidden by default
+    // Optional modules based on page
+    const PAGE_SPECIFIC_MODULES = {
+        '/dashboard': [
+            '/js/dashboard.js'
+        ],
+        '/profile': [
+            '/js/profile.js'
+        ],
+        '/login': [
+            '/js/login.js'
+        ],
+        '/settings': [
+            '/js/settings.js'
+        ]
+    };
+
+    /**
+     * Check which page-specific modules to load
+     */
+    function determinePageModules() {
+        const path = window.location.pathname;
+        const modules = [];
+
+        // Check if current path matches any page-specific modules
+        for (const pagePath in PAGE_SPECIFIC_MODULES) {
+            if (path === pagePath || path.startsWith(pagePath + '/')) {
+                modules.push(...PAGE_SPECIFIC_MODULES[pagePath]);
+            }
+        }
+
+        return modules;
     }
 
-    // Toggle dropdown visibility
-    dropdownBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      // Toggle between hiding and showing
-      if (dropdownContent.style.display === 'block') {
-        dropdownContent.style.display = 'none';
-      } else {
-        dropdownContent.style.display = 'block';
+    /**
+     * Dynamically load a JavaScript file
+     * @param {string} src - Path to JavaScript file
+     * @returns {Promise} - Promise that resolves when file is loaded
+     */
+    function loadScript(src) {
+        return new Promise((resolve, reject) => {
+            // Skip if already loaded
+            if (document.querySelector(`script[src="${src}"]`)) {
+                resolve();
+                return;
+            }
 
-        // Style each dropdown item
-        const items = dropdownContent.querySelectorAll('.dropdown-item');
-        items.forEach(item => {
-          item.style.display = 'block';
-          item.style.padding = '10px 16px';
-          item.style.textDecoration = 'none';
-          item.style.color = '#374151';
-          item.style.borderBottom = '1px solid #e5e7eb';
+            const script = document.createElement('script');
+            script.src = src;
+            script.async = true;
 
-          // Hover effect
-          item.addEventListener('mouseenter', function() {
-            this.style.backgroundColor = '#f3f4f6';
-          });
-          item.addEventListener('mouseleave', function() {
-            this.style.backgroundColor = '#fff';
-          });
+            script.onload = () => resolve();
+            script.onerror = () => {
+                console.error(`Failed to load script: ${src}`);
+                reject(new Error(`Failed to load script: ${src}`));
+            };
+
+            document.head.appendChild(script);
         });
-      }
-    });
-
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function(e) {
-      if (!accountDropdown.contains(e.target)) {
-        dropdownContent.style.display = 'none';
-      }
-    });
-  }
-
-  // TODO: Implement proper user session check using Supabase client
-  // Example (needs integration with supabase-client.js and UI updates):
-  /*
-  import { auth } from '../static/js/supabase-client.js'; // Adjust path if needed
-
-  async function checkAuthStatus() {
-    const session = await auth.getSession();
-    const user = await auth.getUser();
-    const apiStatusElements = document.querySelectorAll('#api-status-text');
-    const apiStatusValues = document.querySelectorAll('.api-status');
-
-    if (session && user) {
-      console.log('User logged in:', user.email);
-      // Update UI to show logged-in state (e.g., show user email, logout button)
-      apiStatusElements.forEach(element => {
-        element.textContent = `Logged in as ${user.email}`;
-        element.classList.remove('text-red-500');
-        element.classList.add('text-green-500');
-      });
-      apiStatusValues.forEach(element => {
-        element.textContent = 'Connected';
-      });
-    } else {
-      console.log('User not logged in.');
-      // Update UI to show logged-out state (e.g., show login button)
-       apiStatusElements.forEach(element => {
-        element.textContent = 'Not logged in';
-        element.classList.remove('text-green-500');
-        element.classList.add('text-red-500'); // Or neutral color
-      });
-       apiStatusValues.forEach(element => {
-        element.textContent = 'Disconnected';
-      });
     }
-  }
-  checkAuthStatus();
 
-  // Listen for auth state changes
-  supabase.auth.onAuthStateChange((event, session) => {
-    console.log('Auth state changed:', event, session);
-    checkAuthStatus(); // Re-check status on change
-  });
-  */
+    /**
+     * Load all required scripts in parallel
+     * @param {Array<string>} scripts - Array of script paths to load
+     * @returns {Promise} - Promise that resolves when all scripts are loaded
+     */
+    function loadScripts(scripts) {
+        const uniqueScripts = Array.from(new Set(scripts)); // Remove duplicates
+        const promises = uniqueScripts.map(src => loadScript(src));
+        return Promise.all(promises);
+    }
 
-  // Handle mobile menu
-  const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-  const mobileNav = document.querySelector('.mobile-nav');
-  if (mobileMenuToggle && mobileNav) {
-    mobileMenuToggle.addEventListener('click', function() {
-      mobileNav.classList.toggle('hidden');
-    });
-  }
+    /**
+     * Initialize the LocalLift application
+     */
+    function initApp() {
+        // Setup global namespace
+        window.LocalLift = window.LocalLift || {};
+        
+        // Detect environment (development or production)
+        const isProduction = window.location.hostname !== 'localhost' && 
+                            !window.location.hostname.includes('127.0.0.1');
+        
+        window.LocalLift.config = {
+            environment: isProduction ? 'production' : 'development',
+            apiBaseUrl: isProduction ? '/api' : 'http://localhost:8000/api',
+            version: '1.0.0'
+        };
+        
+        // Add utility functions to the global namespace
+        window.LocalLift.utils = {
+            loadScript,
+            loadScripts,
+            
+            // Add a debounce function for performance optimization
+            debounce: function(func, wait) {
+                let timeout;
+                return function(...args) {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(this, args), wait);
+                };
+            },
+            
+            // Sanitize user input to prevent XSS attacks
+            sanitizeInput: function(input) {
+                const element = document.createElement('div');
+                element.textContent = input;
+                return element.innerHTML;
+            }
+        };
+        
+        // Initialize event tracking if available
+        if (typeof window.LocalLift.analytics !== 'undefined') {
+            window.LocalLift.analytics.init();
+        }
+        
+        console.log(`LocalLift application initialized (${window.LocalLift.config.environment})`);
+    }
 
-  // Initialize tabs if present
-  const tabButtons = document.querySelectorAll('.tabs-nav .tab-button');
-  const tabContents = document.querySelectorAll('.tabs-content .tab-content');
-  if (tabButtons.length > 0 && tabContents.length > 0) {
-    tabButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        const tab = button.getAttribute('data-tab');
-        tabButtons.forEach(btn => btn.classList.remove('active'));
-        tabContents.forEach(content => content.classList.add('hidden'));
-        button.classList.add('active');
-        document.getElementById(tab + '-tab').classList.remove('hidden');
-      });
-    });
-  }
+    /**
+     * Initialize the application
+     */
+    function init() {
+        // Determine which modules to load based on the current page
+        const pageDependencies = determinePageModules();
+        const allDependencies = [...REQUIRED_MODULES, ...pageDependencies];
+        
+        // Show loading indicator
+        const loadingIndicator = document.getElementById('loading-indicator');
+        if (loadingIndicator) {
+            loadingIndicator.style.display = 'block';
+        }
+        
+        // Load all required modules
+        loadScripts(allDependencies)
+            .then(() => {
+                console.log('All modules loaded successfully');
+                
+                // Initialize the application
+                initApp();
+                
+                // Hide loading indicator
+                if (loadingIndicator) {
+                    loadingIndicator.style.display = 'none';
+                }
+                
+                // Dispatch ready event
+                window.dispatchEvent(new CustomEvent('LocalLiftReady'));
+            })
+            .catch(error => {
+                console.error('Failed to load all modules', error);
+                
+                // Still hide loading indicator even on error
+                if (loadingIndicator) {
+                    loadingIndicator.style.display = 'none';
+                }
+                
+                // Show error message
+                const errorElement = document.getElementById('error-message');
+                if (errorElement) {
+                    errorElement.textContent = 'Failed to load application resources. Please refresh the page.';
+                    errorElement.style.display = 'block';
+                }
+            });
+    }
 
-  // Handle report generation - TODO: Replace alert with actual API call using auth token
-  const generateReportBtn = document.getElementById('generate-report-btn');
-  if (generateReportBtn) {
-    generateReportBtn.addEventListener('click', async function() {
-      // Example: Fetch session/token before making API call
-      // const session = await auth.getSession();
-      // if (session) {
-      //   const token = session.access_token;
-      //   // Make API call to backend report endpoint with token
-      //   console.log("Attempting report generation with token:", token);
-           alert("Report generation feature needs backend integration.");
-      // } else {
-      //   alert("You must be logged in to generate reports.");
-      // }
-    });
-  }
-
-  // Handle logout - TODO: Integrate with Supabase signout
-  const logoutBtn = document.getElementById('logout-btn'); // Assuming this ID exists on a logout button
-  const logoutBtnMobile = document.getElementById('logout-btn-mobile'); // Assuming this ID exists
-
-  async function handleLogout() {
-      // Example: Call Supabase signout
-      // const { error } = await auth.signOut();
-      // if (error) {
-      //   console.error('Error logging out:', error);
-      //   alert('Logout failed. Please try again.');
-      // } else {
-           alert('You have been logged out.'); // Placeholder
-           // Clear any local session info if needed
-           // localStorage.removeItem(window.LOCALLIFT_CONFIG.AUTH.TOKEN_KEY);
-           window.location.href = '/'; // Redirect to home
-      // }
-  }
-
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', handleLogout);
-  }
-
-  if (logoutBtnMobile) {
-    logoutBtnMobile.addEventListener('click', handleLogout);
-  }
-
-});
-
-// Initialize engagement chart if available
-function initializeEngagementChart() {
-  const engagementChartCanvas = document.getElementById('engagement-chart');
-  if (engagementChartCanvas && typeof Chart !== 'undefined') {
-    const ctx = engagementChartCanvas.getContext('2d');
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-        datasets: [{
-          label: 'Engagement',
-          data: [12, 19, 3, 5, 2, 3, 7],
-          backgroundColor: 'rgba(0, 118, 255, 0.2)',
-          borderColor: 'rgba(0, 118, 255, 1)',
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false
-      }
-    });
-  } else if (engagementChartCanvas) {
-    console.warn("Chart.js library is not loaded. Engagement chart is not available.");
-  }
-}
-
-// Call chart initialization after DOMContentLoaded
-document.addEventListener('DOMContentLoaded', function() {
-  // Attempt to initialize chart with a slight delay to ensure DOM is fully ready
-  setTimeout(initializeEngagementChart, 100);
-});
+    // Run initialization when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
