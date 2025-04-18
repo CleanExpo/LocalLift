@@ -1,15 +1,17 @@
-// LocalLift main JavaScript file
+/**
+ * LocalLift main JavaScript file
+ */
 
 // Load configuration and authenticate user
 document.addEventListener('DOMContentLoaded', function() {
   console.log('LocalLift application initialized');
-  
+
   // Handle dropdown menus with improved functionality
   const accountDropdown = document.querySelector('.dropdown');
   if (accountDropdown) {
     const dropdownBtn = accountDropdown.querySelector('.btn-primary');
     const dropdownContent = accountDropdown.querySelector('.dropdown-content');
-    
+
     // Add necessary styles for the dropdown content to be properly positioned and styled
     if (dropdownContent) {
       dropdownContent.style.position = 'absolute';
@@ -23,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
       dropdownContent.style.right = '0';
       dropdownContent.style.display = 'none';  // Hidden by default
     }
-    
+
     // Toggle dropdown visibility
     dropdownBtn.addEventListener('click', function(e) {
       e.preventDefault();
@@ -33,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
         dropdownContent.style.display = 'none';
       } else {
         dropdownContent.style.display = 'block';
-        
+
         // Style each dropdown item
         const items = dropdownContent.querySelectorAll('.dropdown-item');
         items.forEach(item => {
@@ -42,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
           item.style.textDecoration = 'none';
           item.style.color = '#374151';
           item.style.borderBottom = '1px solid #e5e7eb';
-          
+
           // Hover effect
           item.addEventListener('mouseenter', function() {
             this.style.backgroundColor = '#f3f4f6';
@@ -53,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
       }
     });
-    
+
     // Close dropdown when clicking outside
     document.addEventListener('click', function(e) {
       if (!accountDropdown.contains(e.target)) {
@@ -61,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
-  
+
   // Load developer credentials from embedded data to avoid CORS issues
   try {
     // Embedded credentials to bypass CORS in local environment
@@ -69,12 +71,12 @@ document.addEventListener('DOMContentLoaded', function() {
       username: "phill.m@carsi.com.au",
       password: "Sanctuary2025!@"
     };
-    
+
     console.log('Developer account connected:', devCredentials.username);
-    
+
     // Store credentials for demo purposes
     localStorage.setItem('locallift_dev_credentials', JSON.stringify(devCredentials));
-    
+
     // Update all API status indicators
     const apiStatusElements = document.querySelectorAll('#api-status-text');
     apiStatusElements.forEach(element => {
@@ -82,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
       element.classList.remove('text-red-500');
       element.classList.add('text-green-500');
     });
-    
+
     // Update API status values
     const apiStatusValues = document.querySelectorAll('.api-status');
     apiStatusValues.forEach(element => {
@@ -98,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
       element.classList.add('text-red-500');
     });
   }
-  
+
   // Handle mobile menu
   const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
   const mobileNav = document.querySelector('.mobile-nav');
@@ -107,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
       mobileNav.classList.toggle('hidden');
     });
   }
-  
+
   // Initialize tabs if present
   const tabButtons = document.querySelectorAll('.tabs-nav .tab-button');
   const tabContents = document.querySelectorAll('.tabs-content .tab-content');
@@ -122,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   }
-  
+
   // Handle report generation
   const generateReportBtn = document.getElementById('generate-report-btn');
   if (generateReportBtn) {
@@ -132,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (storedCredentials) {
         try {
           const credentials = JSON.parse(storedCredentials);
-          // We have credentials, so show a success message
+          // We have credentials so show a success message
           alert("Report generation started for " + credentials.username);
         } catch (error) {
           // Error parsing JSON
@@ -145,18 +147,18 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
-  
+
   // Handle logout
   const logoutBtn = document.getElementById('logout-btn');
   const logoutBtnMobile = document.getElementById('logout-btn-mobile');
-  
+
   if (logoutBtn) {
     logoutBtn.addEventListener('click', function() {
       alert('You have been logged out.');
       window.location.href = '/';
     });
   }
-  
+
   if (logoutBtnMobile) {
     logoutBtnMobile.addEventListener('click', function() {
       alert('You have been logged out.');

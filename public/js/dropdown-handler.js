@@ -9,15 +9,15 @@ document.addEventListener('DOMContentLoaded', function() {
   const dropdownContent = document.querySelector('.dropdown-content');
   const dropdownOptions = document.querySelectorAll('.dropdown-option');
   const moduleContainers = document.querySelectorAll('.module-wrapper');
-  
+
   // General dropdown handling for navigation
   const allDropdowns = document.querySelectorAll('.dropdown');
-  
+
   if (allDropdowns.length) {
     allDropdowns.forEach(dropdown => {
-      const button = dropdown.querySelector('button, a');
+      const button = dropdown.querySelector('button a');
       const content = dropdown.querySelector('.dropdown-content');
-      
+
       if (button && content) {
         // Toggle dropdown visibility when clicking the dropdown button
         button.addEventListener('click', function(e) {
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
       }
     });
-    
+
     // Close all dropdowns when clicking outside
     document.addEventListener('click', function() {
       document.querySelectorAll('.dropdown-content').forEach(content => {
@@ -69,11 +69,11 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   }
-  
+
   // Mobile menu toggle functionality
   const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
   const mobileNav = document.querySelector('.mobile-nav');
-  
+
   if (mobileMenuToggle && mobileNav) {
     mobileMenuToggle.addEventListener('click', function() {
       mobileNav.classList.toggle('hidden');

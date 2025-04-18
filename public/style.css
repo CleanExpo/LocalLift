@@ -24,18 +24,18 @@
   --color-secondary-700: #4d885c;
   --color-secondary-800: #335b3d;
   --color-secondary-900: #1a2d1f;
-  
+
   /* Light mode theme colors */
   --color-bg-primary: #ffffff;
   --color-bg-secondary: #f9fafb;
   --color-bg-tertiary: #f3f4f6;
-  
+
   --color-text-primary: #1f2937;
   --color-text-secondary: #4b5563;
   --color-text-tertiary: #9ca3af;
-  
+
   --color-border: #e5e7eb;
-  
+
   /* Blue accent (from digital marketing image) */
   --color-accent-300: #90b8e0;
   --color-accent-400: #6a9fd4;
@@ -49,11 +49,11 @@
   --color-bg-primary: #121212;
   --color-bg-secondary: #1e1e1e;
   --color-bg-tertiary: #2d2d2d;
-  
+
   --color-text-primary: #f9fafb;
   --color-text-secondary: #e2e8f0;
   --color-text-tertiary: #94a3b8;
-  
+
   --color-border: #2d2d2d;
 }
 
@@ -606,13 +606,13 @@ footer a:hover {
     width: 100%;
     margin-top: 1rem;
   }
-  
+
   .nav-links a {
     padding: 0.5rem 0;
     width: 100%;
     display: block;
   }
-  
+
   .space-x-6 > * + * {
     margin-left: 0;
     margin-top: 0.5rem;

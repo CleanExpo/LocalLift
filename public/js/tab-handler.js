@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (tabButtons.length && !document.querySelector('.tab-button.active')) {
     const firstTab = tabButtons[0];
     const firstTabTarget = firstTab.getAttribute('data-tab');
-    
+
     firstTab.classList.add('active');
     const firstContent = document.getElementById(`${firstTabTarget}-tab`);
     if (firstContent) {

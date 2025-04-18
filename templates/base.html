@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Local Lift{% endblock %}</title>
-    
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}">
     <link rel="stylesheet" href="/public/style.css">
-    
+
     <!-- Additional head content -->
     {% block head %}{% endblock %}
 </head>
@@ -101,7 +101,7 @@
                 <a href="/gamification" class="block text-gray-700 hover:text-primary-600 font-medium">Gamification</a>
                 <a href="/leaderboards" class="block text-gray-700 hover:text-primary-600 font-medium">Leaderboards</a>
                 <a href="/certifications" class="block text-gray-700 hover:text-primary-600 font-medium">Certifications</a>
-                
+
                 <div class="block text-gray-700 font-medium pt-2">Titles for Local Impact</div>
                 <div class="pl-4 space-y-2">
                     <a href="/titles/local-business-champion" class="block text-gray-700 hover:text-primary-600">Local Business Champion</a>
@@ -111,7 +111,7 @@
                     <a href="/titles/regional-revitalizer" class="block text-gray-700 hover:text-primary-600">Regional Revitalizer</a>
                     <a href="/titles/metro-maestro" class="block text-gray-700 hover:text-primary-600">Metro Maestro</a>
                 </div>
-                
+
                 <div class="block text-gray-700 font-medium pt-2">Documentation</div>
                 <div class="pl-4 space-y-2">
                     <a href="/docs/latest" class="block text-gray-700 hover:text-primary-600">Latest Documentation</a>
@@ -186,12 +186,12 @@
         document.getElementById('mobileMenuButton').addEventListener('click', function() {
             document.getElementById('mobileMenu').classList.toggle('hidden');
         });
-        
+
         // Toggle profile dropdown
         document.getElementById('profileDropdown').addEventListener('click', function() {
             document.getElementById('profileMenu').classList.toggle('hidden');
         });
-        
+
         // Close dropdowns when clicking outside
         document.addEventListener('click', function(event) {
             const profileDropdown = document.getElementById('profileDropdown');
@@ -204,11 +204,11 @@
             if (!profileDropdown.contains(event.target)) {
                 profileMenu.classList.add('hidden');
             }
-            
+
             if (!docDropdown.contains(event.target)) {
                 docMenu.classList.add('hidden');
             }
-            
+
             if (!localImpactDropdown.contains(event.target)) {
                 localImpactMenu.classList.add('hidden');
             }
@@ -218,19 +218,19 @@
         document.getElementById('docDropdown').addEventListener('click', function() {
             document.getElementById('docMenu').classList.toggle('hidden');
         });
-        
+
         // Toggle Local Impact dropdown
         document.getElementById('localImpactDropdown').addEventListener('click', function() {
             document.getElementById('localImpactMenu').classList.toggle('hidden');
         });
     </script>
-    
+
     <!-- API Configuration -->
     <script src="/static/js/config.js"></script>
-    
+
     <!-- Additional scripts -->
     {% block scripts %}{% endblock %}
-    
+
     <!-- Badge Widget Script -->
     <script src="/static/js/badge-widget.js"></script>
 </body>

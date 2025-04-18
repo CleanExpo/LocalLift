@@ -1,9 +1,9 @@
 /**
  * Supabase Client Configuration
- * 
+ *
  * This file initializes the Supabase client for browser-side access.
  * It establishes a connection to the Supabase backend using the project URL
- * and API key, which should be set in environment variables.
+ * and API key which should be set in environment variables.
  */
 
 import { createClient } from '@supabase/supabase-js'
@@ -13,10 +13,10 @@ export const SUPABASE_URL = 'https://rsooolwhapkkkwbmybdb.supabase.co'
 export const SUPABASE_PROJECT_ID = 'rsooolwhapkkkwbmybdb'
 
 // The API key should be set in environment variables
-// In production, this will come from Railway environment variables
-// In development, it should be in .env file or injected by the server
-const supabaseAnonKey = process.env.SUPABASE_KEY || 
-                        window.SUPABASE_KEY || 
+// In production this will come from Railway environment variables
+// In development it should be in .env file or injected by the server
+const supabaseAnonKey = process.env.SUPABASE_KEY ||
+                        window.SUPABASE_KEY ||
                         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzb29vbHdoYXBra2t3Ym15YmRiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MDg1NDYsImV4cCI6MjA2MDI4NDU0Nn0.hKGvTKiT0c8270__roY4C66P5haZuXwBpbRSvmpYa34'
 
 // Client options with better defaults for web applications
@@ -106,27 +106,27 @@ export const db = {
    */
   fetch: async (table, options = {}) => {
     let query = supabase.from(table).select(options.columns || '*')
-    
+
     if (options.filters) {
       Object.entries(options.filters).forEach(([field, value]) => {
         query = query.eq(field, value)
       })
     }
-    
+
     if (options.order) {
       Object.entries(options.order).forEach(([column, direction]) => {
         query = query.order(column, { ascending: direction === 'asc' })
       })
     }
-    
+
     if (options.limit) {
       query = query.limit(options.limit)
     }
-    
+
     if (options.offset) {
       query = query.range(options.offset, options.offset + (options.limit || 10) - 1)
     }
-    
+
     return await query
   },
 
@@ -149,11 +149,11 @@ export const db = {
    */
   update: async (table, data, filters = {}) => {
     let query = supabase.from(table).update(data)
-    
+
     Object.entries(filters).forEach(([field, value]) => {
       query = query.eq(field, value)
     })
-    
+
     return await query
   },
 
@@ -165,11 +165,11 @@ export const db = {
    */
   delete: async (table, filters = {}) => {
     let query = supabase.from(table).delete()
-    
+
     Object.entries(filters).forEach(([field, value]) => {
       query = query.eq(field, value)
     })
-    
+
     return await query
   }
 }

@@ -44,5 +44,11 @@ window.LOCALLIFT_CONFIG = {
   },
 
   // Default error page
-  ERROR_PAGE: '/404.html'
+  ERROR_PAGE: '/404.html',
+  
+  // Supabase configuration
+  SUPABASE: {
+    PROJECT_ID: 'rsooolwhapkkkwbmybdb',
+    API_URL: 'https://rsooolwhapkkkwbmybdb.supabase.co'
+  }
 };
