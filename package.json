@@ -1,9 +1,10 @@
 {
-{
-  "name": "locallift",
+  "name": "locallift-frontend",
   "version": "1.0.0",
   "scripts": {
-    "build": "echo 'Static deployment only'"
+    "build:css": "npx tailwindcss -i ./frontend/styles/tailwind.css -o ./public/style.css",
+    "watch:css": "npx tailwindcss -i ./frontend/styles/tailwind.css -o ./public/style.css --watch",
+    "build": "npm run build:css"
   },
   "license": "MIT",
   "devDependencies": {
