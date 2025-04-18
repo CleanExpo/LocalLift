@@ -8,7 +8,7 @@
     { "source": "/settings", "destination": "/settings/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
-  "buildCommand": "",
+  "buildCommand": "npm run vercel-build",
   "outputDirectory": "public",
   "trailingSlash": false,
   "headers": [

@@ -4,7 +4,11 @@
   "scripts": {
     "build:css": "npx tailwindcss -i ./frontend/styles/tailwind.css -o ./public/style.css",
     "watch:css": "npx tailwindcss -i ./frontend/styles/tailwind.css -o ./public/style.css --watch",
-    "build": "npm run build:css"
+    "preserve-css": "node -e \"require('fs').copyFileSync('./public/style.css', './public/style.backup.css')\"",
+    "build": "npm run preserve-css && npm run build:css && npm run validate-css",
+    "vercel-build": "npm run preserve-css && npm run build:css && npm run validate-css",
+    "postbuild": "echo 'CSS build completed'",
+    "validate-css": "node ./tools/validate_css.js"
   },
   "license": "MIT",
   "devDependencies": {
