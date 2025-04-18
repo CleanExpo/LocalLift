@@ -13,12 +13,11 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 export const SUPABASE_URL = 'https://rsooolwhapkkkwbmybdb.supabase.co'
 export const SUPABASE_PROJECT_ID = 'rsooolwhapkkkwbmybdb'
 
-// The API key should be set in environment variables
-// In production this will come from Railway environment variables
-// In development it should be in .env file or injected by the server
-const supabaseAnonKey = process.env.SUPABASE_KEY ||
-                        window.SUPABASE_KEY ||
-                        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzb29vbHdoYXBra2t3Ym15YmRiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MDg1NDYsImV4cCI6MjA2MDI4NDU0Nn0.hKGvTKiT0c8270__roY4C66P5haZuXwBpbRSvmpYa34'
+// The API key should be set in environment variables for server-side rendering or build steps.
+// For static client-side deployment, we rely on window injection or a hardcoded fallback.
+// process.env is Node.js specific and will cause errors in the browser.
+const supabaseAnonKey = window.SUPABASE_KEY || // Check if injected into window scope
+                        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzb29vbHdoYXBra2t3Ym15YmRiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MDg1NDYsImV4cCI6MjA2MDI4NDU0Nn0.hKGvTKiT0c8270__roY4C66P5haZuXwBpbRSvmpYa34'; // Hardcoded fallback anon key
 
 // Client options with better defaults for web applications
 const supabaseOptions = {
