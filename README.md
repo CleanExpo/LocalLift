@@ -5,13 +5,15 @@ LocalLift is a platform designed to support local businesses through technology 
 [![Deploy to Railway](https://github.com/LocalLift/locallift/workflows/Deploy%20to%20Railway/badge.svg)](https://github.com/LocalLift/locallift/actions/workflows/railway-deploy.yml)
 [![Deploy LocalLift](https://github.com/LocalLift/locallift/workflows/Deploy%20LocalLift/badge.svg)](https://github.com/LocalLift/locallift/actions/workflows/deploy.yml)
 
-## Deployment System Documentation
+## Project Documentation
 
-This project includes a comprehensive deployment system for both the backend (FastAPI on Railway) and frontend (Static files on Vercel). The following documentation guides will help you deploy, monitor, and maintain the LocalLift application.
+This project includes comprehensive documentation for all major aspects of the LocalLift platform. These guides will help you deploy, optimize, monitor, and maintain the application.
 
-### Main Documentation
+### Core Documentation
 
 - **[Deployment Guide](./DEPLOYMENT_GUIDE.md)** - Step-by-step manual deployment instructions
+- **[CI/CD Pipeline](./CI_CD_PIPELINE.md)** - Detailed CI/CD workflow documentation
+- **[Performance Optimization](./PERFORMANCE_OPTIMIZATION.md)** - Performance strategies and best practices
 - **[GitHub Actions Guide](./GITHUB_ACTIONS_GUIDE.md)** - Automated CI/CD deployment workflow
 - **[Railway Deployment](./RAILWAY_DEPLOYMENT.md)** - Specific details for Railway backend deployment
 
