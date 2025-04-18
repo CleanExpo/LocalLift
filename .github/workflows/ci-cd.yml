@@ -147,6 +147,26 @@ jobs:
           if [ -f package.json ]; then 
             npm test || echo "No tests defined, continuing deployment"
           fi
+          
+      - name: Create jest test report directory
+        run: mkdir -p test-results/jest
+        
+      - name: Run Jest tests with coverage
+        if: always()
+        run: |
+          if [ -f package.json ] && [ -d tests/js ]; then
+            npm run test:ci
+          fi
+          
+      - name: Upload Jest test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: jest-test-results
+          path: |
+            test-results
+            coverage
+          retention-days: 7
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v3
