@@ -2,6 +2,22 @@
 
 {% block title %}Dashboard - LocalLift{% endblock %}
 
+{% block head %}
+<!-- Post notifications styles -->
+<style>
+  #post-notifications-container {
+    transition: all 0.3s ease;
+  }
+  #post-notifications-container > div {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+  #post-notifications-container > div.opacity-0 {
+    opacity: 0;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="mb-8">
     <h1 class="text-3xl font-display font-bold text-primary-700">Dashboard</h1>
@@ -202,4 +218,9 @@
         <a href="/activity" class="text-primary-600 font-medium hover:text-primary-800">View All Activity</a>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Post notifications script -->
+<script src="{{ url_for('static', path='js/post-notifications.js') }}" type="module"></script>
 {% endblock %}

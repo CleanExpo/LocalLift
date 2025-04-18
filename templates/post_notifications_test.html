@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Post Notifications Test - LocalLift{% endblock %}
+
+{% block head %}
+<!-- Post notifications styles -->
+<style>
+  #post-notifications-container {
+    transition: all 0.3s ease;
+  }
+  #post-notifications-container > div {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+  #post-notifications-container > div.opacity-0 {
+    opacity: 0;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-display font-bold text-primary-700">Post Notifications Test</h1>
+    <p class="text-gray-600">Use this page to test the post notifications system.</p>
+</div>
+
+<div class="card p-6 mb-8">
+    <h2 class="text-xl font-semibold mb-4">Create a Test Post</h2>
+    <p class="mb-4">Click the button below to create a mock post. This will trigger a notification to appear.</p>
+    
+    <div class="flex items-center space-x-4">
+        <input type="text" id="post-title" placeholder="Post title" class="border border-gray-300 rounded-md px-4 py-2 flex-grow">
+        <button id="create-post-btn" class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-md transition-colors">
+            Create Post
+        </button>
+    </div>
+    
+    <div id="result-message" class="mt-4 hidden"></div>
+</div>
+
+<div class="card p-6">
+    <h2 class="text-xl font-semibold mb-4">How It Works</h2>
+    
+    <div class="space-y-4">
+        <div>
+            <h3 class="font-medium">1. Real-time Notifications</h3>
+            <p class="text-gray-600">When a new post is created, a notification appears in the top-right corner of the screen.</p>
+        </div>
+        
+        <div>
+            <h3 class="font-medium">2. 60-Minute Countdown</h3>
+            <p class="text-gray-600">Each notification includes a 60-minute countdown timer.</p>
+        </div>
+        
+        <div>
+            <h3 class="font-medium">3. Click to Dismiss</h3>
+            <p class="text-gray-600">Clicking on a notification will take you to the post and remove the notification.</p>
+        </div>
+        
+        <div>
+            <h3 class="font-medium">4. Auto-Expiry</h3>
+            <p class="text-gray-600">Notifications automatically disappear after 60 minutes if not clicked.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Post notifications script -->
+<script src="{{ url_for('static', path='js/post-notifications.js') }}" type="module"></script>
+
+<!-- Test page script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const createPostBtn = document.getElementById('create-post-btn');
+    const postTitleInput = document.getElementById('post-title');
+    const resultMessage = document.getElementById('result-message');
+    
+    createPostBtn.addEventListener('click', async function() {
+        // Get the post title
+        const title = postTitleInput.value.trim() || 'New Test Post';
+        
+        try {
+            // Show loading state
+            createPostBtn.disabled = true;
+            createPostBtn.textContent = 'Creating...';
+            
+            // Call the API to create a mock post
+            const response = await fetch(`/api/mock/create-post?title=${encodeURIComponent(title)}`, {
+                method: 'POST'
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            // Show success message
+            resultMessage.textContent = 'Post created successfully! Check for the notification.';
+            resultMessage.className = 'mt-4 text-green-600';
+            resultMessage.classList.remove('hidden');
+            
+            // Reset the input
+            postTitleInput.value = '';
+            
+        } catch (error) {
+            // Show error message
+            resultMessage.textContent = `Failed to create post: ${error.message}`;
+            resultMessage.className = 'mt-4 text-red-600';
+            resultMessage.classList.remove('hidden');
+            
+        } finally {
+            // Reset button state
+            createPostBtn.disabled = false;
+            createPostBtn.textContent = 'Create Post';
+            
+            // Hide the message after 5 seconds
+            setTimeout(() => {
+                resultMessage.classList.add('hidden');
+            }, 5000);
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -56,13 +56,24 @@ async def dashboard(request: Request):
             "completed_courses": 5
         }
     }
-    
+
     return templates.TemplateResponse(
         "dashboard.html",  # You would need to create this template
         {
             "request": request,
             "data": dashboard_data
         }
+    )
+
+
+@app.get("/test/post-notifications", response_class=HTMLResponse)
+async def post_notifications_test(request: Request):
+    """
+    Render the post notifications test page
+    """
+    return templates.TemplateResponse(
+        "post_notifications_test.html",
+        {"request": request}
     )
 
 
@@ -84,7 +95,7 @@ async def gamification_page(request: Request):
             {"name": "Referral Champion", "description": "Refer 10 new clients", "points": 200}
         ]
     }
-    
+
     return templates.TemplateResponse(
         "gamification.html",  # You would need to create this template
         {
@@ -113,7 +124,7 @@ async def leaderboards_page(request: Request):
             # Regional leaderboard data would go here
         }
     }
-    
+
     return templates.TemplateResponse(
         "leaderboards.html",  # You would need to create this template
         {
@@ -137,18 +148,18 @@ async def certifications_page(request: Request):
         ],
         "featured_courses": [
             {
-                "id": 1, 
-                "title": "GMB Optimization Fundamentals", 
-                "level": 1, 
+                "id": 1,
+                "title": "GMB Optimization Fundamentals",
+                "level": 1,
                 "category_id": 1,
                 "modules_count": 5,
                 "duration_minutes": 120,
                 "points": 50
             },
             {
-                "id": 3, 
-                "title": "Local SEO Best Practices", 
-                "level": 2, 
+                "id": 3,
+                "title": "Local SEO Best Practices",
+                "level": 2,
                 "category_id": 2,
                 "modules_count": 7,
                 "duration_minutes": 240,
@@ -156,7 +167,7 @@ async def certifications_page(request: Request):
             }
         ]
     }
-    
+
     return templates.TemplateResponse(
         "certifications.html",  # You would need to create this template
         {
@@ -188,6 +199,8 @@ from apps.client.api.badge_email_api import router as badge_email_router
 from apps.client.api.badge_history_api import router as badge_history_router
 from apps.client.api.badge_leaderboard_api import router as badge_leaderboard_router
 from apps.client.api.achievement_api import router as achievement_api_router
+from apps.client.api.recent_posts_api import router as recent_posts_router
+from apps.client.api.mock_posts_api import router as mock_posts_router
 from backend.api import router as backend_api_router
 from apps.admin.badge_dashboard_admin import router as badge_admin_router
 from apps.admin.api.badge_admin_api import router as badge_admin_api_router
@@ -197,6 +210,8 @@ app.include_router(badge_email_router)
 app.include_router(badge_history_router)
 app.include_router(badge_leaderboard_router)
 app.include_router(achievement_api_router)
+app.include_router(recent_posts_router)
+app.include_router(mock_posts_router)
 app.include_router(backend_api_router)
 app.include_router(badge_admin_router)
 app.include_router(badge_admin_api_router)
@@ -209,7 +224,7 @@ async def trigger_weekly_badge_emails(background_tasks: BackgroundTasks):
     to send weekly badge status reports.
     """
     from apps.client.badge_weekly_emailer import send_all_weekly_reports
-    
+
     result = await send_all_weekly_reports(background_tasks)
     return result
 

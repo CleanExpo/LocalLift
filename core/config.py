@@ -28,8 +28,9 @@ class Settings(BaseModel):
     database_url: str = "sqlite:///./localdb.sqlite"
 
     # Supabase Settings
-    supabase_url: Optional[str] = None
-    supabase_key: Optional[str] = None
+    supabase_url: str = os.getenv("SUPABASE_URL", "https://rsooolwhapkkkwbmybdb.supabase.co")
+    supabase_key: str = os.getenv("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzb29vbHdoYXBra2t3Ym15YmRiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MDg1NDYsImV4cCI6MjA2MDI4NDU0Nn0.hKGvTKiT0c8270__roY4C66P5haZuXwBpbRSvmpYa34")
+    webhook_secret: Optional[str] = os.getenv("WEBHOOK_SECRET", None)
 
     # CORS Settings
     cors_origins: List[str] = ["http://localhost:3000"]
@@ -55,7 +56,7 @@ class Settings(BaseModel):
 def get_settings() -> Settings:
     """
     Get cached settings instance.
-    
+
     Returns:
         Settings: Application settings
     """
