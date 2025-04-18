@@ -1,8 +1,10 @@
 module.exports = {
   content: [
-    "./templates/**/*.html",
+    "./templates/**/*.html", // For backend-rendered templates
+    "./public/**/*.html",    // Add this to scan static HTML files in public/
+    "./public/**/*.js",      // Add this to scan JS files in public/ for potential classes
     "./**/*.py",
-    "./frontend/**/*.{js,ts,jsx,tsx}"
+    "./frontend/**/*.{js,ts,jsx,tsx}" // Keep this if you have a separate frontend source dir
   ],
   theme: { 
     extend: {
