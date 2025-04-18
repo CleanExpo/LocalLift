@@ -64,42 +64,49 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Load developer credentials from embedded data to avoid CORS issues
-  try {
-    // Embedded credentials to bypass CORS in local environment
-    const devCredentials = {
-      username: "phill.m@carsi.com.au",
-      password: "Sanctuary2025!@"
-    };
+  // TODO: Implement proper user session check using Supabase client
+  // Example (needs integration with supabase-client.js and UI updates):
+  /*
+  import { auth } from '../static/js/supabase-client.js'; // Adjust path if needed
 
-    console.log('Developer account connected:', devCredentials.username);
-
-    // Store credentials for demo purposes
-    localStorage.setItem('locallift_dev_credentials', JSON.stringify(devCredentials));
-
-    // Update all API status indicators
+  async function checkAuthStatus() {
+    const session = await auth.getSession();
+    const user = await auth.getUser();
     const apiStatusElements = document.querySelectorAll('#api-status-text');
-    apiStatusElements.forEach(element => {
-      element.textContent = 'Developer account connected';
-      element.classList.remove('text-red-500');
-      element.classList.add('text-green-500');
-    });
-
-    // Update API status values
     const apiStatusValues = document.querySelectorAll('.api-status');
-    apiStatusValues.forEach(element => {
-      element.textContent = 'Connected';
-    });
-  } catch (error) {
-    console.error('Error loading developer credentials:', error);
-    // Update status to show error
-    const apiStatusElements = document.querySelectorAll('#api-status-text');
-    apiStatusElements.forEach(element => {
-      element.textContent = 'Backend integration disabled';
-      element.classList.remove('text-green-500');
-      element.classList.add('text-red-500');
-    });
+
+    if (session && user) {
+      console.log('User logged in:', user.email);
+      // Update UI to show logged-in state (e.g., show user email, logout button)
+      apiStatusElements.forEach(element => {
+        element.textContent = `Logged in as ${user.email}`;
+        element.classList.remove('text-red-500');
+        element.classList.add('text-green-500');
+      });
+      apiStatusValues.forEach(element => {
+        element.textContent = 'Connected';
+      });
+    } else {
+      console.log('User not logged in.');
+      // Update UI to show logged-out state (e.g., show login button)
+       apiStatusElements.forEach(element => {
+        element.textContent = 'Not logged in';
+        element.classList.remove('text-green-500');
+        element.classList.add('text-red-500'); // Or neutral color
+      });
+       apiStatusValues.forEach(element => {
+        element.textContent = 'Disconnected';
+      });
+    }
   }
+  checkAuthStatus();
+
+  // Listen for auth state changes
+  supabase.auth.onAuthStateChange((event, session) => {
+    console.log('Auth state changed:', event, session);
+    checkAuthStatus(); // Re-check status on change
+  });
+  */
 
   // Handle mobile menu
   const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
@@ -125,46 +132,49 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Handle report generation
+  // Handle report generation - TODO: Replace alert with actual API call using auth token
   const generateReportBtn = document.getElementById('generate-report-btn');
   if (generateReportBtn) {
-    generateReportBtn.addEventListener('click', function() {
-      // Check if we have developer credentials in localStorage
-      const storedCredentials = localStorage.getItem('locallift_dev_credentials');
-      if (storedCredentials) {
-        try {
-          const credentials = JSON.parse(storedCredentials);
-          // We have credentials so show a success message
-          alert("Report generation started for " + credentials.username);
-        } catch (error) {
-          // Error parsing JSON
-          console.error('Error parsing credentials:', error);
-          alert("Report generation is currently disabled due to backend integration issues.");
-        }
-      } else {
-        // No credentials in localStorage
-        alert("Report generation is currently disabled due to backend integration issues.");
-      }
+    generateReportBtn.addEventListener('click', async function() {
+      // Example: Fetch session/token before making API call
+      // const session = await auth.getSession();
+      // if (session) {
+      //   const token = session.access_token;
+      //   // Make API call to backend report endpoint with token
+      //   console.log("Attempting report generation with token:", token);
+           alert("Report generation feature needs backend integration.");
+      // } else {
+      //   alert("You must be logged in to generate reports.");
+      // }
     });
   }
 
-  // Handle logout
-  const logoutBtn = document.getElementById('logout-btn');
-  const logoutBtnMobile = document.getElementById('logout-btn-mobile');
+  // Handle logout - TODO: Integrate with Supabase signout
+  const logoutBtn = document.getElementById('logout-btn'); // Assuming this ID exists on a logout button
+  const logoutBtnMobile = document.getElementById('logout-btn-mobile'); // Assuming this ID exists
+
+  async function handleLogout() {
+      // Example: Call Supabase signout
+      // const { error } = await auth.signOut();
+      // if (error) {
+      //   console.error('Error logging out:', error);
+      //   alert('Logout failed. Please try again.');
+      // } else {
+           alert('You have been logged out.'); // Placeholder
+           // Clear any local session info if needed
+           // localStorage.removeItem(window.LOCALLIFT_CONFIG.AUTH.TOKEN_KEY);
+           window.location.href = '/'; // Redirect to home
+      // }
+  }
 
   if (logoutBtn) {
-    logoutBtn.addEventListener('click', function() {
-      alert('You have been logged out.');
-      window.location.href = '/';
-    });
+    logoutBtn.addEventListener('click', handleLogout);
   }
 
   if (logoutBtnMobile) {
-    logoutBtnMobile.addEventListener('click', function() {
-      alert('You have been logged out.');
-      window.location.href = '/';
-    });
+    logoutBtnMobile.addEventListener('click', handleLogout);
   }
+
 });
 
 // Initialize engagement chart if available
