@@ -98,7 +98,7 @@ async def get_current_user(
     db: Session = Depends(get_db)
 ) -> UserRead:
     """
-    Verify and decode the JWT token to get the current user.
+    Verify and decode the JWT token from Supabase to get the current user.
     
     Args:
         token: The JWT token to decode
@@ -110,6 +110,8 @@ async def get_current_user(
     Raises:
         HTTPException: If the token is invalid or the user doesn't exist
     """
+    from core.supabase.client import get_supabase_admin_client
+    
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -117,34 +119,45 @@ async def get_current_user(
     )
     
     try:
-        payload = jwt.decode(token, settings.secret_key, algorithms=["HS256"])
-        user_id: int = payload.get("sub")
-        if user_id is None:
+        # Get admin client with service role for user validation
+        supabase_admin = get_supabase_admin_client()
+        
+        # Verify the JWT token with Supabase
+        # This is a bit hacky since we're setting an auth header directly
+        # but it's the most reliable way to validate a token with the Supabase Python client
+        supabase_admin.auth.set_auth(token)
+        
+        # Get the user from the token - this will throw an error if invalid
+        user_response = supabase_admin.auth.get_user()
+        
+        if not user_response or not user_response.user:
             raise credentials_exception
             
-        token_data = TokenData(
-            user_id=user_id,
-            email=payload.get("email"),
-            role=payload.get("role"),
-            permissions=payload.get("permissions", []),
-            exp=payload.get("exp")
+        supabase_user = user_response.user
+        
+        # Extract user ID, email and app_metadata
+        user_id = supabase_user.id
+        email = supabase_user.email
+        app_metadata = supabase_user.app_metadata or {}
+        
+        # Extract role and permissions from app_metadata
+        role = app_metadata.get("role", "client")
+        permissions = app_metadata.get("permissions", [])
+        
+        # Create a user object from the Supabase data
+        user = UserRead(
+            id=user_id,
+            email=email,
+            name=supabase_user.user_metadata.get("full_name", email),
+            role=role,
+            permissions=permissions,
+            is_active=not supabase_user.banned,
         )
-    except JWTError:
+        
+    except Exception as e:
+        import logging
+        logging.error(f"Token validation error: {str(e)}")
         raise credentials_exception
-        
-    # This is a placeholder - in a real implementation, you would fetch the user from the database
-    # user = db.query(User).filter(User.id == token_data.user_id).first()
-    # if user is None or not user.is_active:
-    #     raise credentials_exception
-        
-    # For now, we'll simulate a user
-    user = UserRead(
-        id=token_data.user_id,
-        email=token_data.email or "user@example.com",
-        name="Test User",
-        role=token_data.role or "client",
-        permissions=token_data.permissions
-    )
     
     return user
 
@@ -221,7 +234,7 @@ async def register_user(user: UserCreate, db: Session = Depends(get_db)):
 @router.post("/login", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     """
-    Authenticate a user and return an access token.
+    Authenticate a user using Supabase and return the access/refresh tokens.
     
     Args:
         form_data: OAuth2 password request form
@@ -233,49 +246,43 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     Raises:
         HTTPException: If authentication fails
     """
-    # This is a placeholder - in a real implementation, you would fetch the user from the database
-    # user = db.query(User).filter(User.email == form_data.username).first()
-    # if not user or not verify_password(form_data.password, user.hashed_password):
-    #     raise HTTPException(
-    #         status_code=status.HTTP_401_UNAUTHORIZED,
-    #         detail="Incorrect username or password",
-    #         headers={"WWW-Authenticate": "Bearer"},
-    #     )
+    from core.supabase.client import get_supabase_client
     
-    # For now, we'll simulate authentication (only allow test credentials)
-    if form_data.username != "test@example.com" or form_data.password != "Test1234":
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
+    auth_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Incorrect username or password",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    
+    try:
+        # Get Supabase client
+        supabase = get_supabase_client()
+        
+        # Authenticate with Supabase
+        auth_response = supabase.auth.sign_in_with_password({
+            "email": form_data.username,
+            "password": form_data.password
+        })
+        
+        if not auth_response or not auth_response.session:
+            raise auth_exception
+            
+        # Return the Supabase-generated tokens
+        return Token(
+            access_token=auth_response.session.access_token,
+            refresh_token=auth_response.session.refresh_token
         )
-    
-    # Create tokens
-    access_token_expires = timedelta(minutes=settings.auth_token_expire_minutes)
-    user_data = {
-        "sub": 1,  # User ID
-        "email": "test@example.com",
-        "role": "client",
-        "permissions": ["read:profile", "update:profile"],
-    }
-    
-    access_token = create_access_token(
-        data=user_data,
-        expires_delta=access_token_expires
-    )
-    
-    refresh_token = create_refresh_token(data={"sub": 1})
-    
-    return Token(
-        access_token=access_token,
-        refresh_token=refresh_token
-    )
+        
+    except Exception as e:
+        import logging
+        logging.error(f"Login error: {str(e)}")
+        raise auth_exception
 
 
 @router.post("/refresh", response_model=Token)
 async def refresh_token(token: str, db: Session = Depends(get_db)):
     """
-    Refresh an expired access token using a refresh token.
+    Refresh an expired access token using a Supabase refresh token.
     
     Args:
         token: The refresh token
@@ -287,6 +294,8 @@ async def refresh_token(token: str, db: Session = Depends(get_db)):
     Raises:
         HTTPException: If the refresh token is invalid
     """
+    from core.supabase.client import get_supabase_client
+    
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Invalid refresh token",
@@ -294,38 +303,25 @@ async def refresh_token(token: str, db: Session = Depends(get_db)):
     )
     
     try:
-        payload = jwt.decode(token, settings.secret_key, algorithms=["HS256"])
-        user_id: int = payload.get("sub")
-        if user_id is None:
+        # Get Supabase client
+        supabase = get_supabase_client()
+        
+        # Refresh the token with Supabase
+        auth_response = supabase.auth.refresh_session(refresh_token=token)
+        
+        if not auth_response or not auth_response.session:
             raise credentials_exception
             
-        # Check if token is expired
-        expiration = datetime.fromtimestamp(payload.get("exp", 0))
-        if datetime.utcnow() > expiration:
-            raise credentials_exception
-    except JWTError:
+        # Return the new Supabase-generated tokens
+        return Token(
+            access_token=auth_response.session.access_token,
+            refresh_token=auth_response.session.refresh_token
+        )
+        
+    except Exception as e:
+        import logging
+        logging.error(f"Token refresh error: {str(e)}")
         raise credentials_exception
-    
-    # This is a placeholder - in a real implementation, you would fetch the user from the database
-    # user = db.query(User).filter(User.id == user_id).first()
-    # if user is None or not user.is_active:
-    #     raise credentials_exception
-    
-    # Create new tokens
-    user_data = {
-        "sub": user_id,
-        "email": "test@example.com",
-        "role": "client",
-        "permissions": ["read:profile", "update:profile"],
-    }
-    
-    access_token = create_access_token(data=user_data)
-    new_refresh_token = create_refresh_token(data={"sub": user_id})
-    
-    return Token(
-        access_token=access_token,
-        refresh_token=new_refresh_token
-    )
 
 
 @router.get("/me", response_model=UserRead)

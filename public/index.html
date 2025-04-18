@@ -20,6 +20,20 @@
         <div class="nav-links mt-4 md:mt-0 space-x-6">
           <a href="/" class="font-medium hover:text-primary-600">Home</a>
           <a href="/dashboard" class="font-medium hover:text-primary-600">Dashboard</a>
+          
+          <!-- Documents Dropdown -->
+          <div class="relative inline-block">
+            <button class="dropdown-trigger font-medium hover:text-primary-600 inline-flex items-center">
+              Documents <i class="fas fa-chevron-down ml-1 text-xs"></i>
+            </button>
+            <div class="dropdown-content hidden absolute z-10 mt-1 bg-white rounded-lg shadow-lg w-48">
+              <a href="/documents/user-guide" class="block px-4 py-2 text-sm hover:bg-gray-100">User Guide</a>
+              <a href="/documents/tutorials" class="block px-4 py-2 text-sm hover:bg-gray-100">Tutorials</a>
+              <a href="/documents/api" class="block px-4 py-2 text-sm hover:bg-gray-100">API Documentation</a>
+              <a href="/documents/faq" class="block px-4 py-2 text-sm hover:bg-gray-100">FAQ</a>
+            </div>
+          </div>
+          
           <a href="/admin/guide" class="font-medium hover:text-primary-600">Guide</a>
           <a href="/login" class="btn btn-primary ml-4">Login</a>
         </div>
@@ -76,8 +90,7 @@ x8&auto=format&fit=crop&w=1050&q=80"
           <h2 class="text-3xl font-bold text-center mb-12">What Our Clients Say</h2>
           <div class="grid md:grid-cols-2 gap-8">
             <div class="testimonial card">
-              <p class="italic mb-4">"LocalLift has transformed how we manage our online presence. Our engagement metrics have increased by 45%
-% in just three months!"</p>
+              <p class="italic mb-4">"LocalLift has transformed how we manage our online presence. Our engagement metrics have increased by 45% in just three months!"</p>
               <div class="flex items-center">
                 <div class="mr-4">
                   <i class="fas fa-user-circle text-3xl text-gray-400"></i>
@@ -89,8 +102,7 @@ x8&auto=format&fit=crop&w=1050&q=80"
               </div>
             </div>
             <div class="testimonial card">
-              <p class="italic mb-4">"The analytics tools provided by LocalLift gave us insights we never had before. It's like having a market
-ting team in your pocket."</p>
+              <p class="italic mb-4">"The analytics tools provided by LocalLift gave us insights we never had before. It's like having a marketing team in your pocket."</p>
               <div class="flex items-center">
                 <div class="mr-4">
                   <i class="fas fa-user-circle text-3xl text-gray-400"></i>
@@ -98,6 +110,72 @@ ting team in your pocket."</p>
                 <div>
                   <p class="font-semibold">Michael Chen</p>
                   <p class="text-sm text-gray-500">Chen's Hardware</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Question and Answer Section -->
+      <section class="qa-section py-16 bg-white">
+        <div class="container mx-auto px-4">
+          <h2 class="text-3xl font-bold text-center mb-4">Questions & Answers</h2>
+          <p class="text-gray-600 text-center mb-12 max-w-2xl mx-auto">Get answers to your most pressing questions about LocalLift and how it can help your business grow.</p>
+          
+          <div class="qa-container max-w-3xl mx-auto">
+            <div class="qa-item mb-6">
+              <div class="qa-question bg-gray-50 rounded-lg p-4 cursor-pointer flex justify-between items-center">
+                <h3 class="text-lg font-semibold">How does LocalLift improve my online visibility?</h3>
+                <i class="fas fa-chevron-down text-primary-600 qa-toggle"></i>
+              </div>
+              <div class="qa-answer bg-white p-4 border border-gray-200 rounded-b-lg hidden">
+                <p class="text-gray-700">LocalLift uses a combination of SEO optimization, targeted content strategies, and local engagement metrics to boost your business's visibility in local search results. Our platform continuously monitors your online presence and provides actionable recommendations to improve your ranking.</p>
+                <div class="mt-4 flex items-center">
+                  <i class="fas fa-file-pdf text-red-500 mr-2"></i>
+                  <a href="/docs/visibility-guide.pdf" class="text-primary-600 hover:underline text-sm">Download our Visibility Guide</a>
+                </div>
+              </div>
+            </div>
+            
+            <div class="qa-item mb-6">
+              <div class="qa-question bg-gray-50 rounded-lg p-4 cursor-pointer flex justify-between items-center">
+                <h3 class="text-lg font-semibold">Can I track performance across multiple locations?</h3>
+                <i class="fas fa-chevron-down text-primary-600 qa-toggle"></i>
+              </div>
+              <div class="qa-answer bg-white p-4 border border-gray-200 rounded-b-lg hidden">
+                <p class="text-gray-700">Yes! LocalLift is designed to handle multi-location businesses seamlessly. You can track performance metrics, customer engagement, and online reviews for each location individually, while still getting aggregated reports for your entire business. This makes it easy to identify location-specific issues and opportunities.</p>
+                <div class="mt-4 flex items-center">
+                  <i class="fas fa-file-excel text-green-600 mr-2"></i>
+                  <a href="/docs/multi-location-template.xlsx" class="text-primary-600 hover:underline text-sm">Download Location Tracking Template</a>
+                </div>
+              </div>
+            </div>
+            
+            <div class="qa-item mb-6">
+              <div class="qa-question bg-gray-50 rounded-lg p-4 cursor-pointer flex justify-between items-center">
+                <h3 class="text-lg font-semibold">How does role-based access work?</h3>
+                <i class="fas fa-chevron-down text-primary-600 qa-toggle"></i>
+              </div>
+              <div class="qa-answer bg-white p-4 border border-gray-200 rounded-b-lg hidden">
+                <p class="text-gray-700">LocalLift offers flexible role-based access control, allowing you to assign different permissions to team members based on their responsibilities. Administrators can manage all aspects of the system, while managers may have access to reporting and client management. Client users can access only their own dashboards and data.</p>
+                <div class="mt-4 flex items-center">
+                  <i class="fas fa-file-alt text-blue-500 mr-2"></i>
+                  <a href="/docs/role-permissions.pdf" class="text-primary-600 hover:underline text-sm">View Role Permissions Document</a>
+                </div>
+              </div>
+            </div>
+            
+            <div class="qa-item mb-6">
+              <div class="qa-question bg-gray-50 rounded-lg p-4 cursor-pointer flex justify-between items-center">
+                <h3 class="text-lg font-semibold">How secure is my business data?</h3>
+                <i class="fas fa-chevron-down text-primary-600 qa-toggle"></i>
+              </div>
+              <div class="qa-answer bg-white p-4 border border-gray-200 rounded-b-lg hidden">
+                <p class="text-gray-700">Security is our top priority. LocalLift employs industry-standard encryption for all data, both in transit and at rest. We use secure authentication systems and regularly audit our security practices. Your business data is never shared with third parties without your explicit consent.</p>
+                <div class="mt-4 flex items-center">
+                  <i class="fas fa-shield-alt text-gray-700 mr-2"></i>
+                  <a href="/security" class="text-primary-600 hover:underline text-sm">Read our Security Policy</a>
                 </div>
               </div>
             </div>
@@ -135,6 +213,56 @@ ting team in your pocket."</p>
   </div>
 
   <script src="js/config.js"></script>
+  <script src="js/dropdown-handler.js"></script>
   <script src="js/main.js" defer></script>
+  
+  <!-- Q&A Section Toggle Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Handle document dropdown
+      const dropdownTrigger = document.querySelector('.dropdown-trigger');
+      const dropdownContent = document.querySelector('.dropdown-content');
+      
+      if (dropdownTrigger && dropdownContent) {
+        dropdownTrigger.addEventListener('click', function(e) {
+          e.preventDefault();
+          dropdownContent.classList.toggle('hidden');
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+          if (!dropdownTrigger.contains(e.target)) {
+            dropdownContent.classList.add('hidden');
+          }
+        });
+      }
+      
+      // Handle Q&A accordion
+      const qaQuestions = document.querySelectorAll('.qa-question');
+      
+      qaQuestions.forEach(question => {
+        question.addEventListener('click', function() {
+          // Toggle answer visibility
+          const answer = this.nextElementSibling;
+          answer.classList.toggle('hidden');
+          
+          // Toggle icon rotation
+          const icon = this.querySelector('.qa-toggle');
+          icon.classList.toggle('fa-chevron-down');
+          icon.classList.toggle('fa-chevron-up');
+          
+          // Update question styling
+          this.classList.toggle('active');
+          if (this.classList.contains('active')) {
+            this.classList.add('bg-primary-50');
+            this.classList.remove('bg-gray-50');
+          } else {
+            this.classList.remove('bg-primary-50');
+            this.classList.add('bg-gray-50');
+          }
+        });
+      });
+    });
+  </script>
 </body>
 </html>

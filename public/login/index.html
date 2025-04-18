@@ -789,44 +789,59 @@
   <!-- JavaScript References -->
   <script src="../js/tab-handler.js"></script>
   <script src="../js/dropdown-handler.js"></script>
-  <script>
+  <script type="module">
+    // Import Supabase authentication functionality
+    import { auth } from '../static/js/supabase-client.js';
+    
     // Login form handling
     document.addEventListener('DOMContentLoaded', function() {
       const loginForm = document.getElementById('loginForm');
       const loginStatus = document.querySelector('.login-status');
       
       if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
+        loginForm.addEventListener('submit', async function(e) {
           e.preventDefault();
           
           const email = document.getElementById('email').value;
           const password = document.getElementById('password').value;
+          
+          if (!email || !password) {
+            loginStatus.classList.remove('hidden', 'loading', 'success');
+            loginStatus.classList.add('error');
+            loginStatus.textContent = 'Email and password are required.';
+            return;
+          }
           
           // Show loading status
           loginStatus.classList.remove('hidden', 'error', 'success');
           loginStatus.classList.add('loading');
           loginStatus.textContent = 'Signing in...';
           
-          // Here you would normally connect to your Supabase auth
-          // For demo purposes, simulate login
-          setTimeout(() => {
-            if (email && password) {
-              // Success case
-              loginStatus.classList.remove('loading', 'error');
-              loginStatus.classList.add('success');
-              loginStatus.textContent = 'Sign in successful! Redirecting...';
-              
-              // Redirect to dashboard after successful login
-              setTimeout(() => {
-                window.location.href = '../dashboard/index.html';
-              }, 1500);
-            } else {
-              // Error case
-              loginStatus.classList.remove('loading', 'success');
-              loginStatus.classList.add('error');
-              loginStatus.textContent = 'Invalid email or password. Please try again.';
+          try {
+            // Use actual Supabase authentication
+            const { data, error } = await auth.signIn(email, password);
+            
+            if (error) {
+              throw error;
             }
-          }, 1500);
+            
+            // Success case
+            loginStatus.classList.remove('loading', 'error');
+            loginStatus.classList.add('success');
+            loginStatus.textContent = 'Sign in successful! Redirecting...';
+            
+            // Redirect to dashboard after successful login
+            setTimeout(() => {
+              window.location.href = '../dashboard/index.html';
+            }, 1000);
+          } catch (error) {
+            console.error('Login error:', error);
+            
+            // Error case
+            loginStatus.classList.remove('loading', 'success');
+            loginStatus.classList.add('error');
+            loginStatus.textContent = error.message || 'Invalid email or password. Please try again.';
+          }
         });
       }
       
