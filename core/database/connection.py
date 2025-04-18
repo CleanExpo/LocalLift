@@ -7,18 +7,27 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.exc import SQLAlchemyError # Import SQLAlchemyError
 import sys # Import sys for exit
+import os # Import os
 from core.config import get_settings
 
-settings = get_settings()
+settings = get_settings() # Keep settings for other parts of the app
 engine = None
 SessionLocal = None
 Base = declarative_base()
 
 print("--- Attempting to create database engine ---")
 try:
+    # Explicitly get DATABASE_URL from environment for engine creation
+    db_url = os.getenv("DATABASE_URL")
+    if not db_url:
+        print("!!! FATAL: DATABASE_URL environment variable not found.", file=sys.stderr)
+        sys.exit(1) # Exit if DB URL is missing
+        
+    print(f"--- Using DATABASE_URL from ENV: {db_url[:db_url.find('@') + 1]}... (Credentials Hidden)") # Log URL safely
+
     # Add connect_args for potential timeout adjustments if needed later
     engine = create_engine(
-        settings.database_url,
+        db_url, # Use the directly fetched URL
         # connect_args={"options": "-c statement_timeout=30000"} # Example: 30 second timeout
         pool_pre_ping=True # Add pool pre-ping to check connections
     )
