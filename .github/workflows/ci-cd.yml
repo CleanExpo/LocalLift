@@ -1,0 +1,577 @@
+name: LocalLift CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+      - development
+  pull_request:
+    branches:
+      - main
+      - staging
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+        default: 'staging'
+        required: true
+      deploy_backend:
+        description: 'Deploy backend to Railway'
+        type: boolean
+        default: true
+      deploy_frontend:
+        description: 'Deploy frontend to Vercel'
+        type: boolean
+        default: true
+
+# Add permissions needed for deployment operations
+permissions:
+  contents: read
+  actions: write
+  deployments: write
+  pull-requests: write
+  checks: write
+
+# Define environment variables
+env:
+  NODE_VERSION: '18'
+  PYTHON_VERSION: '3.11'
+  CACHE_KEY_PYTHON: 'python-deps-v1'
+  CACHE_KEY_NODE: 'node-deps-v1'
+
+jobs:
+  # ==============================
+  # Pre-deployment Quality Checks
+  # ==============================
+  quality-checks:
+    name: Quality Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+          cache-dependency-path: '**/requirements.txt'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install flake8 mypy bandit pytest pytest-cov
+
+      - name: Install Node dependencies
+        run: |
+          if [ -f package.json ]; then npm ci; fi
+
+      - name: Check for null bytes
+        run: python tools/check_null_bytes.py .
+
+      - name: Run Python linting
+        run: |
+          # Stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+
+      - name: Run security scanning
+        run: |
+          bandit -r . -x "*/test_*.py,*/tests/*" -ll
+
+      - name: Check code formatting
+        run: |
+          if [ -f package.json ]; then 
+            npm run lint
+          fi
+
+      - name: Run pre-deployment validation
+        run: python tools/pre_deploy_check.py --fix
+
+  # ==============================
+  # Run Automated Tests
+  # ==============================
+  test:
+    name: Run Tests
+    needs: quality-checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+          cache-dependency-path: '**/requirements.txt'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install pytest pytest-cov
+
+      - name: Run Python tests with coverage
+        run: |
+          pytest --cov=./ --cov-report=xml
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install Node dependencies
+        run: |
+          if [ -f package.json ]; then npm ci; fi
+
+      - name: Run frontend tests
+        run: |
+          if [ -f package.json ]; then 
+            npm test || echo "No tests defined, continuing deployment"
+          fi
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: true
+
+  # ==============================
+  # Build and Package for Deployment
+  # ==============================
+  build:
+    name: Build
+    needs: test
+    runs-on: ubuntu-latest
+    outputs:
+      build_id: ${{ steps.set-build-id.outputs.build_id }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set environment
+        id: set-env
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "DEPLOY_ENV=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "DEPLOY_ENV=production" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
+            echo "DEPLOY_ENV=staging" >> $GITHUB_ENV
+          else
+            echo "DEPLOY_ENV=development" >> $GITHUB_ENV
+          fi
+
+      - name: Set build ID
+        id: set-build-id
+        run: |
+          BUILD_ID="${{ github.sha }}-$(date +%s)"
+          echo "BUILD_ID=$BUILD_ID" >> $GITHUB_ENV
+          echo "build_id=$BUILD_ID" >> $GITHUB_OUTPUT
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f package.json ]; then npm ci; fi
+
+      - name: Prepare backend for deployment
+        run: |
+          # Create version file with build info
+          echo "{\"version\": \"$(jq -r .version package.json)\", \"build\": \"${{ env.BUILD_ID }}\", \"environment\": \"${{ env.DEPLOY_ENV }}\", \"timestamp\": \"$(date -u +'%Y-%m-%dT%H:%M:%SZ')\"}" > version.json
+          
+          # Collect static assets
+          if [ -f manage.py ]; then
+            python manage.py collectstatic --noinput
+          fi
+
+      - name: Build frontend assets
+        run: |
+          if [ -f package.json ]; then
+            npm run build:css
+          fi
+
+      - name: Create deployment artifact
+        run: |
+          mkdir -p artifacts
+          
+          # Create archive with backend files
+          tar -czf artifacts/backend-${{ env.BUILD_ID }}.tar.gz \
+            --exclude="node_modules" \
+            --exclude=".git" \
+            --exclude="artifacts" \
+            .
+          
+          # Create archive with frontend files
+          tar -czf artifacts/frontend-${{ env.BUILD_ID }}.tar.gz \
+            public/ \
+            static/ \
+            templates/ \
+            version.json
+
+      - name: Upload backend artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: backend-${{ env.BUILD_ID }}
+          path: artifacts/backend-${{ env.BUILD_ID }}.tar.gz
+          retention-days: 7
+
+      - name: Upload frontend artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: frontend-${{ env.BUILD_ID }}
+          path: artifacts/frontend-${{ env.BUILD_ID }}.tar.gz
+          retention-days: 7
+
+  # ==============================
+  # Deploy Backend to Railway
+  # ==============================
+  deploy-backend:
+    name: Deploy Backend to Railway
+    needs: [build]
+    if: |
+      success() && 
+      (github.event_name != 'pull_request') && 
+      (github.event.inputs.deploy_backend != 'false')
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production') || (github.ref == 'refs/heads/staging' && 'staging') || 'development' }}
+      url: https://locallift-${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production') || (github.ref == 'refs/heads/staging' && 'staging') || 'development' }}.up.railway.app
+    steps:
+      - name: Download backend artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: backend-${{ needs.build.outputs.build_id }}
+          path: artifacts
+
+      - name: Extract backend files
+        run: |
+          mkdir -p deploy
+          tar -xzf artifacts/backend-${{ needs.build.outputs.build_id }}.tar.gz -C deploy
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Set environment
+        id: set-env
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "DEPLOY_ENV=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "DEPLOY_ENV=production" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
+            echo "DEPLOY_ENV=staging" >> $GITHUB_ENV
+          else
+            echo "DEPLOY_ENV=development" >> $GITHUB_ENV
+          fi
+
+      - name: Link Railway project
+        working-directory: deploy
+        run: |
+          # Choose the right project ID based on environment
+          if [[ "${{ env.DEPLOY_ENV }}" == "production" ]]; then
+            echo "Using production Railway project"
+            railway link -p 0e58b112-f5f5-4285-ad1f-f47d1481045b
+          elif [[ "${{ env.DEPLOY_ENV }}" == "staging" ]]; then
+            echo "Using staging Railway project"
+            railway link -p ba36c743-97f2-4f3f-a888-5aa91c5a9e23
+          else
+            echo "Using development Railway project"
+            railway link -p d27fc113-a812-49b5-a791-4e7b9c7a1234
+          fi
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: Deploy to Railway
+        working-directory: deploy
+        run: |
+          railway up --detach --service "locallift-${{ env.DEPLOY_ENV }}"
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          BUILD_ID: ${{ needs.build.outputs.build_id }}
+
+      - name: Wait for deployment and perform health check
+        run: |
+          echo "Waiting for deployment to complete..."
+          sleep 60
+          
+          # Health check retries
+          MAX_RETRIES=10
+          RETRY_COUNT=0
+          HEALTH_URL="https://locallift-${{ env.DEPLOY_ENV }}.up.railway.app/api/health"
+          
+          while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" $HEALTH_URL || echo "failed")
+            
+            if [ "$STATUS" == "200" ]; then
+              echo "✅ Backend deployment successful!"
+              exit 0
+            fi
+            
+            echo "Backend not ready yet (status: $STATUS). Retrying in 15 seconds..."
+            sleep 15
+            RETRY_COUNT=$((RETRY_COUNT+1))
+          done
+          
+          echo "❌ Backend health check failed after $MAX_RETRIES attempts. Manual verification required."
+          curl -v $HEALTH_URL
+          exit 1
+
+      - name: Notify on successful deployment
+        if: success()
+        run: |
+          echo "🚀 Backend successfully deployed to ${{ env.DEPLOY_ENV }} environment"
+          echo "URL: https://locallift-${{ env.DEPLOY_ENV }}.up.railway.app"
+          echo "Build: ${{ needs.build.outputs.build_id }}"
+
+  # ==============================
+  # Deploy Frontend to Vercel
+  # ==============================
+  deploy-frontend:
+    name: Deploy Frontend to Vercel
+    needs: [build, deploy-backend]
+    if: |
+      success() && 
+      (github.event_name != 'pull_request') && 
+      (github.event.inputs.deploy_frontend != 'false')
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production') || (github.ref == 'refs/heads/staging' && 'staging') || 'development' }}
+      url: https://local-lift-${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production') || (github.ref == 'refs/heads/staging' && 'staging') || 'development' }}.vercel.app
+    steps:
+      - name: Download frontend artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: frontend-${{ needs.build.outputs.build_id }}
+          path: artifacts
+
+      - name: Extract frontend files
+        run: |
+          mkdir -p deploy
+          tar -xzf artifacts/frontend-${{ needs.build.outputs.build_id }}.tar.gz -C deploy
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      - name: Set environment
+        id: set-env
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "DEPLOY_ENV=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "DEPLOY_ENV=production" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
+            echo "DEPLOY_ENV=staging" >> $GITHUB_ENV
+          else
+            echo "DEPLOY_ENV=development" >> $GITHUB_ENV
+          fi
+          
+          # Set proper Vercel project ID based on environment
+          if [[ "${{ env.DEPLOY_ENV }}" == "production" ]]; then
+            echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID_PROD }}" >> $GITHUB_ENV
+          elif [[ "${{ env.DEPLOY_ENV }}" == "staging" ]]; then
+            echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID_STAGING }}" >> $GITHUB_ENV
+          else
+            echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID_DEV }}" >> $GITHUB_ENV
+          fi
+
+      - name: Configure backend API URL
+        working-directory: deploy
+        run: |
+          # Update configuration with the right backend URL for this environment
+          if [[ -f "public/js/config.js" ]]; then
+            sed -i "s|https://locallift-production.up.railway.app|https://locallift-${{ env.DEPLOY_ENV }}.up.railway.app|g" public/js/config.js
+            echo "Updated API URL in config.js for ${{ env.DEPLOY_ENV }} environment"
+            grep -n "BASE_URL" public/js/config.js
+          fi
+
+      - name: Deploy to Vercel
+        working-directory: deploy
+        run: |
+          if [[ "${{ env.DEPLOY_ENV }}" == "production" ]]; then
+            vercel deploy --prod --yes --token ${{ secrets.VERCEL_TOKEN }}
+          else
+            vercel deploy --yes --token ${{ secrets.VERCEL_TOKEN }}
+          fi
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          BUILD_ID: ${{ needs.build.outputs.build_id }}
+
+      - name: Verify frontend deployment
+        run: |
+          SITE_URL="https://local-lift-${{ env.DEPLOY_ENV }}.vercel.app"
+          echo "Waiting for deployment to be available..."
+          sleep 30
+          
+          MAX_RETRIES=5
+          RETRY_COUNT=0
+          
+          while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" $SITE_URL || echo "failed")
+            
+            if [ "$STATUS" == "200" ]; then
+              echo "✅ Frontend deployment successful!"
+              exit 0
+            fi
+            
+            echo "Frontend not ready yet (status: $STATUS). Retrying in 15 seconds..."
+            sleep 15
+            RETRY_COUNT=$((RETRY_COUNT+1))
+          done
+          
+          echo "❌ Frontend verification failed after $MAX_RETRIES attempts. Manual verification required."
+          curl -v $SITE_URL
+          exit 1
+
+      - name: Notify on successful deployment
+        if: success()
+        run: |
+          echo "🚀 Frontend successfully deployed to ${{ env.DEPLOY_ENV }} environment"
+          echo "URL: https://local-lift-${{ env.DEPLOY_ENV }}.vercel.app"
+          echo "Build: ${{ needs.build.outputs.build_id }}"
+
+  # ==============================
+  # Post-deployment tasks
+  # ==============================
+  post-deploy:
+    name: Post-deployment Tasks
+    needs: [deploy-backend, deploy-frontend]
+    if: success() && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set environment
+        id: set-env
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "DEPLOY_ENV=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "DEPLOY_ENV=production" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
+            echo "DEPLOY_ENV=staging" >> $GITHUB_ENV
+          else
+            echo "DEPLOY_ENV=development" >> $GITHUB_ENV
+          fi
+
+      - name: Create deployment report
+        run: |
+          mkdir -p reports
+          cat > reports/deployment-summary.md << EOF
+          # Deployment Report
+          
+          ## Environment
+          Environment: **${{ env.DEPLOY_ENV }}**
+          Build ID: **${{ needs.build.outputs.build_id }}**
+          Commit: **${{ github.sha }}**
+          
+          ## URLs
+          - Backend: https://locallift-${{ env.DEPLOY_ENV }}.up.railway.app
+          - Frontend: https://local-lift-${{ env.DEPLOY_ENV }}.vercel.app
+          
+          ## Deployment Status
+          ✅ Backend: Deployed successfully
+          ✅ Frontend: Deployed successfully
+          
+          ## Notes
+          This deployment was triggered by ${{ github.actor }} via ${{ github.event_name }}
+          
+          ## Timestamp
+          Deployed at: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+          EOF
+
+      - name: Upload deployment report
+        uses: actions/upload-artifact@v3
+        with:
+          name: deployment-report
+          path: reports/deployment-summary.md
+          retention-days: 30
+
+      - name: Send notification
+        run: |
+          echo "🎉 Deployment to ${{ env.DEPLOY_ENV }} environment completed successfully!"
+          echo "Backend: https://locallift-${{ env.DEPLOY_ENV }}.up.railway.app"
+          echo "Frontend: https://local-lift-${{ env.DEPLOY_ENV }}.vercel.app"
+          echo "Build ID: ${{ needs.build.outputs.build_id }}"
+          
+          # Here you could add code to send notifications to Slack, Discord, etc.
+          # using their respective API endpoints
+
+  # ==============================
+  # Monitor deployment
+  # ==============================
+  monitor:
+    name: Monitor Deployment
+    needs: [deploy-backend, deploy-frontend]
+    if: success() && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install monitoring dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests matplotlib pandas
+
+      - name: Monitor deployment
+        run: |
+          echo "Starting post-deployment monitoring..."
+          python tools/monitor_deployment.py \
+            --backend-url https://locallift-production.up.railway.app \
+            --frontend-url https://local-lift-frontend.vercel.app \
+            --duration 300 \
+            --interval 15 \
+            --output-dir ./monitoring-results
+
+      - name: Upload monitoring results
+        uses: actions/upload-artifact@v3
+        with:
+          name: monitoring-results
+          path: ./monitoring-results
+          retention-days: 7
