@@ -116,13 +116,17 @@ This document serves as a central reference for the LocalLift application's arch
     *   [x] Analyze `core/auth/router.py` (Backend Supabase auth OK, registration endpoint is placeholder).
     *   [x] Analyze `railway.toml` (Minimal config, relies on Procfile).
     *   [x] Analyze `Procfile` (Specifies `uvicorn railway_entry:app`).
-    *   [x] Analyze `railway_entry.py` (Found critical `AttributeError` preventing app start).
+    *   [x] Analyze `railway_entry.py` (Found critical `AttributeError` preventing app start - Fixed).
+    *   [x] Analyze `requirements.txt` (Missing `passlib` - Fixed).
+    *   [x] Analyze `core/config.py` (Identified critical ENV VARS: `DATABASE_URL`, `SUPABASE_KEY` (service_role), `SECRET_KEY`).
 *   **Phase 2: Create `SYSTEM_CHEAT_SHEET.md`**
     *   [x] Initialize cheat sheet with findings.
-    *   [ ] **IN PROGRESS:** Update cheat sheet with backend diagnosis.
+    *   [x] Update cheat sheet with backend diagnosis.
 *   **Phase 3: Iterative Fixes, Enhancements & Documentation**
-    *   [x] **FIXED:** Corrected `AttributeError` in `railway_entry.py` by re-exporting app from `main.py`.
-    *   [ ] **NEXT:** Commit & Push backend fix. Advise Railway redeploy.
+    *   [x] **FIXED:** Corrected `AttributeError` in `railway_entry.py`.
+    *   [x] **FIXED:** Added missing `passlib` to `requirements.txt`.
+    *   [x] **FIXED:** Added `Dockerfile` for explicit build instructions.
+    *   [ ] **NEXT:** Ask user to verify critical ENV VARS in Railway settings.
     *   [ ] **TODO:** Fix critical authentication conflict in `public/js/main.js` (after backend is running).
     *   [ ] **TODO:** Address page loading issues (likely related to backend/auth).
     *   [ ] **TODO:** Address UI/UX downgrades (CSS/JS).

@@ -1,6 +1,7 @@
 """
 Local Lift - Main Application Entry Point
 """
+print("--- main.py execution started ---") # Add this line for Railway logging
 import os
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
