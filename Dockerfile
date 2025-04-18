@@ -27,6 +27,7 @@ USER appuser
 # Make port $PORT available to the world outside this container (Railway injects the PORT variable)
 # EXPOSE $PORT # Note: EXPOSE is documentation; Railway handles port exposure based on Procfile/start command
 
-# Define the command to run the application using the wrapper script
-# This ensures consistent startup behavior whether Procfile or CMD is used.
-CMD ["python", "run_server.py"]
+# Define the command to run the application using the wrapper script via sh -c
+# This explicitly uses the shell to handle environment variable expansion for $PORT
+# before passing it to the python script.
+CMD ["/bin/sh", "-c", "python run_server.py"]
