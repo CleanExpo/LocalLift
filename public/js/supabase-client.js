@@ -6,7 +6,8 @@
  * and API key which should be set in environment variables.
  */
 
-import { createClient } from '@supabase/supabase-js'
+// Import from CDN for direct browser usage without a build step
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
 // Supabase project configuration
 export const SUPABASE_URL = 'https://rsooolwhapkkkwbmybdb.supabase.co'
