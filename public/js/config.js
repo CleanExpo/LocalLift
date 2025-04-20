@@ -1,54 +1,13 @@
 /**
- * LocalLift Configuration
- * This file contains configuration settings for the LocalLift application
- * It is used by all frontend components to connect to the backend API
+ * Configuration for LocalLift CRM Frontend
  */
-
-window.LOCALLIFT_CONFIG = {
-  // Updated API base URL to point to the correct backend endpoint
-  API_BASE_URL: 'https://locallift-production.up.railway.app',
-
-  // Version information
+const config = {
+  API_BASE_URL: 'https://humorous-serenity-locallift.up.railway.app/api',
+  SUPABASE_URL: 'https://rsooolwhapkkkwbmybdb.supabase.co',
+  SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzb29vbHdoYXBra2t3Ym15YmRiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MDg1NDYsImV4cCI6MjA2MDI4NDU0Nn0.RHb4rImTrVqbgAbxZ-LlrEwQ0o42aRDPrco-dY-8dOQ',
   VERSION: '1.0.0',
-
-  // Feature flags
-  FEATURES: {
-    GAMIFICATION: true,
-    ACHIEVEMENTS: true,
-    LEADERBOARDS: true,
-    CERTIFICATIONS: true
-  },
-
-  // Authentication configuration
-  AUTH: {
-    TOKEN_KEY: 'locallift_auth_token',
-    REFRESH_TOKEN_KEY: 'locallift_refresh_token',
-    EXPIRY_KEY: 'locallift_token_expiry',
-    SESSION_DURATION: 86400 // 24 hours in seconds
-  },
-
-  // Environment - will be 'production' for deployed app
-  ENVIRONMENT: 'production',
-
-  // Default health check endpoint
-  HEALTH_CHECK_ENDPOINT: '/api/health',
-
-  // Routes configuration
-  ROUTES: {
-    HOME: '/',
-    DASHBOARD: '/dashboard',
-    LOGIN: '/login',
-    GUIDE: '/admin/guide',
-    PROFILE: '/profile',
-    SETTINGS: '/settings'
-  },
-
-  // Default error page
-  ERROR_PAGE: '/404.html',
-  
-  // Supabase configuration
-  SUPABASE: {
-    PROJECT_ID: 'rsooolwhapkkkwbmybdb',
-    API_URL: 'https://rsooolwhapkkkwbmybdb.supabase.co'
-  }
+  ENVIRONMENT: 'production'
 };
+
+// Make config available globally
+window.config = config;
