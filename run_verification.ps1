@@ -7,7 +7,8 @@ Write-Host "Starting LocalLift CRM Deployment Verification..." -ForegroundColor 
 try {
     python --version
     Write-Host "Python detected..." -ForegroundColor Green
-} catch {
+}
+catch {
     Write-Host "Error: Python is not available. Please install Python 3.6+ and try again." -ForegroundColor Red
     exit 1
 }
@@ -25,7 +26,8 @@ function Check-Module {
         python -c "import $ModuleName"
         Write-Host "✓ $ModuleName is installed" -ForegroundColor Green
         return $true
-    } catch {
+    }
+    catch {
         Write-Host "✗ $ModuleName is not installed" -ForegroundColor Yellow
         return $false
     }
@@ -46,8 +48,9 @@ if (-not $modulesInstalled) {
 # Run the verification script
 Write-Host "`nRunning deployment verification script..." -ForegroundColor Cyan
 python verify_deployment.py --verbose
+$scriptExitCode = $LASTEXITCODE
 
-if ($LASTEXITCODE -eq 0) {
+if ($scriptExitCode -eq 0) {
     Write-Host "`n✅ Deployment verification completed successfully!" -ForegroundColor Green
     
     # Check if results file exists
@@ -70,10 +73,12 @@ if ($LASTEXITCODE -eq 0) {
             if ($content -match "## Issues Detected\s+(.*?)##") {
                 Write-Host $matches[1] -ForegroundColor Yellow
             }
-        } else {
+        }
+        else {
             Write-Host "`nNo issues detected during verification." -ForegroundColor Green
         }
-    } else {
+    }
+    else {
         Write-Host "Warning: Results file not found." -ForegroundColor Yellow
     }
     
@@ -93,11 +98,14 @@ if ($LASTEXITCODE -eq 0) {
             
             # Also add note to the test results
             Add-Content -Path "DEPLOYMENT_TEST_RESULTS.md" -Value "`n## Next Steps`n`nAll deployment verification tests have passed successfully. The system is fully operational and ready for use. The deployment guide has been updated with the latest verification timestamp.`n`nRefer to the [Comprehensive Deployment Checklist](./COMPREHENSIVE_DEPLOYMENT_CHECKLIST.md) for any manual verification steps that may be needed.`n"
-        } else {
+        }
+        else {
             Write-Host "Warning: DEPLOYMENT_COMPLETION_GUIDE.md not found." -ForegroundColor Yellow
         }
-    } catch {
+    }
+    catch {
         Write-Host "Warning: Could not update deployment guide file." -ForegroundColor Yellow
+        Write-Host $_.Exception.Message -ForegroundColor Red
     }
     
     # Recommend next steps
@@ -106,8 +114,8 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host "2. Check for any issues and resolve them"
     Write-Host "3. Use the comprehensive deployment checklist for manual verification steps"
     Write-Host "4. Commit the updated verification files to your repository"
-    
-} else {
+}
+else {
     Write-Host "`n❌ Deployment verification failed!" -ForegroundColor Red
     Write-Host "Please review the log for details on the issues detected." -ForegroundColor Red
     
