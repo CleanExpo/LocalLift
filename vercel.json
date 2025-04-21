@@ -1,15 +1,18 @@
 {
   "version": 2,
   "public": true,
-  "builds": [
-    { "src": "public/**/*", "use": "@vercel/static" }
-  ],
+  "outputDirectory": "public",
+  "github": {
+    "enabled": false
+  },
+  "cleanUrls": true,
+  "trailingSlash": true,
   "routes": [
-    { "src": "/(.*)", "dest": "/public/$1" },
     { "handle": "filesystem" },
-    { "src": "/.*", "dest": "/public/index.html" }
+    { "src": "/(.*)", "dest": "/$1" }
   ],
   "env": {
-    "API_URL": "https://humorous-serenity-locallift.up.railway.app"
+    "API_URL": "https://humorous-serenity-locallift.up.railway.app",
+    "NODE_ENV": "production"
   }
 }
