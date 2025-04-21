@@ -9,7 +9,7 @@ This guide provides comprehensive instructions for managing and maintaining your
 
 | Component | Status | Endpoint |
 |-----------|--------|----------|
-| Frontend (Vercel) | ✅ OPERATIONAL | [https://local-lift-eyewzn9wp-admin-cleanexpo247s-projects.vercel.app/](https://local-lift-eyewzn9wp-admin-cleanexpo247s-projects.vercel.app/) |
+| Frontend (Vercel) | ⚠️ PARTIAL | [https://local-lift-2rcmac58y-admin-cleanexpo247s-projects.vercel.app/](https://local-lift-2rcmac58y-admin-cleanexpo247s-projects.vercel.app/) |
 | Backend (Railway) | ✅ OPERATIONAL | [https://humorous-serenity-locallift.up.railway.app/](https://humorous-serenity-locallift.up.railway.app/) |
 | Database (Supabase) | ✅ OPERATIONAL | [https://rsooolwhapkkkwbmybdb.supabase.co](https://rsooolwhapkkkwbmybdb.supabase.co) |
 
@@ -77,6 +77,27 @@ The authentication system has been configured to use the proper endpoints. If yo
 3. Authentication connects to the backend at: `https://humorous-serenity-locallift.up.railway.app/api`
 4. Supabase configuration is correctly set up for user management
 
+### Frontend Deployment Issues
+
+The Vercel deployment is showing authentication challenges. Several fixes have been attempted:
+
+1. Added vercel.json configuration file with proper static site settings
+2. Updated API endpoint references in auth.js to use the config values
+3. Added debug logging to trace API connections
+4. Modified environment variables in vercel.json
+
+To resolve remaining issues, use the MCP-powered automation tools:
+
+```powershell
+# Navigate to the automation directory
+cd C:\Users\PhillMcGurk\Desktop\LocalLift\deployment-automation
+
+# Run the automated deployment fixer
+.\run_auto_deployment_fixed.ps1
+```
+
+The automation will diagnose and fix common Vercel deployment issues, including permissions and configuration problems.
+
 ### Port Configuration Fixed
 
 The PORT configuration has been resolved with the following actions:
@@ -93,7 +114,7 @@ If frontend and backend are not connecting properly:
 2. Verify that CORS is properly configured in your backend
 3. Check frontend console logs for API connection errors
 
-## Frontend Enhancements
+## Frontend Enhancements & Current Status
 
 Several improvements have been made to the frontend:
 
@@ -112,17 +133,41 @@ Several improvements have been made to the frontend:
    - Better responsive design
    - Enhanced user flow from landing page to dashboard
 
+## Using the Deployment Automation Tools
+
+The project includes powerful MCP-based automation tools for deployment troubleshooting and fixing:
+
+1. **Run Endpoint Discovery** to verify all endpoints:
+   ```powershell
+   cd C:\Users\PhillMcGurk\Desktop\LocalLift
+   python .\mcp_endpoint_discovery.py
+   ```
+
+2. **Fix Deployment Issues** automatically:
+   ```powershell
+   cd C:\Users\PhillMcGurk\Desktop\LocalLift\deployment-automation
+   .\run_auto_deployment_fixed.ps1
+   ```
+
+3. **Troubleshoot specific issues**:
+   - For Vercel issues: `python .\deployment-automation\src\platforms\vercel.py --verify`
+   - For Railway issues: `python .\deployment-automation\src\platforms\railway.py --verify`
+
 ## Next Steps
 
-1. **User Management**:
+1. **Complete Vercel Deployment**:
+   - Run the deployment automation tools to fix remaining issues
+   - Use the simplified-vercel-deploy.ps1 script for a fresh deployment
+
+2. **User Management**:
    - Set up superadmin role using guide in SUPERADMIN_SETUP_GUIDE.md
    - Import initial user data if needed
 
-2. **Custom Domain Setup**:
+3. **Custom Domain Setup**:
    - Configure custom domain for Vercel deployment
    - Update API endpoint configuration accordingly
 
-3. **Extend Automation**:
+4. **Extend Automation**:
    - Additional scripts can be added to the `deployment-automation/src` directory
    - Customize monitoring thresholds in config files
 
