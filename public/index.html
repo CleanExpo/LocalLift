@@ -13,6 +13,36 @@
             background-color: #f7f9fc;
             color: #333;
         }
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .nav-logo {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #2563eb;
+            text-decoration: none;
+        }
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        .nav-link {
+            color: #4b5563;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-link:hover {
+            color: #2563eb;
+        }
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -62,6 +92,18 @@
     </style>
 </head>
 <body>
+    <nav class="nav">
+        <a href="/" class="nav-logo">LocalLift</a>
+        <div class="nav-links">
+            <a href="/features" class="nav-link">Features</a>
+            <a href="/pricing" class="nav-link">Pricing</a>
+            <a href="/support" class="nav-link">Support</a>
+        </div>
+        <div class="nav-links">
+            <a href="/login" class="nav-link">Login</a>
+            <a href="/dashboard" class="nav-link">Dashboard</a>
+        </div>
+    </nav>
     <div class="container">
         <div class="header">
             <h1>LocalLift Platform</h1>
@@ -78,16 +120,20 @@
                 <p>Database Connection: <span id="db-status">Checking...</span></p>
             </div>
 
-            <a href="#" class="button" id="check-status">Check Status</a>
+            <div class="auth-buttons">
+                <a href="/login/" class="button">Login</a>
+                <a href="/login/?signup=true" class="button" style="background-color: #10b981;">Sign Up</a>
+            </div>
+            <a href="#" class="button" id="check-status" style="margin-top: 1rem;">Check Status</a>
         </div>
 
         <div class="card">
             <h2>Our Features</h2>
             <ul>
-                <li>Customer engagement tracking</li>
-                <li>Local business visibility optimization</li>
-                <li>Review management and response tools</li>
-                <li>Performance analytics dashboard</li>
+                <li><a href="/dashboard/engagement/" style="color: #2563eb; text-decoration: none;">Customer engagement tracking</a></li>
+                <li><a href="/dashboard/visibility/" style="color: #2563eb; text-decoration: none;">Local business visibility optimization</a></li>
+                <li><a href="/dashboard/reviews/" style="color: #2563eb; text-decoration: none;">Review management and response tools</a></li>
+                <li><a href="/dashboard/analytics/" style="color: #2563eb; text-decoration: none;">Performance analytics dashboard</a></li>
             </ul>
         </div>
 
@@ -97,10 +143,9 @@
     </div>
 
     <script>
-        const API_URL = 'https://locallift-production.up.railway.app';
+        const API_URL = 'https://humorous-serenity-locallift.up.railway.app';
         
         document.addEventListener('DOMContentLoaded', function() {
-            // Simulate checking status
             document.getElementById('check-status').addEventListener('click', function(e) {
                 e.preventDefault();
                 
@@ -108,12 +153,33 @@
                 document.getElementById('api-status').textContent = "Connecting...";
                 document.getElementById('db-status').textContent = "Connecting...";
                 
-                // Simulate API check
-                setTimeout(() => {
-                    document.getElementById('api-status').textContent = "Online";
-                    document.getElementById('db-status').textContent = "Connected";
-                }, 1500);
+                // Actually check the API
+                fetch(API_URL + '/health')
+                    .then(response => {
+                        if (response.ok) {
+                            document.getElementById('api-status').textContent = "Online";
+                            document.getElementById('db-status').textContent = "Connected";
+                        } else {
+                            document.getElementById('api-status').textContent = "Error";
+                            document.getElementById('db-status').textContent = "Unavailable";
+                        }
+                    })
+                    .catch(error => {
+                        console.error('API Health check failed:', error);
+                        document.getElementById('api-status').textContent = "Offline";
+                        document.getElementById('db-status').textContent = "Unavailable";
+                    });
             });
+            
+            // Perform an initial check
+            fetch(API_URL + '/health')
+                .then(response => {
+                    if (response.ok) {
+                        document.getElementById('api-status').textContent = "Online";
+                        document.getElementById('db-status').textContent = "Connected";
+                    }
+                })
+                .catch(error => console.error('Initial health check failed:', error));
         });
     </script>
 
@@ -133,4 +199,3 @@
     </script>
 </body>
 </html>
-
