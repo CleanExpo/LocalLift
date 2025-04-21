@@ -9,7 +9,7 @@ This guide provides comprehensive instructions for managing and maintaining your
 
 | Component | Status | Endpoint |
 |-----------|--------|----------|
-| Frontend (Vercel) | ✅ OPERATIONAL | [https://local-lift-f49ujh3u6-admin-cleanexpo247s-projects.vercel.app/](https://local-lift-f49ujh3u6-admin-cleanexpo247s-projects.vercel.app/) |
+| Frontend (Vercel) | ✅ OPERATIONAL | [https://local-lift-gs7gr0v8x-admin-cleanexpo247s-projects.vercel.app/](https://local-lift-gs7gr0v8x-admin-cleanexpo247s-projects.vercel.app/) |
 | Backend (Railway) | ✅ OPERATIONAL | [https://humorous-serenity-locallift.up.railway.app/](https://humorous-serenity-locallift.up.railway.app/) |
 | Database (Supabase) | ✅ OPERATIONAL | [https://rsooolwhapkkkwbmybdb.supabase.co](https://rsooolwhapkkkwbmybdb.supabase.co) |
 
@@ -127,11 +127,18 @@ The PORT configuration has been resolved with the following actions:
 
 ### API Connection Issues
 
-If frontend and backend are not connecting properly:
+Recent API connectivity issues have been resolved:
 
-1. The auto-fixer automatically updates API endpoint configuration in config.js
-2. Verify that CORS is properly configured in your backend
-3. Check frontend console logs for API connection errors
+1. The API endpoint has been standardized across the application to use `https://humorous-serenity-locallift.up.railway.app/api`
+2. Frontend now makes real API calls to check backend and database connectivity
+3. Backend API includes a new `/database/status` endpoint to verify database connections
+4. The config.js file properly exposes the API endpoint globally for all components
+5. Authentication system can properly connect to the backend API
+
+If you still experience connection issues:
+1. Check browser console for detailed API connection logs
+2. Verify network requests to ensure proper endpoint usage
+3. The status check button on the homepage can verify API connectivity
 
 ## Frontend Enhancements & Current Status
 
