@@ -66,6 +66,26 @@ if SessionLocal is None:
      print("!!! SessionLocal not created due to engine failure. Using dummy.", file=sys.stderr)
      SessionLocal = sessionmaker()
 
+def get_db_connection():
+    """
+    Get a raw database connection for status checks.
+    
+    Returns:
+        A connection object if successful, None otherwise
+    """
+    try:
+        if engine is None:
+            print("!!! ERROR: get_db_connection called but engine is None", file=sys.stderr)
+            return None
+        
+        # Try to acquire a connection from the engine
+        connection = engine.connect()
+        # If we got here, we have a valid connection
+        return connection
+    except Exception as e:
+        print(f"!!! ERROR: Failed to get database connection: {e}", file=sys.stderr)
+        return None
+
 def get_db() -> Generator[Session, None, None]:
     """
     Get database session.

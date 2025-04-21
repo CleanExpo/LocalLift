@@ -13,36 +13,6 @@
             background-color: #f7f9fc;
             color: #333;
         }
-        .nav {
-            display: flex;
-            justify-content: space-between;
-            padding: 1rem 2rem;
-            background-color: white;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-        .nav-logo {
-            font-weight: bold;
-            font-size: 1.2rem;
-            color: #2563eb;
-            text-decoration: none;
-        }
-        .nav-links {
-            display: flex;
-            gap: 1.5rem;
-        }
-        .nav-link {
-            color: #4b5563;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .nav-link:hover {
-            color: #2563eb;
-        }
-        .auth-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -92,18 +62,6 @@
     </style>
 </head>
 <body>
-    <nav class="nav">
-        <a href="/" class="nav-logo">LocalLift</a>
-        <div class="nav-links">
-        <a href="/features/" class="nav-link">Features</a>
-        <a href="/pricing/" class="nav-link">Pricing</a>
-        <a href="/support/" class="nav-link">Support</a>
-        </div>
-        <div class="nav-links">
-            <a href="/login/" class="nav-link">Login</a>
-            <a href="/dashboard/" class="nav-link">Dashboard</a>
-        </div>
-    </nav>
     <div class="container">
         <div class="header">
             <h1>LocalLift Platform</h1>
@@ -120,20 +78,16 @@
                 <p>Database Connection: <span id="db-status">Checking...</span></p>
             </div>
 
-            <div class="auth-buttons">
-                <a href="/login/" class="button">Login</a>
-                <a href="/login/?signup=true" class="button" style="background-color: #10b981;">Sign Up</a>
-            </div>
-            <a href="#" class="button" id="check-status" style="margin-top: 1rem;">Check Status</a>
+            <a href="#" class="button" id="check-status">Check Status</a>
         </div>
 
         <div class="card">
             <h2>Our Features</h2>
             <ul>
-                <li><a href="/dashboard/engagement/" style="color: #2563eb; text-decoration: none;">Customer engagement tracking</a></li>
-                <li><a href="/dashboard/visibility/" style="color: #2563eb; text-decoration: none;">Local business visibility optimization</a></li>
-                <li><a href="/dashboard/reviews/" style="color: #2563eb; text-decoration: none;">Review management and response tools</a></li>
-                <li><a href="/dashboard/analytics/" style="color: #2563eb; text-decoration: none;">Performance analytics dashboard</a></li>
+                <li>Customer engagement tracking</li>
+                <li>Local business visibility optimization</li>
+                <li>Review management and response tools</li>
+                <li>Performance analytics dashboard</li>
             </ul>
         </div>
 
@@ -144,60 +98,61 @@
 
     <script src="/js/config.js"></script>
     <script>
-        // Use API URL from config if available, otherwise use fallback
-        const API_URL = window.config?.API_BASE_URL || 'https://humorous-serenity-locallift.up.railway.app/api';
-        
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('check-status').addEventListener('click', function(e) {
+            // Use the global config
+            const API_URL = window.config ? window.config.API_BASE_URL : 'https://humorous-serenity-locallift.up.railway.app/api';
+            console.log("Index page loaded with API URL:", API_URL);
+            
+            // Status checking function
+            document.getElementById('check-status').addEventListener('click', async function(e) {
                 e.preventDefault();
                 
                 // Show checking
                 document.getElementById('api-status').textContent = "Connecting...";
                 document.getElementById('db-status').textContent = "Connecting...";
                 
-                // Actually check the API
-                fetch(API_URL + '/health')
-                    .then(response => {
-                        if (response.ok) {
-                            document.getElementById('api-status').textContent = "Online";
-                            document.getElementById('db-status').textContent = "Connected";
-                        } else {
-                            document.getElementById('api-status').textContent = "Error";
-                            document.getElementById('db-status').textContent = "Unavailable";
+                // Make real API check
+                try {
+                    // Check API status
+                    const apiResponse = await fetch(`${API_URL}/health`, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json'
                         }
-                    })
-                    .catch(error => {
-                        console.error('API Health check failed:', error);
-                        document.getElementById('api-status').textContent = "Offline";
-                        document.getElementById('db-status').textContent = "Unavailable";
                     });
-            });
-            
-            // Perform an initial check
-            fetch(API_URL + '/health')
-                .then(response => {
-                    if (response.ok) {
+                    
+                    if (apiResponse.ok) {
                         document.getElementById('api-status').textContent = "Online";
-                        document.getElementById('db-status').textContent = "Connected";
+                        
+                        // If API is online, check DB status
+                        try {
+                            const dbResponse = await fetch(`${API_URL}/database/status`, {
+                                method: 'GET',
+                                headers: {
+                                    'Accept': 'application/json'
+                                }
+                            });
+                            
+                            if (dbResponse.ok) {
+                                document.getElementById('db-status').textContent = "Connected";
+                            } else {
+                                document.getElementById('db-status').textContent = "Issue Detected";
+                            }
+                        } catch (dbError) {
+                            console.error("DB status check error:", dbError);
+                            document.getElementById('db-status').textContent = "Unknown";
+                        }
+                    } else {
+                        document.getElementById('api-status').textContent = "Offline";
+                        document.getElementById('db-status').textContent = "Unknown";
                     }
-                })
-                .catch(error => console.error('Initial health check failed:', error));
-        });
-    </script>
-
-    <!-- Service Worker Registration -->
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/service-worker.js')
-            .then(registration => {
-              console.log('ServiceWorker registration successful');
-            })
-            .catch(error => {
-              console.log('ServiceWorker registration failed:', error);
+                } catch (error) {
+                    console.error("API status check error:", error);
+                    document.getElementById('api-status').textContent = "Connection Failed";
+                    document.getElementById('db-status').textContent = "Unknown";
+                }
             });
         });
-      }
     </script>
 </body>
 </html>

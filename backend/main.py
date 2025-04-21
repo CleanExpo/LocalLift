@@ -61,6 +61,24 @@ async def health_check():
     """Health check endpoint for monitoring"""
     return {"status": "healthy", "version": "1.0.0"}
 
+# Database status check
+@app.get("/database/status")
+async def database_status():
+    """Database connection status check"""
+    try:
+        # This is a simple check to verify if the database connection works
+        from core.database.connection import get_db_connection
+        conn = get_db_connection()
+        if conn:
+            conn.close()  # Make sure to close the connection
+            return {"status": "connected", "message": "Database connection successful"}
+        else:
+            return {"status": "error", "message": "Database connection failed"}
+    except ImportError as ie:
+        return {"status": "error", "message": f"Import error: {str(ie)}"}
+    except Exception as e:
+        return {"status": "error", "message": f"Database error: {str(e)}"}
+
 # Version info
 @app.get("/api/version")
 async def version():
