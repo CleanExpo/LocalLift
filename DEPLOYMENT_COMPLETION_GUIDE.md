@@ -1,7 +1,7 @@
 # LocalLift Deployment Completion Guide
 
-**Date: April 20, 2025**  
-**Version: 1.1.0**
+**Date: April 20, 2025** (Last verified: 2025-04-20 19:10:36)  
+**Version: 1.2.0**
 
 This guide provides comprehensive instructions for managing and maintaining your LocalLift deployment infrastructure using the automated MCP (Model Context Protocol) powered tooling that has been set up.
 
@@ -76,6 +76,37 @@ cd C:\Users\PhillMcGurk\Desktop\LocalLift\deployment-automation
 cd C:\Users\PhillMcGurk\Desktop\LocalLift\deployment-automation
 .\setup_scheduled_task.ps1
 ```
+
+## Deployment Verification Tools
+
+We've created dedicated verification tools to quickly check the status of all deployment components:
+
+### Option 1: Simplified Verification (Recommended)
+
+For quick verification of your deployment, use the simplified PowerShell script:
+
+```powershell
+cd C:\Users\PhillMcGurk\Desktop\LocalLift
+.\simple_verify.ps1
+```
+
+This script provides a straightforward check of all components without the complexity of the full verification system.
+
+### Option 2: Comprehensive Verification
+
+For a more detailed verification with logs and reports:
+
+```powershell
+cd C:\Users\PhillMcGurk\Desktop\LocalLift
+.\simple_verify.ps1
+```
+
+> **Note**: We provide both scripts because the simplified version is guaranteed to work correctly with PowerShell, while the comprehensive script may encounter Unicode character handling issues in some environments.
+
+### Verification Checklist
+
+For manual verification steps, refer to the comprehensive checklist:
+[COMPREHENSIVE_DEPLOYMENT_CHECKLIST.md](./COMPREHENSIVE_DEPLOYMENT_CHECKLIST.md)
 
 ## Configuration Files
 
@@ -178,12 +209,22 @@ The following steps were taken to successfully deploy the application:
    - Verified health endpoint is responding correctly
    - Configuration validated across all components
 
+4. **Verification Tools**:
+   - Created Python-based verification script for comprehensive tests
+   - Developed PowerShell runners to execute verification
+   - Fixed Unicode character issues in console output
+   - Added simple verification script that works on all systems
+
 The MCP-powered automation tools provided crucial assistance in diagnosing and fixing deployment issues. These tools can be used for ongoing maintenance and troubleshooting:
 
 ```powershell
 # For diagnostics and verification
 cd C:\Users\PhillMcGurk\Desktop\LocalLift\deployment-automation
 .\run_auto_deployment_fixed.ps1
+
+# For quick status check
+cd C:\Users\PhillMcGurk\Desktop\LocalLift
+.\simple_verify.ps1
 ```
 
 ## Next Steps
@@ -233,13 +274,20 @@ The deployment automation leverages several MCP tools:
    - Fixes common deployment issues automatically
    - Updates configuration files to match the current environment
 
+5. **Deployment Verification Tools**:
+   - Verifies connectivity between all components
+   - Tests authentication and API functions
+   - Generates detailed reports on system status
+
 ## Logs and Reporting
 
 Detailed logs are stored in:
 - `C:\Users\PhillMcGurk\Desktop\LocalLift\deployment-automation\deployment-logs\`
+- `C:\Users\PhillMcGurk\Desktop\LocalLift\DEPLOYMENT_TEST_RESULTS.md`
 
 Summary reports are generated in:
 - `C:\Users\PhillMcGurk\Desktop\LocalLift\deployment-automation\mcp-env\`
+- `C:\Users\PhillMcGurk\Desktop\LocalLift\DEPLOYMENT_VERIFICATION.md`
 
 ---
 
