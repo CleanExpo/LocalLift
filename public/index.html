@@ -95,13 +95,13 @@
     <nav class="nav">
         <a href="/" class="nav-logo">LocalLift</a>
         <div class="nav-links">
-            <a href="/features" class="nav-link">Features</a>
-            <a href="/pricing" class="nav-link">Pricing</a>
-            <a href="/support" class="nav-link">Support</a>
+        <a href="/features/" class="nav-link">Features</a>
+        <a href="/pricing/" class="nav-link">Pricing</a>
+        <a href="/support/" class="nav-link">Support</a>
         </div>
         <div class="nav-links">
-            <a href="/login" class="nav-link">Login</a>
-            <a href="/dashboard" class="nav-link">Dashboard</a>
+            <a href="/login/" class="nav-link">Login</a>
+            <a href="/dashboard/" class="nav-link">Dashboard</a>
         </div>
     </nav>
     <div class="container">
@@ -142,8 +142,10 @@
         </div>
     </div>
 
+    <script src="/js/config.js"></script>
     <script>
-        const API_URL = 'https://humorous-serenity-locallift.up.railway.app';
+        // Use API URL from config if available, otherwise use fallback
+        const API_URL = window.config?.API_BASE_URL || 'https://humorous-serenity-locallift.up.railway.app/api';
         
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('check-status').addEventListener('click', function(e) {
