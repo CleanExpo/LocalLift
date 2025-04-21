@@ -9,7 +9,7 @@ This guide provides comprehensive instructions for managing and maintaining your
 
 | Component | Status | Endpoint |
 |-----------|--------|----------|
-| Frontend (Vercel) | ✅ OPERATIONAL | [https://local-lift-gs7gr0v8x-admin-cleanexpo247s-projects.vercel.app/](https://local-lift-gs7gr0v8x-admin-cleanexpo247s-projects.vercel.app/) |
+| Frontend (Vercel) | ✅ OPERATIONAL | [https://local-lift-lnsm8puo8-admin-cleanexpo247s-projects.vercel.app/](https://local-lift-lnsm8puo8-admin-cleanexpo247s-projects.vercel.app/) |
 | Backend (Railway) | ✅ OPERATIONAL | [https://humorous-serenity-locallift.up.railway.app/](https://humorous-serenity-locallift.up.railway.app/) |
 | Database (Supabase) | ✅ OPERATIONAL | [https://rsooolwhapkkkwbmybdb.supabase.co](https://rsooolwhapkkkwbmybdb.supabase.co) |
 
