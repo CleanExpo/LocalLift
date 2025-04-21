@@ -1,17 +1,10 @@
 {
   "version": 2,
   "public": true,
+  "cleanUrls": true,
+  "trailingSlash": false,
   "outputDirectory": "public",
   "github": {
-    "enabled": false
-  },
-  "cleanUrls": true,
-  "trailingSlash": true,
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/$1" }
-  ],
-  "env": {
-    "API_URL": "https://humorous-serenity-locallift.up.railway.app",
-    "NODE_ENV": "production"
+    "silent": true
   }
 }
