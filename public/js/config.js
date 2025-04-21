@@ -1,3 +1,6 @@
+// API Configuration
+const API_BASE_URL = "https://humorous-serenity-locallift.up.railway.app";
+
 /**
  * Configuration for LocalLift CRM Frontend
  */

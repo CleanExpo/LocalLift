@@ -1,0 +1,1 @@
+#!/bin/bashecho "Static deployment - no build needed"exit 0

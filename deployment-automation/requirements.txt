@@ -1,0 +1,14 @@
+# LocalLift Deployment Automation - Python Dependencies
+# These packages are required for the automation tools to work
+
+# HTTP Requests
+requests>=2.25.1
+
+# Environment Variable Management
+python-dotenv>=0.15.0
+
+# Logging and Formatting
+colorama>=0.4.4
+
+# API Interactions
+pyyaml>=6.0

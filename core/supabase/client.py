@@ -1,101 +1,128 @@
 """
-Supabase Client Configuration
+Supabase Client for LocalLift CRM
 
-This module initializes the Supabase client for server-side access.
-It establishes a connection to the Supabase backend using the project URL
-and API keys, which should be set in environment variables.
+This module provides a singleton Supabase client for accessing the Supabase
+backend services, including authentication, database, and storage.
 """
-
 import os
-import logging
-from dotenv import load_dotenv
+from typing import Optional
+from functools import lru_cache
+
 from supabase import create_client, Client
 
-# Configure logging
-logger = logging.getLogger(__name__)
-
 # Load environment variables
-load_dotenv()
-
-# Get Supabase credentials
 SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
-SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
-SUPABASE_PROJECT_ID = os.getenv("SUPABASE_PROJECT_ID")
+SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 
-# Log configuration status with environment check
-if not SUPABASE_URL:
-    logger.warning("SUPABASE_URL environment variable is not set")
-if not SUPABASE_ANON_KEY:
-    logger.warning("SUPABASE_ANON_KEY environment variable is not set")
-if not SUPABASE_SERVICE_KEY:
-    logger.warning("SUPABASE_SERVICE_ROLE_KEY environment variable is not set")
-if not SUPABASE_PROJECT_ID:
-    logger.warning("SUPABASE_PROJECT_ID environment variable is not set")
+# Validation
+if not SUPABASE_URL or not SUPABASE_KEY:
+    raise ValueError(
+        "Supabase URL and service role key must be set in environment variables "
+        "(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)"
+    )
 
+@lru_cache()
 def get_supabase_client() -> Client:
     """
-    Get a configured Supabase client instance using anon key for public access.
+    Get a cached Supabase client instance.
+    
+    This function creates a Supabase client if one doesn't exist,
+    or returns the existing client if it does. The @lru_cache decorator
+    ensures that only one client is created.
     
     Returns:
-        Client: A configured Supabase client with anonymous role permissions
-    
-    Raises:
-        ValueError: If SUPABASE_ANON_KEY environment variable is not set
+        Client: A Supabase client instance
     """
-    if not SUPABASE_URL:
-        raise ValueError("SUPABASE_URL environment variable is not set")
-    if not SUPABASE_ANON_KEY:
-        raise ValueError("SUPABASE_ANON_KEY environment variable is not set")
-    
-    logger.debug(f"Creating Supabase client with URL: {SUPABASE_URL}")
-    return create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
+    return create_client(SUPABASE_URL, SUPABASE_KEY)
 
-def get_supabase_admin_client() -> Client:
+def get_user_by_email(email: str) -> Optional[dict]:
     """
-    Get a configured Supabase admin client instance using service role key.
-    This client has elevated permissions and should be used only for
-    server-side operations that require admin access.
+    Get a user by email address.
     
+    Args:
+        email (str): The user's email address
+        
     Returns:
-        Client: A configured Supabase client with service role permissions
-    
-    Raises:
-        ValueError: If SUPABASE_SERVICE_ROLE_KEY environment variable is not set
+        Optional[dict]: The user data if found, or None if not found
     """
-    if not SUPABASE_URL:
-        raise ValueError("SUPABASE_URL environment variable is not set")
-    if not SUPABASE_SERVICE_KEY:
-        raise ValueError("SUPABASE_SERVICE_ROLE_KEY environment variable is not set")
+    supabase = get_supabase_client()
     
-    logger.debug(f"Creating Supabase admin client with URL: {SUPABASE_URL}")
-    return create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+    # Use the admin API to search for a user by email
+    response = supabase.rpc(
+        "get_user_by_email", 
+        {"email_to_find": email}
+    ).execute()
+    
+    if response.data and len(response.data) > 0:
+        return response.data[0]
+    
+    return None
 
-# Initialize default clients for convenience
-try:
-    if SUPABASE_URL and SUPABASE_ANON_KEY:
-        supabase_client = get_supabase_client()
-        logger.info(f"Initialized Supabase client with anonymous role for URL: {SUPABASE_URL}")
+def check_permission(user_id: str, permission: str) -> bool:
+    """
+    Check if a user has a specific permission.
+    
+    Args:
+        user_id (str): The user ID to check
+        permission (str): The permission to check for
+        
+    Returns:
+        bool: True if the user has the permission, False otherwise
+    """
+    supabase = get_supabase_client()
+    
+    # First, get the user's role
+    role_response = supabase.table("user_roles").select("role").eq("user_id", user_id).execute()
+    
+    if not role_response.data or len(role_response.data) == 0:
+        # Default to user role if not found
+        role = "user"
     else:
-        logger.warning("Skipping Supabase client initialization due to missing credentials")
-        supabase_client = None
-except ValueError as e:
-    logger.error(f"Failed to initialize default Supabase client: {e}")
-    supabase_client = None
-except Exception as e:
-    logger.error(f"Unexpected error initializing Supabase client: {str(e)}")
-    supabase_client = None
+        role = role_response.data[0]["role"]
+    
+    # Define permission hierarchy
+    role_permissions = {
+        'user': ['view_dashboard', 'edit_profile', 'view_learning'],
+        'staff': ['view_dashboard', 'edit_profile', 'view_learning', 'view_analytics', 'view_reports'],
+        'manager': ['view_dashboard', 'edit_profile', 'view_learning', 'view_analytics', 'view_reports', 'manage_users'],
+        'admin': ['view_dashboard', 'edit_profile', 'view_learning', 'view_analytics', 'view_reports', 'manage_users', 'edit_settings', 'view_admin_panel', 'view_audit_logs'],
+        'superadmin': ['view_dashboard', 'edit_profile', 'view_learning', 'view_analytics', 'view_reports', 'manage_users', 'edit_settings', 'view_admin_panel', 'view_audit_logs']
+    }
+    
+    # Check if user has the permission based on their role
+    has_permission = permission in role_permissions.get(role, [])
+    
+    if has_permission:
+        return True
+    
+    # Also check for temporary permissions
+    temp_perm_response = supabase.table("temp_permissions").select("*").eq("user_id", user_id).eq("permission", permission).gt("expiry", "now()").execute()
+    
+    if temp_perm_response.data and len(temp_perm_response.data) > 0:
+        return True
+    
+    return False
 
-try:
-    if SUPABASE_URL and SUPABASE_SERVICE_KEY:
-        supabase_admin_client = get_supabase_admin_client()
-        logger.info(f"Initialized Supabase admin client with service role for URL: {SUPABASE_URL}")
-    else:
-        logger.warning("Skipping Supabase admin client initialization due to missing credentials")
-        supabase_admin_client = None
-except ValueError as e:
-    logger.error(f"Failed to initialize admin Supabase client: {e}")
-    supabase_admin_client = None
-except Exception as e:
-    logger.error(f"Unexpected error initializing Supabase admin client: {str(e)}")
-    supabase_admin_client = None
+def log_activity(user_id: str, action: str, resource: str, details: Optional[dict] = None) -> None:
+    """
+    Log a user activity for audit purposes.
+    
+    Args:
+        user_id (str): The ID of the user performing the action
+        action (str): The action being performed (e.g., "create", "update", "delete")
+        resource (str): The resource being acted upon (e.g., "user", "profile", "settings")
+        details (Optional[dict]): Additional details about the action
+    """
+    supabase = get_supabase_client()
+    
+    log_data = {
+        "user_id": user_id,
+        "action": action,
+        "resource": resource,
+    }
+    
+    if details:
+        log_data["details"] = details
+    
+    # Insert into activity log table
+    supabase.table("activity_logs").insert(log_data).execute()

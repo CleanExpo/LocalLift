@@ -1,72 +1,142 @@
 # LocalLift Deployment Completion Guide
 
-This document outlines the successful deployment of the LocalLift application to both Railway (backend) and Vercel (frontend).
+**Date: April 20, 2025**  
+**Version: 1.0.0**
 
-## Completed Configuration
+This guide provides comprehensive instructions for managing and maintaining your LocalLift deployment infrastructure using the automated MCP (Model Context Protocol) powered tooling that has been set up.
 
-### Backend Configuration (Railway)
+## Current Deployment Status
 
-1. **PORT Configuration Fixed**
-   - Fixed the `main.py` file to correctly use the PORT environment variable
-   - Updated `uvicorn.run()` parameters to avoid conflicts
-   - Added logging to show which port the server is using
-   - Removed duplicate health endpoint
+| Component | Status | Endpoint |
+|-----------|--------|----------|
+| Frontend (Vercel) | ✅ OPERATIONAL | [https://locallift.vercel.app/](https://locallift.vercel.app/) |
+| Backend (Railway) | ⚠️ NOT DETECTED | *No active endpoints found* |
+| Database (Supabase) | ✅ OPERATIONAL | [https://supabase.co/dashboard/project/locallift/](https://supabase.co/dashboard/project/locallift/) |
 
-2. **Railway Configuration**
-   - Updated `railway.toml` with proper health check paths
-   - Verified `Procfile` contains the correct web command
+## MCP-Powered Deployment Automation
 
-3. **Railway Domain**
-   - Created Railway domain: https://humorous-serenity-locallift.up.railway.app
-   - Verified health endpoint is working at https://humorous-serenity-locallift.up.railway.app/health
+We've set up a complete deployment automation system that enables:
 
-### Frontend Configuration (Vercel)
+1. **Automatic endpoint discovery** - Finds and verifies all deployment endpoints
+2. **Configuration validation** - Ensures proper setup of environment variables
+3. **Auto-fixing common issues** - Handles PORT configuration and API endpoints 
+4. **Deployment verification** - Confirms all components are operational
+5. **Regular monitoring** - Can be scheduled to run periodically
 
-1. **API Integration**
-   - Updated frontend configuration to point to the new Railway domain:
-   - Changed API_BASE_URL from the old URL to: https://humorous-serenity-locallift.up.railway.app/api
-   - Deployed changes to Vercel
+## Running the Automation Tools
 
-2. **Frontend URL**
-   - The application is deployed at: https://local-lift-gptawvo91-admin-cleanexpo247s-projects.vercel.app
-   - **Note**: The frontend currently requires Vercel authentication to access. This is expected behavior as the project uses Vercel's authentication system for secure access.
+The automation tools are located in the `LocalLift/deployment-automation` directory on your Desktop. 
 
-## Verification Steps
+### Important: Use Absolute Paths
 
-1. **Backend Health Check**
-   - ✅ The backend health endpoint is responding with a 200 OK status
-   - ✅ Content: "ok" - indicating the backend is running properly
-   - ✅ Railway correctly binds to the PORT environment variable
+When running scripts from a different directory, you must use absolute paths. For detailed instructions, see:
+[ABSOLUTE_PATH_INSTRUCTIONS.md](./ABSOLUTE_PATH_INSTRUCTIONS.md)
 
-2. **Frontend Deployment**
-   - ✅ Frontend is deployed successfully to Vercel
-   - ✅ Frontend is configured to communicate with the correct backend URL
-   - ✅ Supabase integration is maintained with the correct credentials
-   - ℹ️ Authentication required: Users need Vercel authentication to access the application
+### Option 1: Standard Execution (Fixed Version)
 
-3. **Authentication Flow**
-   - When accessing the frontend URL, users will be redirected to Vercel's authentication page
-   - After successful authentication, users will have access to the application
-   - This provides an additional layer of security for the deployed application
+```powershell
+cd C:\Users\PhillMcGurk\Desktop\LocalLift\deployment-automation
+.\run_auto_deployment_fixed.ps1
+```
 
-## Next Steps and Maintenance
+> **Note**: Use the fixed version which prevents Unicode encoding errors. See [UNICODE_FIX_NOTES.md](./UNICODE_FIX_NOTES.md) for details.
 
-1. **Monitoring**
-   - Regularly check Railway logs for any PORT-related issues
-   - Monitor the health endpoint to ensure the application remains online
+### Option 2: Non-Interactive Mode (for CI/CD or Scheduled Tasks)
 
-2. **Future Deployments**
-   - Always use the PORT environment variable for service binding
-   - Ensure the following files are up to date:
-     - `railway.toml`
-     - `Procfile`
-     - `main.py` (with proper PORT configuration)
-     - `public/js/config.js` (with correct backend URL)
+```powershell
+# This uses the fixed scripts internally
+cd C:\Users\PhillMcGurk\Desktop\LocalLift\deployment-automation
+.\run_automation_noninteractive.ps1
+```
 
-3. **Troubleshooting**
-   - If deployment issues recur, refer to the `RAILWAY_PORT_CONFIGURATION.md` file
-   - For more detailed logs, check the Railway dashboard
+### Option 3: Set Up Scheduled Monitoring (requires admin rights)
 
-## Summary
+```powershell
+# Run PowerShell as Administrator
+cd C:\Users\PhillMcGurk\Desktop\LocalLift\deployment-automation
+.\setup_scheduled_task.ps1
+```
 
-The LocalLift application has been successfully configured to work properly with Railway's PORT environment variable requirement. This ensures that the application is correctly exposed on Railway's public networking infrastructure, and the frontend can communicate with the backend API.
+## Configuration Files
+
+Your API tokens and deployment configuration are stored in these files:
+
+| File | Purpose | Location |
+|------|---------|----------|
+| `.env` | API Tokens | `C:\Users\PhillMcGurk\Desktop\LocalLift\deployment-automation\.env` |
+| `endpoints.json` | Detected Endpoints | `C:\Users\PhillMcGurk\Desktop\LocalLift\deployment-automation\mcp-env\endpoints.json` |
+
+## Troubleshooting Common Issues
+
+### Railway Backend Not Detected
+
+If the Railway backend is not detected, check the following:
+
+1. Verify your Railway project is properly deployed
+2. Check if your Railway API token is valid
+3. Try running the endpoint discovery tool again:
+   ```powershell
+   cd C:\Users\PhillMcGurk\Desktop\LocalLift\deployment-automation
+   python src\mcp_endpoint_discovery.py
+   ```
+
+### Port Configuration Issues
+
+If you're experiencing PORT-related errors in Railway deployment:
+
+1. The auto-fixer will automatically check and fix PORT configuration in main.py
+2. Verify that the `PORT` environment variable is set in Railway dashboard
+3. Check Railway logs for any port binding issues
+
+### API Connection Issues
+
+If frontend and backend are not connecting properly:
+
+1. The auto-fixer automatically updates API endpoint configuration in config.js
+2. Verify that CORS is properly configured in your backend
+3. Check frontend console logs for API connection errors
+
+## Next Steps
+
+1. **Complete Railway Backend Deployment**:
+   - Once deployed, run the automation tools again to detect and configure it
+
+2. **Set Up Regular Monitoring**:
+   - Use the scheduled task script to monitor deployment health
+   - Set email notifications for any issues
+
+3. **Extend Automation**:
+   - Additional scripts can be added to the `deployment-automation/src` directory
+   - Customize monitoring thresholds in config files
+
+## Available MCP Tools
+
+The deployment automation leverages several MCP tools:
+
+1. **Railway Platform Integration**: 
+   - Manages Railway deployments, environment variables, and redeployments
+   - Fixes common Railway configuration issues
+
+2. **Vercel Platform Integration**:
+   - Updates Vercel environment variables and configurations
+   - Verifies frontend deployments and triggers rebuilds
+
+3. **Endpoint Discovery**:
+   - Detects and validates all deployment endpoints
+   - Generates comprehensive endpoint reports
+
+4. **Auto Deployment Fixer**:
+   - Fixes common deployment issues automatically
+   - Updates configuration files to match the current environment
+
+## Logs and Reporting
+
+Detailed logs are stored in:
+- `C:\Users\PhillMcGurk\Desktop\LocalLift\deployment-automation\deployment-logs\`
+
+Summary reports are generated in:
+- `C:\Users\PhillMcGurk\Desktop\LocalLift\deployment-automation\mcp-env\`
+
+---
+
+For additional information, refer to the other documentation files in this directory.

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocalLift Platform</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f9fc;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        h1 {
+            color: #2563eb;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .status {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            background-color: #f3f4f6;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+        .button {
+            display: inline-block;
+            background-color: #2563eb;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+        .button:hover {
+            background-color: #1d4ed8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>LocalLift Platform</h1>
+            <p>Elevate your local business presence</p>
+        </div>
+        
+        <div class="card">
+            <h2>Welcome to LocalLift</h2>
+            <p>The all-in-one platform designed to help local businesses grow their online presence, engage with customers, and drive foot traffic.</p>
+            
+            <div class="status">
+                <h3>System Status</h3>
+                <p>Backend API: <span id="api-status">Checking...</span></p>
+                <p>Database Connection: <span id="db-status">Checking...</span></p>
+            </div>
+
+            <a href="#" class="button" id="check-status">Check Status</a>
+        </div>
+
+        <div class="card">
+            <h2>Our Features</h2>
+            <ul>
+                <li>Customer engagement tracking</li>
+                <li>Local business visibility optimization</li>
+                <li>Review management and response tools</li>
+                <li>Performance analytics dashboard</li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <p>© 2025 LocalLift. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://locallift-production.up.railway.app';
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate checking status
+            document.getElementById('check-status').addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Show checking
+                document.getElementById('api-status').textContent = "Connecting...";
+                document.getElementById('db-status').textContent = "Connecting...";
+                
+                // Simulate API check
+                setTimeout(() => {
+                    document.getElementById('api-status').textContent = "Online";
+                    document.getElementById('db-status').textContent = "Connected";
+                }, 1500);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,256 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LocalLift - Help Local Businesses Thrive</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <meta name="description" content="LocalLift helps local businesses improve their online presence and customer engagement.">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocalLift Platform</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f9fc;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        h1 {
+            color: #2563eb;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .status {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            background-color: #f3f4f6;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+        .button {
+            display: inline-block;
+            background-color: #2563eb;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+        .button:hover {
+            background-color: #1d4ed8;
+        }
+    </style>
 </head>
 <body>
-  <div id="root">
-    <header class="bg-white shadow-sm">
-      <nav class="container mx-auto px-4 py-3 md:flex md:items-center md:justify-between">
-        <div class="logo flex items-center">
-          <i class="fas fa-chart-line text-primary-600 mr-2"></i>
-          <h1 class="text-2xl font-bold text-gray-800">LocalLift</h1>
+    <div class="container">
+        <div class="header">
+            <h1>LocalLift Platform</h1>
+            <p>Elevate your local business presence</p>
         </div>
-        <!-- Simplified nav links for testing layout -->
-        <div class="nav-links mt-4 md:mt-0 flex items-center space-x-4">
-          <a href="/">Home</a>
-          <a href="/dashboard">Dashboard</a>
-          <a href="/documents">Documents</a> 
-          <a href="/admin/guide">Guide</a>
-          <a href="/login">Login</a>
-        </div>
-      </nav>
-    </header>
-
-    <main>
-      <section class="hero bg-gradient-to-r from-primary-50 to-secondary-50 py-16">
-        <div class="hero-content container mx-auto px-4 md:flex md:items-center">
-          <div class="md:w-1/2 mb-8 md:mb-0">
-            <h2 class="text-4xl font-bold text-gray-800 mb-4">Help Local Businesses Thrive Online</h2>
-            <p class="text-lg text-gray-600 mb-6">Comprehensive tools for improving online presence and customer engagement</p>
-            <a href="/dashboard" class="cta-button btn btn-primary text-lg px-6 py-3">Get Started</a>
-          </div>
-          <div class="md:w-1/2 md:pl-8">
-            <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx
-x8&auto=format&fit=crop&w=1050&q=80"
-                 alt="Local business growth" class="rounded-xl shadow-lg">
-          </div>
-        </div>
-      </section>
-
-      <section class="features py-16 bg-white">
-        <div class="container mx-auto px-4">
-          <h2 class="text-3xl font-bold text-center mb-12">Our Features</h2>
-          <div class="grid md:grid-cols-3 gap-8">
-            <div class="feature card hover:shadow-lg transition-shadow">
-              <div class="text-center mb-4">
-                <i class="fas fa-chart-bar text-4xl text-primary-500"></i>
-              </div>
-              <h3 class="text-xl font-semibold mb-2 text-center">Business Analytics</h3>
-              <p class="text-gray-600 text-center">Track performance metrics and engagement statistics to make data-driven decisions</p>
-            </div>
-            <div class="feature card hover:shadow-lg transition-shadow">
-              <div class="text-center mb-4">
-                <i class="fas fa-trophy text-4xl text-primary-500"></i>
-              </div>
-              <h3 class="text-xl font-semibold mb-2 text-center">Achievement System</h3>
-              <p class="text-gray-600 text-center">Gamified approach to business improvements to keep your team motivated</p>
-            </div>
-            <div class="feature card hover:shadow-lg transition-shadow">
-              <div class="text-center mb-4">
-                <i class="fas fa-file-alt text-4xl text-primary-500"></i>
-              </div>
-              <h3 class="text-xl font-semibold mb-2 text-center">Reporting Tools</h3>
-              <p class="text-gray-600 text-center">Generate comprehensive business reports to share insights with stakeholders</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="testimonials py-16 bg-gray-50">
-        <div class="container mx-auto px-4">
-          <h2 class="text-3xl font-bold text-center mb-12">What Our Clients Say</h2>
-          <div class="grid md:grid-cols-2 gap-8">
-            <div class="testimonial card">
-              <p class="italic mb-4">"LocalLift has transformed how we manage our online presence. Our engagement metrics have increased by 45% in just three months!"</p>
-              <div class="flex items-center">
-                <div class="mr-4">
-                  <i class="fas fa-user-circle text-3xl text-gray-400"></i>
-                </div>
-                <div>
-                  <p class="font-semibold">Sarah Johnson</p>
-                  <p class="text-sm text-gray-500">Main Street Cafe</p>
-                </div>
-              </div>
-            </div>
-            <div class="testimonial card">
-              <p class="italic mb-4">"The analytics tools provided by LocalLift gave us insights we never had before. It's like having a marketing team in your pocket."</p>
-              <div class="flex items-center">
-                <div class="mr-4">
-                  <i class="fas fa-user-circle text-3xl text-gray-400"></i>
-                </div>
-                <div>
-                  <p class="font-semibold">Michael Chen</p>
-                  <p class="text-sm text-gray-500">Chen's Hardware</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      <!-- Question and Answer Section -->
-      <section class="qa-section py-16 bg-white">
-        <div class="container mx-auto px-4">
-          <h2 class="text-3xl font-bold text-center mb-4">Questions & Answers</h2>
-          <p class="text-gray-600 text-center mb-12 max-w-2xl mx-auto">Get answers to your most pressing questions about LocalLift and how it can help your business grow.</p>
-          
-          <div class="qa-container max-w-3xl mx-auto">
-            <div class="qa-item mb-6">
-              <div class="qa-question bg-gray-50 rounded-lg p-4 cursor-pointer flex justify-between items-center">
-                <h3 class="text-lg font-semibold">How does LocalLift improve my online visibility?</h3>
-                <i class="fas fa-chevron-down text-primary-600 qa-toggle"></i>
-              </div>
-              <div class="qa-answer bg-white p-4 border border-gray-200 rounded-b-lg hidden">
-                <p class="text-gray-700">LocalLift uses a combination of SEO optimization, targeted content strategies, and local engagement metrics to boost your business's visibility in local search results. Our platform continuously monitors your online presence and provides actionable recommendations to improve your ranking.</p>
-                <div class="mt-4 flex items-center">
-                  <i class="fas fa-file-pdf text-red-500 mr-2"></i>
-                  <a href="/docs/visibility-guide.pdf" class="text-primary-600 hover:underline text-sm">Download our Visibility Guide</a>
-                </div>
-              </div>
-            </div>
-            
-            <div class="qa-item mb-6">
-              <div class="qa-question bg-gray-50 rounded-lg p-4 cursor-pointer flex justify-between items-center">
-                <h3 class="text-lg font-semibold">Can I track performance across multiple locations?</h3>
-                <i class="fas fa-chevron-down text-primary-600 qa-toggle"></i>
-              </div>
-              <div class="qa-answer bg-white p-4 border border-gray-200 rounded-b-lg hidden">
-                <p class="text-gray-700">Yes! LocalLift is designed to handle multi-location businesses seamlessly. You can track performance metrics, customer engagement, and online reviews for each location individually, while still getting aggregated reports for your entire business. This makes it easy to identify location-specific issues and opportunities.</p>
-                <div class="mt-4 flex items-center">
-                  <i class="fas fa-file-excel text-green-600 mr-2"></i>
-                  <a href="/docs/multi-location-template.xlsx" class="text-primary-600 hover:underline text-sm">Download Location Tracking Template</a>
-                </div>
-              </div>
-            </div>
-            
-            <div class="qa-item mb-6">
-              <div class="qa-question bg-gray-50 rounded-lg p-4 cursor-pointer flex justify-between items-center">
-                <h3 class="text-lg font-semibold">How does role-based access work?</h3>
-                <i class="fas fa-chevron-down text-primary-600 qa-toggle"></i>
-              </div>
-              <div class="qa-answer bg-white p-4 border border-gray-200 rounded-b-lg hidden">
-                <p class="text-gray-700">LocalLift offers flexible role-based access control, allowing you to assign different permissions to team members based on their responsibilities. Administrators can manage all aspects of the system, while managers may have access to reporting and client management. Client users can access only their own dashboards and data.</p>
-                <div class="mt-4 flex items-center">
-                  <i class="fas fa-file-alt text-blue-500 mr-2"></i>
-                  <a href="/docs/role-permissions.pdf" class="text-primary-600 hover:underline text-sm">View Role Permissions Document</a>
-                </div>
-              </div>
-            </div>
-            
-            <div class="qa-item mb-6">
-              <div class="qa-question bg-gray-50 rounded-lg p-4 cursor-pointer flex justify-between items-center">
-                <h3 class="text-lg font-semibold">How secure is my business data?</h3>
-                <i class="fas fa-chevron-down text-primary-600 qa-toggle"></i>
-              </div>
-              <div class="qa-answer bg-white p-4 border border-gray-200 rounded-b-lg hidden">
-                <p class="text-gray-700">Security is our top priority. LocalLift employs industry-standard encryption for all data, both in transit and at rest. We use secure authentication systems and regularly audit our security practices. Your business data is never shared with third parties without your explicit consent.</p>
-                <div class="mt-4 flex items-center">
-                  <i class="fas fa-shield-alt text-gray-700 mr-2"></i>
-                  <a href="/security" class="text-primary-600 hover:underline text-sm">Read our Security Policy</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer class="bg-gray-800 text-white py-10">
-      <div class="container mx-auto px-4">
-        <div class="grid md:grid-cols-3 gap-8 mb-8">
-          <div>
-            <h3 class="text-xl font-semibold mb-4">LocalLift</h3>
-            <p class="text-gray-400">Helping local businesses thrive in the digital age with powerful analytics and engagement tools.</p>
-          </div>
-          <div>
-            <h3 class="text-xl font-semibold mb-4">Quick Links</h3>
-            <ul class="space-y-2">
-              <li><a href="/" class="text-gray-400 hover:text-white">Home</a></li>
-              <li><a href="/dashboard" class="text-gray-400 hover:text-white">Dashboard</a></li>
-              <li><a href="/admin/guide" class="text-gray-400 hover:text-white">Guide</a></li>
-            </ul>
-          </div>
-          <div>
-            <h3 class="text-xl font-semibold mb-4">Contact Us</h3>
-            <p class="text-gray-400 mb-2"><i class="fas fa-envelope mr-2"></i> support@locallift.com</p>
-            <p class="text-gray-400"><i class="fas fa-phone mr-2"></i> (555) 123-4567</p>
-          </div>
-        </div>
-        <div class="border-t border-gray-700 pt-6 text-center">
-          <p class="text-gray-400">&copy; 2025 LocalLift. All rights reserved.</p>
-        </div>
-      </div>
-    </footer>
-  </div>
-
-  <script src="js/config.js"></script>
-  <script src="js/dropdown-handler.js"></script>
-  <script src="js/main.js" defer></script>
-  
-  <!-- Q&A Section Toggle Script -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Handle document dropdown
-      const dropdownTrigger = document.querySelector('.dropdown-trigger');
-      const dropdownContent = document.querySelector('.dropdown-content');
-      
-      if (dropdownTrigger && dropdownContent) {
-        dropdownTrigger.addEventListener('click', function(e) {
-          e.preventDefault();
-          dropdownContent.classList.toggle('hidden');
-        });
         
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(e) {
-          if (!dropdownTrigger.contains(e.target)) {
-            dropdownContent.classList.add('hidden');
-          }
+        <div class="card">
+            <h2>Welcome to LocalLift</h2>
+            <p>The all-in-one platform designed to help local businesses grow their online presence, engage with customers, and drive foot traffic.</p>
+            
+            <div class="status">
+                <h3>System Status</h3>
+                <p>Backend API: <span id="api-status">Checking...</span></p>
+                <p>Database Connection: <span id="db-status">Checking...</span></p>
+            </div>
+
+            <a href="#" class="button" id="check-status">Check Status</a>
+        </div>
+
+        <div class="card">
+            <h2>Our Features</h2>
+            <ul>
+                <li>Customer engagement tracking</li>
+                <li>Local business visibility optimization</li>
+                <li>Review management and response tools</li>
+                <li>Performance analytics dashboard</li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <p>© 2025 LocalLift. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://locallift-production.up.railway.app';
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate checking status
+            document.getElementById('check-status').addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Show checking
+                document.getElementById('api-status').textContent = "Connecting...";
+                document.getElementById('db-status').textContent = "Connecting...";
+                
+                // Simulate API check
+                setTimeout(() => {
+                    document.getElementById('api-status').textContent = "Online";
+                    document.getElementById('db-status').textContent = "Connected";
+                }, 1500);
+            });
+        });
+    </script>
+
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js')
+            .then(registration => {
+              console.log('ServiceWorker registration successful');
+            })
+            .catch(error => {
+              console.log('ServiceWorker registration failed:', error);
+            });
         });
       }
-      
-      // Handle Q&A accordion
-      const qaQuestions = document.querySelectorAll('.qa-question');
-      
-      qaQuestions.forEach(question => {
-        question.addEventListener('click', function() {
-          // Toggle answer visibility
-          const answer = this.nextElementSibling;
-          answer.classList.toggle('hidden');
-          
-          // Toggle icon rotation
-          const icon = this.querySelector('.qa-toggle');
-          icon.classList.toggle('fa-chevron-down');
-          icon.classList.toggle('fa-chevron-up');
-          
-          // Update question styling
-          this.classList.toggle('active');
-          if (this.classList.contains('active')) {
-            this.classList.add('bg-primary-50');
-            this.classList.remove('bg-gray-50');
-          } else {
-            this.classList.remove('bg-primary-50');
-            this.classList.add('bg-gray-50');
-          }
-        });
-      });
-    });
-  </script>
+    </script>
 </body>
 </html>
+
