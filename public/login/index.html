@@ -332,7 +332,16 @@
     <script src="/js/config.js"></script>
     <script src="/js/auth.js"></script>
     <script>
+        // Debug message for authentication
+        console.log('Login page loaded. Checking auth configuration...');
+
         document.addEventListener('DOMContentLoaded', function() {
+            // Log configuration details to debug
+            console.log('Config loaded:', window.config ? 'Yes' : 'No');
+            if (window.config) {
+                console.log('API Base URL:', window.config.API_BASE_URL);
+            }
+            
             // Authentication form tabs
             const authTabs = document.querySelectorAll('.auth-tab');
             const authForms = document.querySelectorAll('.auth-form');

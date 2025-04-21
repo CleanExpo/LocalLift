@@ -14,13 +14,16 @@ let tokenExpiry = localStorage.getItem('token_expiry');
 
 // Authentication endpoints
 const AUTH_API = {
-  BASE_URL: 'https://locallift-production.up.railway.app/api',
+  BASE_URL: window.config?.API_BASE_URL || 'https://humorous-serenity-locallift.up.railway.app/api',
   LOGIN: '/auth/login',
   REGISTER: '/auth/register',
   REFRESH: '/auth/refresh',
   LOGOUT: '/auth/logout',
   ME: '/users/me'
 };
+
+// Debug message to help troubleshoot
+console.log('Auth module initialized with API URL:', AUTH_API.BASE_URL);
 
 /**
  * Initialize the authentication system
